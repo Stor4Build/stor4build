@@ -24,8 +24,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "click",
-  "openstudio"
+  "click"
 ]
 dynamic = ["version"]
 
