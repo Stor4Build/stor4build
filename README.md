@@ -1,4 +1,4 @@
-# s4b
+# Stor4Build Modeling Tool
 
 [![PyPI - Version](https://img.shields.io/pypi/v/s4b.svg)](https://pypi.org/project/s4b)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/s4b.svg)](https://pypi.org/project/s4b)
