@@ -8,7 +8,7 @@
 **Table of Contents**
 
 - [Installation](#installation)
-- [VS Code/Hatch Dev Environment](#vs code and hatch dev environment)
+- [VS Code/Hatch Dev Environment](#vs_code_hatch_dev_environment)
 - [License](#license)
 
 ## Installation
@@ -17,7 +17,7 @@
 pip install s4b
 ```
 
-## VS Code and Hatch Dev Environment
+## VS Code/Hatch Dev Environment
 
 To set up a Visual Studio Code development environment, first install Python. Then install Visual Studio code and the Python extension(s) from Microsoft. Next, install hatch with
 
