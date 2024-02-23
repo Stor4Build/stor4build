@@ -8,6 +8,7 @@
 **Table of Contents**
 
 - [Installation](#installation)
+- [VS Code/Hatch Dev Environment](#vs code and hatch dev environment)
 - [License](#license)
 
 ## Installation
@@ -15,6 +16,40 @@
 ```console
 pip install s4b
 ```
+
+## VS Code and Hatch Dev Environment
+
+To set up a Visual Studio Code development environment, first install Python. Then install Visual Studio code and the Python extension(s) from Microsoft. Next, install hatch with
+
+```console
+pip install hatch
+```
+
+Clone the repository to the location of your choice and open the directory with Visual Studio Code. In the root folder of the repo, execute the following to generate an environment that has everything that is needed:
+
+```console
+hatch env create
+```
+
+To point Visual Studio Code at the created environment, find the environment with
+
+```console
+hatch run python -c "import sys;print(sys.executable)"
+```
+
+and copy the result. In Visual Studio Code, hit `ctrl-shift-P` to bring up the command palette, select "Python: Select Interpreter", and paste in the result from above. Any warnings (yellow squiqqly underlines) in the source files should go away. To make sure that everything has worked, run
+
+```console
+hatch shell
+```
+
+to enter the environment that was created, and then execute
+
+```console
+s4b --help
+```
+
+You should see the help output from the tool.
 
 ## License
 
