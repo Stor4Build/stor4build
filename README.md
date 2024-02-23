@@ -8,7 +8,7 @@
 **Table of Contents**
 
 - [Installation](#installation)
-- [VS Code/Hatch Dev Environment](#vs_code_hatch_dev_environment)
+- [VS Code/Hatch Dev Environment](#vs_codehatch_dev_environment)
 - [License](#license)
 
 ## Installation
