@@ -47,7 +47,7 @@ hatch shell
 to enter the environment that was created, and then execute
 
 ```console
-s4b --help
+s4b-compute --help
 ```
 
 You should see the help output from the tool.

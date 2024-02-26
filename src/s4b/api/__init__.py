@@ -8,43 +8,6 @@ from flask import Flask, request
 
 from ..__about__ import __version__
 
-prototypes_list = ['SecondarySchool',
-                   'PrimarySchool',
-                   'SmallOffice',
-                   'MediumOffice',
-                   'LargeOffice',
-                   'SmallHotel',
-                   'LargeHotel',
-                   'Warehouse',
-                   'RetailStandalone',
-                   'RetailStripmall',
-                   'QuickServiceRestaurant',
-                   'FullServiceRestaurant',
-                   'MidriseApartment',
-                   'HighriseApartment',
-                   'Hospital',
-                   'Outpatient',
-                   'SuperMarket',
-                   'SmallDataCenterLowITE',
-                   'SmallDataCenterHighITE',
-                   'LargeDataCenterLowITE',
-                   'LargeDataCenterHighITE',
-                   'SmallOfficeDetailed',
-                   'MediumOfficeDetailed',
-                   'LargeOfficeDetailed',
-                   'Laboratory'
-                   ]
-
-cz_list = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C', '5A',
-           '5B', '5C', '6A', '6B', '7A', '7B', '8A']
-
-vintage_list = ['DOE Ref Pre-1980',
-                'DOE Ref 1980-2004',
-                '90.1-2004',
-                '90.1-2007',
-                '90.1-2010',
-                '90.1-2013']
-
 def create_app(config=None, instance_path=None):
     # create and configure the app
     if instance_path is not None:
@@ -118,9 +81,9 @@ def create_app(config=None, instance_path=None):
         %s
         </select></label></div>
     <input type="submit" value="Submit">
-</form>''' % (''.join(['<option value="%s">%s</option>' % (el,el) for el in prototypes_list]),
-              ''.join(['<option value="%s">%s</option>' % (el,el) for el in cz_list]),
-              ''.join(['<option value="%s">%s</option>' % (el,el) for el in vintage_list]))
+</form>''' % (''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.prototypes_list]),
+              ''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.climate_zone_list]),
+              ''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.vintage_values]))
 
     return app
 
