@@ -45,9 +45,12 @@ vintage_list = ['DOE Ref Pre-1980',
                 '90.1-2010',
                 '90.1-2013']
 
-def create_app(config=None):
+def create_app(config=None, instance_path=None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    if instance_path is not None:
+        app = Flask(__name__, instance_relative_config=True, instance_path=instance_path)
+    else:
+        app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         OPENSTUDIO='openstudio',
         MEASURES_DIR='.'
@@ -135,7 +138,7 @@ def prototype(openstudio, instance_path, measures_dir):
         'OPENSTUDIO': openstudio,
         'MEASURES_DIR': measures_dir
     }
-    app = create_app(config=config)
+    app = create_app(config=config, instance_path=instance_path)
     app.run(host='127.0.0.1', port=5000, debug=True)
 
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
