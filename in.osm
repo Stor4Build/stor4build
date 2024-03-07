@@ -1,7 +1,7 @@
 
 OS:Version,
-  {c9736fcb-f368-4c0a-bee8-beea1b66484d}, !- Handle
-  3.2.1;                                  !- Version Identifier
+  {14935ef6-38c4-4fb9-a39a-5ce95525ecdc}, !- Handle
+  3.7.0;                                  !- Version Identifier
 
 OS:Schedule:Constant,
   {f7d3c1f2-716f-461f-9d76-ccc136b8777a}, !- Handle
@@ -3747,7 +3747,7 @@ OS:SpaceType,
   Plenum,                                 !- Name
   {d812106d-40a9-4d74-a835-a823a3ba89f9}, !- Default Construction Set Name
   {231e38b3-5d75-4be4-92c1-a243b9b9a2c4}, !- Default Schedule Set Name
-  ,                                       !- Group Rendering Name
+  {fe058c55-505f-4c6f-b372-db0d021802f5}, !- Group Rendering Name
   ,                                       !- Design Specification Outdoor Air Object Name
   ,                                       !- Standards Template
   ,                                       !- Standards Building Type
@@ -4872,7 +4872,11 @@ OS:ClimateZones,
   ASHRAE,                                 !- Climate Zone Institution Name 1
   ANSI/ASHRAE Standard 169,               !- Climate Zone Document Name 1
   2006,                                   !- Climate Zone Document Year 1
-  4A;                                     !- Climate Zone Value 1
+  4A,                                     !- Climate Zone Value 1
+  CEC,                                    !- Climate Zone Institution Name 2
+  California Climate Zone Descriptions,   !- Climate Zone Document Name 2
+  1995,                                   !- Climate Zone Document Year 2
+  ;                                       !- Climate Zone Value 2
 
 OS:DefaultScheduleSet,
   {f5ef81a1-cc1c-401a-950d-6a0e6532dd9c}, !- Handle
@@ -5759,11 +5763,11 @@ OS:SpaceInfiltration:DesignFlowRate,
 
 OS:Site,
   {ee33662c-1dfd-4326-89ca-065aa93f75bb}, !- Handle
-  Baltimore Blt Washngtn IntL_MD_USA,     !- Name
-  39.17,                                  !- Latitude {deg}
-  -76.68,                                 !- Longitude {deg}
+  Knoxville Mcghee Tyson Ap,              !- Name
+  35.82,                                  !- Latitude {deg}
+  -83.98,                                 !- Longitude {deg}
   -5,                                     !- Time Zone {hr}
-  45,                                     !- Elevation {m}
+  293,                                    !- Elevation {m}
   City;                                   !- Terrain
 
 OS:SurfaceConvectionAlgorithm:Inside,
@@ -5793,7 +5797,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {2c3cc146-1f24-49a7-a37d-4e5abc3adc33}, !- Group Rendering Name
   {4bef26c9-33dc-4faf-b97f-8efb8ec35d77}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5850,7 +5854,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {4e1f8a4f-8932-4f71-80ac-739df8312a19}, !- Handle
@@ -5888,7 +5899,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {d6e406fb-f29f-4e3a-992e-77ac73cc6610}, !- Group Rendering Name
   {7df98d41-6eae-464d-a1bf-c5628f7b820e}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5945,7 +5956,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {a2de3063-4ac2-4f60-8787-34b810d103fb}, !- Handle
@@ -5983,7 +6001,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {ed5249e8-178a-407b-8336-491626d8113d}, !- Group Rendering Name
   {3a63e4f0-2e71-408a-986f-684144d51f1f}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6040,7 +6058,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {d78cb2e5-c483-47ae-9f61-bb77f21554d6}, !- Handle
@@ -6078,7 +6103,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {8234810d-e08f-4055-ab53-552d64612aa6}, !- Group Rendering Name
   {00e05f7a-d121-49e9-9659-0e592c70d31f}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6135,7 +6160,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {ca0b054d-1b9e-4216-8355-7c9d3174203e}, !- Handle
@@ -6173,7 +6205,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {77c5ea5d-9d37-4630-80b9-deb3e1d76e91}, !- Group Rendering Name
   {47a6f1ae-1457-4f88-a41b-d8646a2b174a}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6230,7 +6262,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {5dd29ebd-c8ac-4f30-8cc6-330bc228ce21}, !- Handle
@@ -6268,7 +6307,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {59e51dac-e235-4052-970b-1eaae0f52781}, !- Group Rendering Name
   {a8a9b898-750d-4f82-8c61-856b199fafa4}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6325,7 +6364,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {a5b5b24b-4ef1-41d0-a7bb-7d1d2cdf5c2b}, !- Handle
@@ -6363,7 +6409,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {a574c3bb-14a3-44de-bfd3-9c46b3b02912}, !- Group Rendering Name
   {fde36179-9113-4e8c-83f9-00ccd859ec7e}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6420,7 +6466,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {412a186f-5d2b-44c0-8487-67b92ea0e993}, !- Handle
@@ -6458,7 +6511,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {b6c17cc6-2242-4f7e-a467-501ec9078572}, !- Group Rendering Name
   {0718a1f8-8881-4732-9e28-74a5d719fef2}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6515,7 +6568,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {8e08406d-f2e7-4e53-90c0-e8b37f6052dc}, !- Handle
@@ -6553,7 +6613,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {7a761449-e9ae-4ddf-aaeb-2b592c3cac16}, !- Group Rendering Name
   {09ed25a6-4a95-42bb-8124-33f1521a4fe0}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6608,7 +6668,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {30db746b-1e97-465e-b58e-2816c70957e6}, !- Handle
@@ -6638,7 +6705,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {6bf59eb7-3023-4125-b508-eaa88b071ac2}, !- Group Rendering Name
   {b6331bc2-2a68-4251-b4e0-58482d7ad0fa}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6693,7 +6760,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {ea1fa24e-e0eb-491b-ad02-971124d911f1}, !- Handle
@@ -6723,7 +6797,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {b6a089a7-afa8-4953-8f65-96e0570865b7}, !- Group Rendering Name
   {50ef0b45-bdf1-4738-b24d-1f888f6576d0}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6780,7 +6854,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {e2ea30c9-6d22-4e93-9af3-8001215210cd}, !- Handle
@@ -6818,7 +6899,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {5741ec4e-d16a-4b4e-95ea-548a9a156374}, !- Group Rendering Name
   {de1f0a8c-b1b8-4f0c-a9dc-206c149373c7}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6875,7 +6956,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {3769b423-4d87-422a-ad9a-1da94eb8952e}, !- Handle
@@ -6913,7 +7001,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {63f4075d-fc0b-4b12-acc3-f44f0351f920}, !- Group Rendering Name
   {92d56817-f245-438f-8b55-2fdd7a9fbeec}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6970,7 +7058,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {46fc2bcd-fe14-4561-a816-2bac0c307b3f}, !- Handle
@@ -7008,7 +7103,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {dbe94da7-3691-445a-abea-73752c9783b9}, !- Group Rendering Name
   {547fbb48-9853-432e-aed5-8deb4f73f54b}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7065,7 +7160,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {3583e152-11d9-43f1-bd53-0e49e5b25059}, !- Handle
@@ -7103,7 +7205,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {d3f7e048-1bd7-478b-897d-b23ca4fc9241}, !- Group Rendering Name
   {852d0e41-8fb1-4c85-a5c7-96073dd5c527}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7160,7 +7262,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {4095acad-ebdc-409b-9c8d-339cea012a9e}, !- Handle
@@ -7198,7 +7307,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {887a7812-4c0d-4266-a3a6-5a9dfc8d631f}, !- Group Rendering Name
   {dbab061e-09e7-4154-af0d-e6b5550916ac}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7255,7 +7364,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {13980182-cc27-4e5b-b7e7-0efa0339b0a1}, !- Handle
@@ -7293,7 +7409,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {7bff26f1-6841-4311-925c-ebf966bcc043}, !- Group Rendering Name
   {d49caf9c-b515-4801-8ce6-9b4aea5fd0ce}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7350,7 +7466,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {398b3265-cdb6-4b2a-b541-4aa822dc49b1}, !- Handle
@@ -7388,7 +7511,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {5f0b17a8-c6b3-4bd5-8ef4-d31a47b373bd}, !- Group Rendering Name
   {98375840-3682-4d8d-b5f3-f5c88f19d333}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7445,7 +7568,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {2eef6603-57cc-4550-822e-c4bb8e3bf3c7}, !- Handle
@@ -7483,7 +7613,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {cbc8b108-494d-43f4-bc72-79d52d45a224}, !- Group Rendering Name
   {840faa46-5f86-4fd4-993c-c3f7b1605ff7}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7540,7 +7670,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {83d10c58-d2ef-465a-bb20-cfb0af5e6ca8}, !- Handle
@@ -7578,7 +7715,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {541b0442-cd1d-41aa-99d1-b9df29d817fd}, !- Group Rendering Name
   {2968b04b-49e0-452b-9594-3beb4af04615}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7635,7 +7772,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {fa25c2c6-3989-42d6-b1da-16eba9f5151a}, !- Handle
@@ -7673,7 +7817,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {06d5351d-47fa-4b45-a7b2-e16acc42b2da}, !- Group Rendering Name
   {1b2a1f85-80ea-4410-be86-9752a77c27da}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7730,7 +7874,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {e587b747-8f5f-4e27-b0d7-6cc1c4257d24}, !- Handle
@@ -7768,7 +7919,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {06bad32e-201b-445c-a251-68915ac28642}, !- Group Rendering Name
   {1d13eddd-a560-4783-9f79-fcbf890d3fc9}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7825,7 +7976,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {c9d408f1-d027-455e-b380-5252aafc3a10}, !- Handle
@@ -7863,7 +8021,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {a427db8b-dab7-4b87-bf29-06c82b52a336}, !- Group Rendering Name
   {d7c15ab9-948d-4754-affc-913c93bd6fe8}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -7918,7 +8076,14 @@ OS:Sizing:Zone,
   No,                                     !- Account for Dedicated Outdoor Air System
   NeutralSupplyAir,                       !- Dedicated Outdoor Air System Control Strategy
   autosize,                               !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
-  autosize;                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  autosize,                               !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
+  Sensible Load Only No Latent Load,      !- Zone Load Sizing Method
+  HumidityRatioDifference,                !- Zone Latent Cooling Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Dehumidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
+  ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
+  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
 
 OS:ZoneHVAC:EquipmentList,
   {3b46a75a-8976-46b8-942d-a03302c79206}, !- Handle
@@ -7928,20 +8093,6 @@ OS:ZoneHVAC:EquipmentList,
 OS:ThermostatSetpoint:DualSetpoint,
   {d7c15ab9-948d-4754-affc-913c93bd6fe8}, !- Handle
   Plenum Thermostat 3;                    !- Name
-
-OS:WeatherFile,
-  {ce8f0a02-bde4-4eea-9f22-60f6ad532f1f}, !- Handle
-  Baltimore Blt Washngtn IntL,            !- City
-  MD,                                     !- State Province Region
-  USA,                                    !- Country
-  TMY3,                                   !- Data Source
-  724060,                                 !- WMO Number
-  39.17,                                  !- Latitude {deg}
-  -76.68,                                 !- Longitude {deg}
-  -5,                                     !- Time Zone {hr}
-  45,                                     !- Elevation {m}
-  c:/Users/8wd/Desktop/s4b/run/000_create_doe_prototype_building_extended/extracted_files/weather/USA_MD_Baltimore-Washington.Intl.AP.724060_TMY3.epw, !- Url
-  A76C8897;                               !- Checksum
 
 OS:Site:WaterMainsTemperature,
   {c451ae37-d87a-4499-94de-02a9768bdac1}, !- Handle
@@ -7955,47 +8106,51 @@ OS:SizingPeriod:DesignDay,
   Baltimore Blt Washngtn IntL Ann Clg .4% Condns DB=>MWB, !- Name
   34.4,                                   !- Maximum Dry-Bulb Temperature {C}
   10.4,                                   !- Daily Dry-Bulb Temperature Range {deltaC}
-  23.9,                                   !- Humidity Indicating Conditions at Maximum Dry-Bulb
   100786,                                 !- Barometric Pressure {Pa}
   4.6,                                    !- Wind Speed {m/s}
   280,                                    !- Wind Direction {deg}
   0,                                      !- Sky Clearness
-  0,                                      !- Rain Indicator
-  0,                                      !- Snow Indicator
+  No,                                     !- Rain Indicator
+  No,                                     !- Snow Indicator
   21,                                     !- Day of Month
   7,                                      !- Month
   SummerDesignDay,                        !- Day Type
-  0,                                      !- Daylight Saving Time Indicator
-  Wetbulb,                                !- Humidity Indicating Type
-  ,                                       !- Humidity Indicating Day Schedule Name
+  No,                                     !- Daylight Saving Time Indicator
+  Wetbulb,                                !- Humidity Condition Type
+  ,                                       !- Humidity Condition Day Schedule Name
+  23.9,                                   !- Wetbulb or DewPoint at Maximum Dry-Bulb {C}
+  ,                                       !- Humidity Ratio at Maximum Dry-Bulb {kgWater/kgDryAir}
+  ,                                       !- Enthalpy at Maximum Dry-Bulb {J/kg}
   DefaultMultipliers,                     !- Dry-Bulb Temperature Range Modifier Type
-  ,                                       !- Dry-Bulb Temperature Range Modifier Schedule Name
+  ,                                       !- Dry-Bulb Temperature Range Modifier Day Schedule Name
   ASHRAETau,                              !- Solar Model Indicator
   ,                                       !- Beam Solar Day Schedule Name
   ,                                       !- Diffuse Solar Day Schedule Name
-  0.552,                                  !- ASHRAE Taub {dimensionless}
-  1.769;                                  !- ASHRAE Taud {dimensionless}
+  0.552,                                  !- ASHRAE Clear Sky Optical Depth for Beam Irradiance {dimensionless}
+  1.769;                                  !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance {dimensionless}
 
 OS:SizingPeriod:DesignDay,
   {ebcf8f67-c384-46bb-8a9e-7c0485f96157}, !- Handle
   Baltimore Blt Washngtn IntL Ann Htg 99.6% Condns DB, !- Name
   -10.6,                                  !- Maximum Dry-Bulb Temperature {C}
   0,                                      !- Daily Dry-Bulb Temperature Range {deltaC}
-  -10.6,                                  !- Humidity Indicating Conditions at Maximum Dry-Bulb
   100786,                                 !- Barometric Pressure {Pa}
   3.9,                                    !- Wind Speed {m/s}
   290,                                    !- Wind Direction {deg}
   0,                                      !- Sky Clearness
-  0,                                      !- Rain Indicator
-  0,                                      !- Snow Indicator
+  No,                                     !- Rain Indicator
+  No,                                     !- Snow Indicator
   21,                                     !- Day of Month
   1,                                      !- Month
   WinterDesignDay,                        !- Day Type
-  0,                                      !- Daylight Saving Time Indicator
-  Wetbulb,                                !- Humidity Indicating Type
-  ,                                       !- Humidity Indicating Day Schedule Name
+  No,                                     !- Daylight Saving Time Indicator
+  Wetbulb,                                !- Humidity Condition Type
+  ,                                       !- Humidity Condition Day Schedule Name
+  -10.6,                                  !- Wetbulb or DewPoint at Maximum Dry-Bulb {C}
+  ,                                       !- Humidity Ratio at Maximum Dry-Bulb {kgWater/kgDryAir}
+  ,                                       !- Enthalpy at Maximum Dry-Bulb {J/kg}
   DefaultMultipliers,                     !- Dry-Bulb Temperature Range Modifier Type
-  ,                                       !- Dry-Bulb Temperature Range Modifier Schedule Name
+  ,                                       !- Dry-Bulb Temperature Range Modifier Day Schedule Name
   ASHRAEClearSky;                         !- Solar Model Indicator
 
 OS:PlantLoop,
@@ -8290,7 +8445,8 @@ OS:Boiler:HotWater,
   {374da5c8-972b-4372-961c-543d56d1cd80}, !- Boiler Water Outlet Node Name
   95.0000000000001,                       !- Water Outlet Upper Temperature Limit {C}
   LeavingSetpointModulated,               !- Boiler Flow Mode
-  0,                                      !- Parasitic Electric Load {W}
+  0,                                      !- On Cycle Parasitic Electric Load {W}
+  0,                                      !- Off Cycle Parasitic Fuel Load {W}
   1,                                      !- Sizing Factor
   General;                                !- End-Use Subcategory
 
@@ -9801,7 +9957,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {88b47e88-56d1-4c06-ab50-3733e1182068}, !- Handle
@@ -10297,7 +10454,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {3df9f020-cb4c-47c1-8c38-ef9f5b82b44c}, !- Handle
@@ -11335,7 +11493,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {443b1dfc-6c5d-4e83-81a0-4c99c545dd19}, !- Handle
@@ -11601,7 +11760,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenOAFlowGreaterThanMinimum;     !- Heat Recovery Bypass Control Type
+  BypassWhenOAFlowGreaterThanMinimum,     !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {334ccca8-1305-42e2-a92e-450a5f6e3232}, !- Handle
@@ -12625,7 +12785,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {fd4d600a-5ffc-48a5-a662-22be74542603}, !- Handle
@@ -12891,7 +13052,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {e5228159-fe85-418b-9c56-7dddf8fd3aad}, !- Handle
@@ -13924,7 +14086,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {2cbea872-83e7-4863-9c14-4548ae508106}, !- Handle
@@ -14182,7 +14345,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {591e4882-e4f5-49d3-a75b-7388e62c419b}, !- Handle
@@ -14773,7 +14937,8 @@ OS:Boiler:HotWater,
   {ba39dc32-77f6-4d98-95d2-c5c09d2b37b7}, !- Boiler Water Outlet Node Name
   95.0000000000001,                       !- Water Outlet Upper Temperature Limit {C}
   ConstantFlow,                           !- Boiler Flow Mode
-  0,                                      !- Parasitic Electric Load {W}
+  0,                                      !- On Cycle Parasitic Electric Load {W}
+  0,                                      !- Off Cycle Parasitic Fuel Load {W}
   1,                                      !- Sizing Factor
   General;                                !- End-Use Subcategory
 
@@ -15139,7 +15304,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {0671ffc4-b643-478d-9db1-5f79507563fb}, !- Handle
@@ -15203,8 +15369,12 @@ OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Water Flow Rate {m3/s}
   ,                                       !- Rated Heating Capacity {W}
   4.2,                                    !- Rated Heating Coefficient of Performance {W/W}
+  20,                                     !- Rated Entering Water Temperature {C}
+  20,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  1,                                      !- Ratio of Rated Heating Capacity to Rated Cooling Capacity
   {5ee66600-fe60-4f2d-a1df-aa6985059025}, !- Heating Capacity Curve Name
-  {58244bdf-f3a0-4461-adaa-e5bed87f06ad}; !- Heating Power Consumption Curve Name
+  {58244bdf-f3a0-4461-adaa-e5bed87f06ad}, !- Heating Power Consumption Curve Name
+  {4a8dbe78-cd28-4170-b63e-986eaef96b45}; !- Part Load Fraction Correlation Curve Name
 
 OS:Curve:QuadLinear,
   {5ee66600-fe60-4f2d-a1df-aa6985059025}, !- Handle
@@ -15292,11 +15462,18 @@ OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Total Cooling Capacity {W}
   ,                                       !- Rated Sensible Cooling Capacity {W}
   3.4,                                    !- Rated Cooling Coefficient of Performance {W/W}
+  30,                                     !- Rated Entering Water Temperature {C}
+  27,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  19,                                     !- Rated Entering Air Wet-Bulb Temperature {C}
   {e7a68a50-0e9f-4d53-913c-7ecab32cac36}, !- Total Cooling Capacity Curve Name
   {0ec4e12d-266d-4a3a-b4b9-e85494bd75c8}, !- Sensible Cooling Capacity Curve Name
   {45e81528-bd41-4f56-ac4c-fd0f2337c978}, !- Cooling Power Consumption Curve Name
+  {4a8dbe78-cd28-4170-b63e-986eaef96b45}, !- Part Load Fraction Correlation Curve Name
   ,                                       !- Nominal Time for Condensate Removal to Begin {s}
-  ;                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  ,                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
+  60,                                     !- Latent Capacity Time Constant {s}
+  60;                                     !- Fan Delay Time {s}
 
 OS:Curve:QuadLinear,
   {e7a68a50-0e9f-4d53-913c-7ecab32cac36}, !- Handle
@@ -15420,18 +15597,18 @@ OS:AirLoopHVAC:UnitarySystem,
   2,                                      !- DOAS DX Cooling Coil Leaving Minimum Air Temperature {C}
   SensibleOnlyLoadControl,                !- Latent Load Control
   {1d341b4f-194f-4b16-b001-86558d25b9e8}, !- Supplemental Heating Coil Name
-  ,                                       !- Supply Air Flow Rate Method During Cooling Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Cooling Operation
   Autosize,                               !- Supply Air Flow Rate During Cooling Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area During Cooling Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method During Heating Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Heating Operation
   Autosize,                               !- Supply Air Flow Rate During Heating Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area during Heating Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method When No Cooling or Heating is Required
-  Autosize,                               !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
+  None,                                   !- Supply Air Flow Rate Method When No Cooling or Heating is Required
+  ,                                       !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area When No Cooling or Heating is Required {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
@@ -15440,12 +15617,20 @@ OS:AirLoopHVAC:UnitarySystem,
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
-  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
-  60,                                     !- Heat Pump Time Constant {s}
-  0.01,                                   !- Fraction of On-Cycle Power Use
-  60,                                     !- Heat Pump Fan Delay Time {s}
   0,                                      !- Ancilliary On-Cycle Electric Power {W}
   0;                                      !- Ancilliary Off-Cycle Electric Power {W}
+
+OS:Curve:Linear,
+  {4a8dbe78-cd28-4170-b63e-986eaef96b45}, !- Handle
+  DataCenter_basement_ZN_6 ZN Unitary HP-AutogeneratedPLFCurve, !- Name
+  0.833746458696111,                      !- Coefficient1 Constant
+  0.166253541303889,                      !- Coefficient2 x
+  0,                                      !- Minimum Value of x
+  1,                                      !- Maximum Value of x
+  0,                                      !- Minimum Curve Output
+  1,                                      !- Maximum Curve Output
+  Dimensionless,                          !- Input Unit Type for X
+  Dimensionless;                          !- Output Unit Type
 
 OS:Connection,
   {432a661f-de09-4f8b-b5b9-a12739f5aea3}, !- Handle
@@ -15481,7 +15666,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {9bdf0fe0-29cf-48d5-a9d7-53393b87f790}, !- Handle
@@ -15790,7 +15976,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {ec5e4cea-5f31-4bde-89cf-b27ffe789aa7}, !- Handle
@@ -15854,8 +16041,12 @@ OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Water Flow Rate {m3/s}
   ,                                       !- Rated Heating Capacity {W}
   4.2,                                    !- Rated Heating Coefficient of Performance {W/W}
+  20,                                     !- Rated Entering Water Temperature {C}
+  20,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  1,                                      !- Ratio of Rated Heating Capacity to Rated Cooling Capacity
   {f342ce70-2afc-4cb5-a77c-660ea82f16de}, !- Heating Capacity Curve Name
-  {f1bb9ab9-ae94-464f-bbde-439f31852195}; !- Heating Power Consumption Curve Name
+  {f1bb9ab9-ae94-464f-bbde-439f31852195}, !- Heating Power Consumption Curve Name
+  {e980f3a3-c570-4dd9-a07b-10b148d8ba75}; !- Part Load Fraction Correlation Curve Name
 
 OS:Curve:QuadLinear,
   {f342ce70-2afc-4cb5-a77c-660ea82f16de}, !- Handle
@@ -15943,11 +16134,18 @@ OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Total Cooling Capacity {W}
   ,                                       !- Rated Sensible Cooling Capacity {W}
   4.1317822230509,                        !- Rated Cooling Coefficient of Performance {W/W}
+  30,                                     !- Rated Entering Water Temperature {C}
+  27,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  19,                                     !- Rated Entering Air Wet-Bulb Temperature {C}
   {6b705386-0e44-43ed-bf95-74d9a86b9fec}, !- Total Cooling Capacity Curve Name
   {b96b939f-7148-4ff6-9cc2-f78e2181d65f}, !- Sensible Cooling Capacity Curve Name
   {12e894e1-1135-48f2-90e5-c2dcce53e881}, !- Cooling Power Consumption Curve Name
+  {e980f3a3-c570-4dd9-a07b-10b148d8ba75}, !- Part Load Fraction Correlation Curve Name
   ,                                       !- Nominal Time for Condensate Removal to Begin {s}
-  ;                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  ,                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
+  60,                                     !- Latent Capacity Time Constant {s}
+  60;                                     !- Fan Delay Time {s}
 
 OS:Curve:QuadLinear,
   {6b705386-0e44-43ed-bf95-74d9a86b9fec}, !- Handle
@@ -16071,18 +16269,18 @@ OS:AirLoopHVAC:UnitarySystem,
   2,                                      !- DOAS DX Cooling Coil Leaving Minimum Air Temperature {C}
   SensibleOnlyLoadControl,                !- Latent Load Control
   {4ca05c55-40bb-4179-8315-cfcbadfe2d0e}, !- Supplemental Heating Coil Name
-  ,                                       !- Supply Air Flow Rate Method During Cooling Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Cooling Operation
   Autosize,                               !- Supply Air Flow Rate During Cooling Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area During Cooling Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method During Heating Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Heating Operation
   Autosize,                               !- Supply Air Flow Rate During Heating Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area during Heating Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method When No Cooling or Heating is Required
-  Autosize,                               !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
+  None,                                   !- Supply Air Flow Rate Method When No Cooling or Heating is Required
+  ,                                       !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area When No Cooling or Heating is Required {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
@@ -16091,12 +16289,20 @@ OS:AirLoopHVAC:UnitarySystem,
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
-  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
-  60,                                     !- Heat Pump Time Constant {s}
-  0.01,                                   !- Fraction of On-Cycle Power Use
-  60,                                     !- Heat Pump Fan Delay Time {s}
   0,                                      !- Ancilliary On-Cycle Electric Power {W}
   0;                                      !- Ancilliary Off-Cycle Electric Power {W}
+
+OS:Curve:Linear,
+  {e980f3a3-c570-4dd9-a07b-10b148d8ba75}, !- Handle
+  DataCenter_bot_ZN_6 ZN Unitary HP-AutogeneratedPLFCurve, !- Name
+  0.833746458696111,                      !- Coefficient1 Constant
+  0.166253541303889,                      !- Coefficient2 x
+  0,                                      !- Minimum Value of x
+  1,                                      !- Maximum Value of x
+  0,                                      !- Minimum Curve Output
+  1,                                      !- Maximum Curve Output
+  Dimensionless,                          !- Input Unit Type for X
+  Dimensionless;                          !- Output Unit Type
 
 OS:Connection,
   {efaf575f-0846-4629-8212-4757db5dc995}, !- Handle
@@ -16132,7 +16338,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {1f98327b-dc6b-41dd-a34e-a4031d3e900e}, !- Handle
@@ -16441,7 +16648,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {8e2df1c7-c3f9-492a-83df-18988213243c}, !- Handle
@@ -16505,8 +16713,12 @@ OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Water Flow Rate {m3/s}
   ,                                       !- Rated Heating Capacity {W}
   4.2,                                    !- Rated Heating Coefficient of Performance {W/W}
+  20,                                     !- Rated Entering Water Temperature {C}
+  20,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  1,                                      !- Ratio of Rated Heating Capacity to Rated Cooling Capacity
   {1d954c95-9abd-4c4f-8251-6e0cf049ec2a}, !- Heating Capacity Curve Name
-  {2a0e3aa1-351f-4efc-988d-370730e6fd80}; !- Heating Power Consumption Curve Name
+  {2a0e3aa1-351f-4efc-988d-370730e6fd80}, !- Heating Power Consumption Curve Name
+  {24fb21a7-50f7-4190-ba6e-d6b2e24587ff}; !- Part Load Fraction Correlation Curve Name
 
 OS:Curve:QuadLinear,
   {1d954c95-9abd-4c4f-8251-6e0cf049ec2a}, !- Handle
@@ -16594,11 +16806,18 @@ OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Total Cooling Capacity {W}
   ,                                       !- Rated Sensible Cooling Capacity {W}
   3.4,                                    !- Rated Cooling Coefficient of Performance {W/W}
+  30,                                     !- Rated Entering Water Temperature {C}
+  27,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  19,                                     !- Rated Entering Air Wet-Bulb Temperature {C}
   {00acb4c1-3dcd-42f9-9342-faf93df86b77}, !- Total Cooling Capacity Curve Name
   {f38899fc-bae6-4918-b76d-6ba5e31dc299}, !- Sensible Cooling Capacity Curve Name
   {6d15c2b2-3745-4e89-b9c2-e4b7e42d109c}, !- Cooling Power Consumption Curve Name
+  {24fb21a7-50f7-4190-ba6e-d6b2e24587ff}, !- Part Load Fraction Correlation Curve Name
   ,                                       !- Nominal Time for Condensate Removal to Begin {s}
-  ;                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  ,                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
+  60,                                     !- Latent Capacity Time Constant {s}
+  60;                                     !- Fan Delay Time {s}
 
 OS:Curve:QuadLinear,
   {00acb4c1-3dcd-42f9-9342-faf93df86b77}, !- Handle
@@ -16722,18 +16941,18 @@ OS:AirLoopHVAC:UnitarySystem,
   2,                                      !- DOAS DX Cooling Coil Leaving Minimum Air Temperature {C}
   SensibleOnlyLoadControl,                !- Latent Load Control
   {a187cda6-7312-47cf-9b61-4538ba188085}, !- Supplemental Heating Coil Name
-  ,                                       !- Supply Air Flow Rate Method During Cooling Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Cooling Operation
   Autosize,                               !- Supply Air Flow Rate During Cooling Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area During Cooling Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method During Heating Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Heating Operation
   Autosize,                               !- Supply Air Flow Rate During Heating Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area during Heating Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method When No Cooling or Heating is Required
-  Autosize,                               !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
+  None,                                   !- Supply Air Flow Rate Method When No Cooling or Heating is Required
+  ,                                       !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area When No Cooling or Heating is Required {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
@@ -16742,12 +16961,20 @@ OS:AirLoopHVAC:UnitarySystem,
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
-  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
-  60,                                     !- Heat Pump Time Constant {s}
-  0.01,                                   !- Fraction of On-Cycle Power Use
-  60,                                     !- Heat Pump Fan Delay Time {s}
   0,                                      !- Ancilliary On-Cycle Electric Power {W}
   0;                                      !- Ancilliary Off-Cycle Electric Power {W}
+
+OS:Curve:Linear,
+  {24fb21a7-50f7-4190-ba6e-d6b2e24587ff}, !- Handle
+  DataCenter_mid_ZN_6 ZN Unitary HP-AutogeneratedPLFCurve, !- Name
+  0.833746458696111,                      !- Coefficient1 Constant
+  0.166253541303889,                      !- Coefficient2 x
+  0,                                      !- Minimum Value of x
+  1,                                      !- Maximum Value of x
+  0,                                      !- Minimum Curve Output
+  1,                                      !- Maximum Curve Output
+  Dimensionless,                          !- Input Unit Type for X
+  Dimensionless;                          !- Output Unit Type
 
 OS:Connection,
   {290a379f-b756-46a0-a2e4-79137b680d81}, !- Handle
@@ -16783,7 +17010,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {dd93f7f8-7fcb-4a01-a9d4-68c67bd0847c}, !- Handle
@@ -17092,7 +17320,8 @@ OS:Sizing:System,
   autosize,                               !- Heating Design Capacity {W}
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
-  OnOff;                                  !- Central Cooling Capacity Control Method
+  OnOff,                                  !- Central Cooling Capacity Control Method
+  ;                                       !- Occupant Diversity
 
 OS:AvailabilityManagerAssignmentList,
   {08b02a4b-561e-4f46-8554-088825586c66}, !- Handle
@@ -17156,8 +17385,12 @@ OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Water Flow Rate {m3/s}
   ,                                       !- Rated Heating Capacity {W}
   4.2,                                    !- Rated Heating Coefficient of Performance {W/W}
+  20,                                     !- Rated Entering Water Temperature {C}
+  20,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  1,                                      !- Ratio of Rated Heating Capacity to Rated Cooling Capacity
   {ad5de9c2-b360-4655-8c8a-55646ad22e8d}, !- Heating Capacity Curve Name
-  {7e1acaaf-6a7e-4c0c-820d-5fd3bcef4073}; !- Heating Power Consumption Curve Name
+  {7e1acaaf-6a7e-4c0c-820d-5fd3bcef4073}, !- Heating Power Consumption Curve Name
+  {7f8183bf-0208-4e76-9470-7b6073f8f8c6}; !- Part Load Fraction Correlation Curve Name
 
 OS:Curve:QuadLinear,
   {ad5de9c2-b360-4655-8c8a-55646ad22e8d}, !- Handle
@@ -17245,11 +17478,18 @@ OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   ,                                       !- Rated Total Cooling Capacity {W}
   ,                                       !- Rated Sensible Cooling Capacity {W}
   4.1317822230509,                        !- Rated Cooling Coefficient of Performance {W/W}
+  30,                                     !- Rated Entering Water Temperature {C}
+  27,                                     !- Rated Entering Air Dry-Bulb Temperature {C}
+  19,                                     !- Rated Entering Air Wet-Bulb Temperature {C}
   {97977ab2-3349-4798-a0ed-2ff48ab12535}, !- Total Cooling Capacity Curve Name
   {754c33bb-ece6-466a-b2d0-700e397763d2}, !- Sensible Cooling Capacity Curve Name
   {3ac6e1f7-a19d-4907-ba86-ab432a2dc8f1}, !- Cooling Power Consumption Curve Name
+  {7f8183bf-0208-4e76-9470-7b6073f8f8c6}, !- Part Load Fraction Correlation Curve Name
   ,                                       !- Nominal Time for Condensate Removal to Begin {s}
-  ;                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  ,                                       !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
+  60,                                     !- Latent Capacity Time Constant {s}
+  60;                                     !- Fan Delay Time {s}
 
 OS:Curve:QuadLinear,
   {97977ab2-3349-4798-a0ed-2ff48ab12535}, !- Handle
@@ -17373,18 +17613,18 @@ OS:AirLoopHVAC:UnitarySystem,
   2,                                      !- DOAS DX Cooling Coil Leaving Minimum Air Temperature {C}
   SensibleOnlyLoadControl,                !- Latent Load Control
   {c6f9594e-89c8-446e-b9db-a8ceacd4910c}, !- Supplemental Heating Coil Name
-  ,                                       !- Supply Air Flow Rate Method During Cooling Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Cooling Operation
   Autosize,                               !- Supply Air Flow Rate During Cooling Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area During Cooling Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method During Heating Operation
+  SupplyAirFlowRate,                      !- Supply Air Flow Rate Method During Heating Operation
   Autosize,                               !- Supply Air Flow Rate During Heating Operation {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area during Heating Operation {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation {m3/s-W}
-  ,                                       !- Supply Air Flow Rate Method When No Cooling or Heating is Required
-  Autosize,                               !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
+  None,                                   !- Supply Air Flow Rate Method When No Cooling or Heating is Required
+  ,                                       !- Supply Air Flow Rate When No Cooling or Heating is Required {m3/s}
   ,                                       !- Supply Air Flow Rate Per Floor Area When No Cooling or Heating is Required {m3/s-m2}
   ,                                       !- Fraction of Autosized Design Cooling Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
@@ -17393,12 +17633,20 @@ OS:AirLoopHVAC:UnitarySystem,
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
-  2.5,                                    !- Maximum Cycling Rate {cycles/hr}
-  60,                                     !- Heat Pump Time Constant {s}
-  0.01,                                   !- Fraction of On-Cycle Power Use
-  60,                                     !- Heat Pump Fan Delay Time {s}
   0,                                      !- Ancilliary On-Cycle Electric Power {W}
   0;                                      !- Ancilliary Off-Cycle Electric Power {W}
+
+OS:Curve:Linear,
+  {7f8183bf-0208-4e76-9470-7b6073f8f8c6}, !- Handle
+  DataCenter_top_ZN_6 ZN Unitary HP-AutogeneratedPLFCurve, !- Name
+  0.833746458696111,                      !- Coefficient1 Constant
+  0.166253541303889,                      !- Coefficient2 x
+  0,                                      !- Minimum Value of x
+  1,                                      !- Maximum Value of x
+  0,                                      !- Minimum Curve Output
+  1,                                      !- Maximum Curve Output
+  Dimensionless,                          !- Input Unit Type for X
+  Dimensionless;                          !- Output Unit Type
 
 OS:Connection,
   {2dc3597d-133d-4b23-9ace-ad96692261b8}, !- Handle
@@ -17434,7 +17682,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {4acfbd5e-80bc-420b-88f4-a89b44a92b43}, !- Handle
@@ -17629,7 +17878,7 @@ OS:Material:NoMass,
 OS:Construction,
   {71cf741a-69cd-4bd7-840c-2a4ff3870ac3}, !- Handle
   Floor Adiabatic construction,           !- Name
-  ,                                       !- Surface Rendering Name
+  {5ab1ddaa-e4bf-4462-a1b4-82cb90754841}, !- Surface Rendering Name
   {028b8537-d330-4cca-8082-aa5389903a8f}, !- Layer 1
   {fdf7e777-9423-43b2-bf9c-ceb15606d428}, !- Layer 2
   {778792f2-59b2-41b9-a179-3d90e79995fc}; !- Layer 3
@@ -17667,7 +17916,7 @@ OS:Material,
 OS:Construction,
   {92fa74c9-2170-4b0b-9331-8ee54826e84b}, !- Handle
   Basement Floor construction,            !- Name
-  ,                                       !- Surface Rendering Name
+  {24c718ba-660e-4be2-b212-3cce423d52c3}, !- Surface Rendering Name
   {3b94e3fb-6c21-41cd-b25d-10304d5bd747}, !- Layer 1
   {a6cb5147-ccd3-406c-81f5-dd6d29aa4a3e}; !- Layer 2
 
@@ -17675,7 +17924,8 @@ OS:Construction:CfactorUndergroundWall,
   {4fa96a1d-2d57-4618-b4a2-e03919484751}, !- Handle
   Basement Wall C-Factor 6.47 Height 2.44, !- Name
   6.47322020886937,                       !- C-Factor {W/m2-K}
-  2.439;                                  !- Height {m}
+  2.439,                                  !- Height {m}
+  {95eec750-c205-4b43-9723-560e2ee2e713}; !- Surface Rendering Name
 
 OS:DefaultConstructionSet,
   {4c348ffc-4b8f-4363-867c-89e277dd8123}, !- Handle
@@ -17701,7 +17951,7 @@ OS:DefaultSurfaceConstructions,
 OS:Construction,
   {5a65aada-7aae-44cf-a542-8db9cf5ed4ac}, !- Handle
   Typical Insulated Exterior Mass Floor R-11.49, !- Name
-  ,                                       !- Surface Rendering Name
+  {c946bb8d-4154-4e26-904e-fb46e7e4d87f}, !- Surface Rendering Name
   {b6166b31-33ff-47ef-85bb-d6050a25f0fd}, !- Layer 1
   {529345fb-d045-4b04-850d-4058e1addab8}, !- Layer 2
   {9d004f82-a9db-4ce1-bc36-598320199e76}; !- Layer 3
@@ -17745,7 +17995,7 @@ OS:Material:NoMass,
 OS:Construction,
   {57fbcf20-fcfe-4d08-b707-a90c90479902}, !- Handle
   Typical Insulated Exterior Mass Wall R-9.62, !- Name
-  ,                                       !- Surface Rendering Name
+  {aded4b4c-9227-4a8f-8e99-d0e05c06d107}, !- Surface Rendering Name
   {4d4819b0-2cbe-4575-955c-654c739a1e37}, !- Layer 1
   {fe144c4b-197e-47a6-b0bb-c5bb0e89d1a7}, !- Layer 2
   {49aeda3b-e49d-466e-86e3-a464fec4e40d}, !- Layer 3
@@ -17805,7 +18055,7 @@ OS:Material,
 OS:Construction,
   {41dba1b7-aeba-4af2-bd6c-a2fef8d40d48}, !- Handle
   Typical IEAD Roof R-20.83,              !- Name
-  ,                                       !- Surface Rendering Name
+  {0618d167-bf42-4af6-9e3a-e27d22bf230e}, !- Surface Rendering Name
   {ec73be87-4194-4ea8-ba55-294b56849d6e}, !- Layer 1
   {8c42e17e-9bc9-4516-9a58-5e164f35b376}, !- Layer 2
   {74f48beb-185c-43d1-b74a-6323e434e069}; !- Layer 3
@@ -17859,7 +18109,7 @@ OS:DefaultSurfaceConstructions,
 OS:Construction,
   {cdb08c9b-3087-4098-b39c-03d4b1b1d4f7}, !- Handle
   Typical Interior Floor,                 !- Name
-  ,                                       !- Surface Rendering Name
+  {9fd44952-cd3a-4dde-9f54-96516e20c8e7}, !- Surface Rendering Name
   {fdf7e777-9423-43b2-bf9c-ceb15606d428}, !- Layer 1
   {028b8537-d330-4cca-8082-aa5389903a8f}; !- Layer 2
 
@@ -17872,7 +18122,7 @@ OS:StandardsInformation:Construction,
 OS:Construction,
   {1e17bb9f-7b5a-4116-8854-4865a9b0adef}, !- Handle
   Typical Interior Wall,                  !- Name
-  ,                                       !- Surface Rendering Name
+  {7ea397c3-1802-44be-a7dc-a781f6392347}, !- Surface Rendering Name
   {448619c5-338c-4b77-8245-da3ac9d2fee6}, !- Layer 1
   {448619c5-338c-4b77-8245-da3ac9d2fee6}; !- Layer 2
 
@@ -17885,7 +18135,7 @@ OS:StandardsInformation:Construction,
 OS:Construction,
   {77aae58e-b653-4782-ac18-79f10a594ce9}, !- Handle
   Typical Interior Ceiling,               !- Name
-  ,                                       !- Surface Rendering Name
+  {83baa8db-5df5-4a67-aacc-9c5eb1f50d57}, !- Surface Rendering Name
   {028b8537-d330-4cca-8082-aa5389903a8f}, !- Layer 1
   {fdf7e777-9423-43b2-bf9c-ceb15606d428}; !- Layer 2
 
@@ -17905,7 +18155,7 @@ OS:DefaultSurfaceConstructions,
 OS:Construction,
   {647a65ba-3b93-419a-a22c-ca1a96a36dcb}, !- Handle
   Typical Insulated Carpeted 6in Slab Floor, !- Name
-  ,                                       !- Surface Rendering Name
+  {f71f1cd3-cf1e-47f1-9227-665a07f74611}, !- Surface Rendering Name
   {6882a050-94c6-43f0-81e9-58e700644020}, !- Layer 1
   {9d004f82-a9db-4ce1-bc36-598320199e76}; !- Layer 2
 
@@ -17939,7 +18189,7 @@ OS:Material,
 OS:Construction,
   {d9cccdbb-1cda-4e0c-a7eb-dec8a0b0c550}, !- Handle
   Typical Insulated Basement Mass Wall,   !- Name
-  ,                                       !- Surface Rendering Name
+  {a78ee25f-39d9-4769-b611-0b93903590da}, !- Surface Rendering Name
   {0196e78c-46c6-475c-9b59-b5419cb7d04e}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -17975,7 +18225,7 @@ OS:DefaultSubSurfaceConstructions,
 OS:Construction,
   {6dea36e5-37b0-4b0d-8db2-e72ae83e65ec}, !- Handle
   U 0.52 SHGC 0.40 Dbl Ref-D Clr 6mm/13mm Air, !- Name
-  ,                                       !- Surface Rendering Name
+  {f922d4d8-a8e9-4d42-88d4-30bdc16a438d}, !- Surface Rendering Name
   {60b356e9-bc42-4ce3-93e8-014452cf1d5f}, !- Layer 1
   {b5ac6cdf-a76c-4f34-84aa-f91df4e14012}, !- Layer 2
   {356f994a-2aed-48bf-ba1f-059c6eeef121}; !- Layer 3
@@ -18042,7 +18292,7 @@ OS:WindowMaterial:Glazing,
 OS:Construction,
   {5e5c8a30-b3de-44ba-89d8-72c6f7215e27}, !- Handle
   Typical Insulated Metal Door R-1.43,    !- Name
-  ,                                       !- Surface Rendering Name
+  {9d15bccd-4214-4410-88e9-20b9be7f88a0}, !- Surface Rendering Name
   {9d1e1c65-8aca-42f8-bfe7-380b78d723cd}, !- Layer 1
   {5a4f2940-cb40-461d-a163-ef5bd1c00357}; !- Layer 2
 
@@ -18067,7 +18317,7 @@ OS:Material,
 OS:Construction,
   {d1076576-b3e1-450f-ae54-6be92d4f5c79}, !- Handle
   U 0.72 SHGC 0.25 Sgl Ref-B-M Tint 6mm,  !- Name
-  ,                                       !- Surface Rendering Name
+  {13349433-fc6b-4bf7-92c0-608ce1e49364}, !- Surface Rendering Name
   {0bb53cea-e856-4c9a-a640-93e431f2f57b}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18107,7 +18357,7 @@ OS:WindowMaterial:Glazing,
 OS:Construction,
   {5f791f23-a428-43ef-ab0d-60be90cf2696}, !- Handle
   Typical Overhead Door R-0.86,           !- Name
-  ,                                       !- Surface Rendering Name
+  {5e9f53e5-f245-4d82-88d5-5ba9e773c058}, !- Surface Rendering Name
   {1217cf37-5bde-424c-9cd4-a9b66587f604}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18128,7 +18378,7 @@ OS:Material:NoMass,
 OS:Construction,
   {7429b904-4c38-4449-a782-191a48ffef7b}, !- Handle
   U 1.17 SHGC 0.49 Simple Glazing Skylight U-1.17 SHGC 0.39, !- Name
-  ,                                       !- Surface Rendering Name
+  {ad7a5895-3d2a-4e76-8077-5968e09d4c59}, !- Surface Rendering Name
   {78b2dbf6-8b1c-469b-8d42-fd12a0164c4f}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18147,7 +18397,7 @@ OS:WindowMaterial:SimpleGlazingSystem,
 OS:Construction,
   {25033db1-ed56-406f-9739-447ec431f3a7}, !- Handle
   Typical Interior Window,                !- Name
-  ,                                       !- Surface Rendering Name
+  {06074c19-2649-4ad6-88e5-f6f05a4b295c}, !- Surface Rendering Name
   {415e4623-4c2d-4589-820c-160f66630e11}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18190,7 +18440,7 @@ OS:DefaultSubSurfaceConstructions,
 OS:Construction,
   {dfb5063e-0d3d-4376-aab4-db156e04eea2}, !- Handle
   Typical Interior Door,                  !- Name
-  ,                                       !- Surface Rendering Name
+  {c9972bf6-1744-45f9-8656-184a36c0ab58}, !- Surface Rendering Name
   {6bb69352-3bcf-4703-b685-ca0d0bca1712}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18214,7 +18464,7 @@ OS:Material,
 OS:Construction,
   {bd51ce9c-16cc-48b7-ab2b-e1967e3517c4}, !- Handle
   Typical Interior Partition,             !- Name
-  ,                                       !- Surface Rendering Name
+  {0ddee412-60fa-4b27-9200-d86785d31274}, !- Surface Rendering Name
   {6bb69352-3bcf-4703-b685-ca0d0bca1712}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18254,7 +18504,7 @@ OS:DefaultSurfaceConstructions,
 OS:Construction,
   {3d1ffb26-7df9-4a94-b118-2d3a487ef02c}, !- Handle
   Plenum Acoustical Tile,                 !- Name
-  ,                                       !- Surface Rendering Name
+  {647b3592-b93c-4b16-b6fe-c1688b146308}, !- Surface Rendering Name
   {9a61b133-5340-45e9-bc1f-29932c053a7b}; !- Layer 1
 
 OS:StandardsInformation:Construction,
@@ -18406,7 +18656,7 @@ OS:Material,
 OS:Construction,
   {6e7de655-9616-4d0b-887d-d4eae754f0e7}, !- Handle
   InteriorFurnishings,                    !- Name
-  ,                                       !- Surface Rendering Name
+  {dd9adec1-7e8f-451b-999f-7309578c29f6}, !- Surface Rendering Name
   {8694831b-ffcc-43d6-ba0b-b14c2fc82b17}; !- Layer 1
 
 OS:InternalMass:Definition,
@@ -20436,4 +20686,629 @@ OS:Curve:Cubic,
 OS:AdditionalProperties,
   {cc083cbc-ab87-4e42-bdcf-f04f5c9a6e7d}, !- Handle
   {21d63f5d-7cdf-4f2a-ad1d-67d0093180b4}; !- Object Name
+
+OS:ShadowCalculation,
+  {baac9f42-677c-4493-b275-3edf63f377c7}, !- Handle
+  PolygonClipping,                        !- Shading Calculation Method
+  ,                                       !- Shading Calculation Update Frequency Method
+  20,                                     !- Shading Calculation Update Frequency
+  15000,                                  !- Maximum Figures in Shadow Overlap Calculations
+  ,                                       !- Polygon Clipping Algorithm
+  512,                                    !- Pixel Counting Resolution
+  ,                                       !- Sky Diffuse Modeling Algorithm
+  No,                                     !- Output External Shading Calculation Results
+  No,                                     !- Disable Self-Shading Within Shading Zone Groups
+  No;                                     !- Disable Self-Shading From Shading Zone Groups to Other Zones
+
+OS:HeatBalanceAlgorithm,
+  {c4413323-6238-41b1-ad31-2cdad577efaa}, !- Handle
+  ConductionTransferFunction,             !- Algorithm
+  200;                                    !- Surface Temperature Upper Limit {C}
+
+OS:RunPeriod,
+  {dd643ae3-81da-4abe-b96c-c67256fd41ea}, !- Handle
+  Run Period 1,                           !- Name
+  1,                                      !- Begin Month
+  1,                                      !- Begin Day of Month
+  12,                                     !- End Month
+  31,                                     !- End Day of Month
+  ,                                       !- Use Weather File Holidays and Special Days
+  ,                                       !- Use Weather File Daylight Saving Period
+  ,                                       !- Apply Weekend Holiday Rule
+  ,                                       !- Use Weather File Rain Indicators
+  ,                                       !- Use Weather File Snow Indicators
+  ;                                       !- Number of Times Runperiod to be Repeated
+
+OS:LifeCycleCost:Parameters,
+  {cd1341cb-2b9c-4730-bef6-9723dab7a3c8}, !- Handle
+  ,                                       !- Analysis Type
+  ,                                       !- Discounting Convention
+  ,                                       !- Inflation Approach
+  ,                                       !- Real Discount Rate
+  ,                                       !- Nominal Discount Rate
+  ,                                       !- Inflation
+  ,                                       !- Base Date Month
+  ,                                       !- Base Date Year
+  ,                                       !- Service Date Month
+  ,                                       !- Service Date Year
+  ;                                       !- Length of Study Period in Years
+
+OS:StandardsInformation:Construction,
+  {a4a8e3d0-fb64-4659-9544-098085bb1023}, !- Handle
+  {4fa96a1d-2d57-4618-b4a2-e03919484751}; !- Construction Name
+
+OS:StandardsInformation:Material,
+  {5764c23d-9964-4f3f-b128-1b87061f99a4}, !- Handle
+  {fe144c4b-197e-47a6-b0bb-c5bb0e89d1a7}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {a957e5f2-6710-40f3-bffe-20b76747fc1e}, !- Handle
+  {028b8537-d330-4cca-8082-aa5389903a8f}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {3ef80bc2-dede-439d-9832-7be99252723e}, !- Handle
+  {fdf7e777-9423-43b2-bf9c-ceb15606d428}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {c39d22f9-bd6f-4edd-a2b2-cfd53460a4e4}, !- Handle
+  {778792f2-59b2-41b9-a179-3d90e79995fc}; !- Material Name
+
+OS:StandardsInformation:Construction,
+  {2bd9e9a4-0972-4c74-ba41-4337fee9ae4c}, !- Handle
+  {71cf741a-69cd-4bd7-840c-2a4ff3870ac3}; !- Construction Name
+
+OS:StandardsInformation:Material,
+  {5888d663-331e-44ff-a98e-8ff45c928d45}, !- Handle
+  {448619c5-338c-4b77-8245-da3ac9d2fee6}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {47a272f6-3a48-49c6-a30b-2d274792e66a}, !- Handle
+  {a6cb5147-ccd3-406c-81f5-dd6d29aa4a3e}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {bf3960d9-8c0f-40bf-911d-5a41829a9714}, !- Handle
+  {3b94e3fb-6c21-41cd-b25d-10304d5bd747}; !- Material Name
+
+OS:StandardsInformation:Construction,
+  {34bcf35d-7297-4829-a67d-b7fd25bf578e}, !- Handle
+  {92fa74c9-2170-4b0b-9331-8ee54826e84b}; !- Construction Name
+
+OS:StandardsInformation:Material,
+  {73afd497-bcec-4946-8fbb-a533afe933d1}, !- Handle
+  {b6166b31-33ff-47ef-85bb-d6050a25f0fd}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {546ba812-f1a5-42d6-bb9d-4a5f307784d9}, !- Handle
+  {529345fb-d045-4b04-850d-4058e1addab8}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {608897e6-ed7d-456e-8d71-f87086adfe3b}, !- Handle
+  {9d004f82-a9db-4ce1-bc36-598320199e76}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {92d1778c-f2f7-4444-ba84-7dfc21a7e82c}, !- Handle
+  {4d4819b0-2cbe-4575-955c-654c739a1e37}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {89ef6694-f875-4e26-9dce-7536daac8ebe}, !- Handle
+  {49aeda3b-e49d-466e-86e3-a464fec4e40d}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {3b57eca1-dbae-438a-82c9-4ac86c9a8372}, !- Handle
+  {614a9f9f-73cf-41b5-b200-0e0bb38c01d3}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {907374da-f248-45cb-b052-94b0904d4595}, !- Handle
+  {ec73be87-4194-4ea8-ba55-294b56849d6e}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {f9cd95d6-7634-41ba-9668-b05ac4ef08b1}, !- Handle
+  {8c42e17e-9bc9-4516-9a58-5e164f35b376}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {973c91ad-aa09-442e-b448-ca3b1e73179b}, !- Handle
+  {74f48beb-185c-43d1-b74a-6323e434e069}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {38153359-46b6-4438-a230-a2982934c64d}, !- Handle
+  {5a4f2940-cb40-461d-a163-ef5bd1c00357}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {bceb1599-b711-4f30-81ca-da395d0abbbf}, !- Handle
+  {6882a050-94c6-43f0-81e9-58e700644020}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {ac57bb59-ff58-4191-a4d3-39eb0eca739d}, !- Handle
+  {0196e78c-46c6-475c-9b59-b5419cb7d04e}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {e576e384-cee8-4e2b-99b4-0c64616eae00}, !- Handle
+  {60b356e9-bc42-4ce3-93e8-014452cf1d5f}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {1b29bd21-c21e-4110-86f3-fc848dc238c6}, !- Handle
+  {b5ac6cdf-a76c-4f34-84aa-f91df4e14012}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {2ad7dffb-ae62-4a6f-8bfb-3b4cf59fb49d}, !- Handle
+  {356f994a-2aed-48bf-ba1f-059c6eeef121}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {d0f8915d-b399-4222-ba38-6dbf379be985}, !- Handle
+  {9d1e1c65-8aca-42f8-bfe7-380b78d723cd}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {d73b6989-a11c-4688-ad66-bfcf22af80e3}, !- Handle
+  {0bb53cea-e856-4c9a-a640-93e431f2f57b}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {28b780ee-c120-4da9-a788-d9d881d1f195}, !- Handle
+  {1217cf37-5bde-424c-9cd4-a9b66587f604}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {4f11333d-ca28-40f9-9ad1-889a5991b7bc}, !- Handle
+  {78b2dbf6-8b1c-469b-8d42-fd12a0164c4f}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {5d0e795a-68bb-4efb-93cc-4c9dd73a9784}, !- Handle
+  {415e4623-4c2d-4589-820c-160f66630e11}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {04a41a47-31a7-4a07-a75d-f641acf53675}, !- Handle
+  {6bb69352-3bcf-4703-b685-ca0d0bca1712}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {905d022b-0d09-48ef-bf50-af02dc7aea3a}, !- Handle
+  {9a61b133-5340-45e9-bc1f-29932c053a7b}; !- Material Name
+
+OS:StandardsInformation:Material,
+  {76d0bc5c-bc13-4b4a-aa98-c3addf5d1494}, !- Handle
+  {8694831b-ffcc-43d6-ba0b-b14c2fc82b17}; !- Material Name
+
+OS:StandardsInformation:Construction,
+  {20523c9a-18c3-43f2-802c-fc338b64c360}, !- Handle
+  {6e7de655-9616-4d0b-887d-d4eae754f0e7}; !- Construction Name
+
+OS:WeatherFile,
+  {26bc95b1-447a-4d81-8122-b8d78e681d9e}, !- Handle
+  Knoxville Mcghee Tyson Ap,              !- City
+  TN,                                     !- State Province Region
+  USA,                                    !- Country
+  TMY3,                                   !- Data Source
+  723260,                                 !- WMO Number
+  35.82,                                  !- Latitude {deg}
+  -83.98,                                 !- Longitude {deg}
+  -5,                                     !- Time Zone {hr}
+  293,                                    !- Elevation {m}
+  USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw, !- Url
+  E49A6D8D,                               !- Checksum
+  ,                                       !- Start Date Actual Year
+  Sunday;                                 !- Start Day of Week
+
+OS:Rendering:Color,
+  {95eec750-c205-4b43-9723-560e2ee2e713}, !- Handle
+  Rendering Color 5,                      !- Name
+  123,                                    !- Rendering Red Value
+  238,                                    !- Rendering Green Value
+  104;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5ab1ddaa-e4bf-4462-a1b4-82cb90754841}, !- Handle
+  Rendering Color 6,                      !- Name
+  255,                                    !- Rendering Red Value
+  80,                                     !- Rendering Green Value
+  127;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {24c718ba-660e-4be2-b212-3cce423d52c3}, !- Handle
+  Rendering Color 7,                      !- Name
+  0,                                      !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {c946bb8d-4154-4e26-904e-fb46e7e4d87f}, !- Handle
+  Rendering Color 8,                      !- Name
+  255,                                    !- Rendering Red Value
+  193,                                    !- Rendering Green Value
+  182;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {aded4b4c-9227-4a8f-8e99-d0e05c06d107}, !- Handle
+  Rendering Color 9,                      !- Name
+  255,                                    !- Rendering Red Value
+  181,                                    !- Rendering Green Value
+  228;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {0618d167-bf42-4af6-9e3a-e27d22bf230e}, !- Handle
+  Rendering Color 10,                     !- Name
+  176,                                    !- Rendering Red Value
+  230,                                    !- Rendering Green Value
+  224;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {9fd44952-cd3a-4dde-9f54-96516e20c8e7}, !- Handle
+  Rendering Color 11,                     !- Name
+  255,                                    !- Rendering Red Value
+  250,                                    !- Rendering Green Value
+  250;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {7ea397c3-1802-44be-a7dc-a781f6392347}, !- Handle
+  Rendering Color 12,                     !- Name
+  255,                                    !- Rendering Red Value
+  122,                                    !- Rendering Green Value
+  160;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {83baa8db-5df5-4a67-aacc-9c5eb1f50d57}, !- Handle
+  Rendering Color 13,                     !- Name
+  255,                                    !- Rendering Red Value
+  181,                                    !- Rendering Green Value
+  228;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {f71f1cd3-cf1e-47f1-9227-665a07f74611}, !- Handle
+  Rendering Color 14,                     !- Name
+  199,                                    !- Rendering Red Value
+  133,                                    !- Rendering Green Value
+  21;                                     !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {a78ee25f-39d9-4769-b611-0b93903590da}, !- Handle
+  Rendering Color 15,                     !- Name
+  245,                                    !- Rendering Red Value
+  250,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {f922d4d8-a8e9-4d42-88d4-30bdc16a438d}, !- Handle
+  Rendering Color 16,                     !- Name
+  0,                                      !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  191;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {9d15bccd-4214-4410-88e9-20b9be7f88a0}, !- Handle
+  Rendering Color 17,                     !- Name
+  255,                                    !- Rendering Red Value
+  196,                                    !- Rendering Green Value
+  228;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {13349433-fc6b-4bf7-92c0-608ce1e49364}, !- Handle
+  Rendering Color 18,                     !- Name
+  250,                                    !- Rendering Red Value
+  114,                                    !- Rendering Green Value
+  128;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5e9f53e5-f245-4d82-88d5-5ba9e773c058}, !- Handle
+  Rendering Color 19,                     !- Name
+  123,                                    !- Rendering Red Value
+  238,                                    !- Rendering Green Value
+  104;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {ad7a5895-3d2a-4e76-8077-5968e09d4c59}, !- Handle
+  Rendering Color 20,                     !- Name
+  240,                                    !- Rendering Red Value
+  240,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {06074c19-2649-4ad6-88e5-f6f05a4b295c}, !- Handle
+  Rendering Color 21,                     !- Name
+  220,                                    !- Rendering Red Value
+  60,                                     !- Rendering Green Value
+  20;                                     !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {c9972bf6-1744-45f9-8656-184a36c0ab58}, !- Handle
+  Rendering Color 22,                     !- Name
+  139,                                    !- Rendering Red Value
+  0,                                      !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {0ddee412-60fa-4b27-9200-d86785d31274}, !- Handle
+  Rendering Color 23,                     !- Name
+  148,                                    !- Rendering Red Value
+  211,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {647b3592-b93c-4b16-b6fe-c1688b146308}, !- Handle
+  Rendering Color 24,                     !- Name
+  0,                                      !- Rendering Red Value
+  127,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {dd9adec1-7e8f-451b-999f-7309578c29f6}, !- Handle
+  Rendering Color 25,                     !- Name
+  0,                                      !- Rendering Red Value
+  209,                                    !- Rendering Green Value
+  206;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {2c3cc146-1f24-49a7-a37d-4e5abc3adc33}, !- Handle
+  Rendering Color 26,                     !- Name
+  245,                                    !- Rendering Red Value
+  220,                                    !- Rendering Green Value
+  245;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {d6e406fb-f29f-4e3a-992e-77ac73cc6610}, !- Handle
+  Rendering Color 27,                     !- Name
+  173,                                    !- Rendering Red Value
+  47,                                     !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {cbc8b108-494d-43f4-bc72-79d52d45a224}, !- Handle
+  Rendering Color 28,                     !- Name
+  253,                                    !- Rendering Red Value
+  230,                                    !- Rendering Green Value
+  245;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {ed5249e8-178a-407b-8336-491626d8113d}, !- Handle
+  Rendering Color 29,                     !- Name
+  245,                                    !- Rendering Red Value
+  220,                                    !- Rendering Green Value
+  245;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {8234810d-e08f-4055-ab53-552d64612aa6}, !- Handle
+  Rendering Color 30,                     !- Name
+  147,                                    !- Rendering Red Value
+  219,                                    !- Rendering Green Value
+  112;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {59e51dac-e235-4052-970b-1eaae0f52781}, !- Handle
+  Rendering Color 31,                     !- Name
+  245,                                    !- Rendering Red Value
+  245,                                    !- Rendering Green Value
+  245;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {77c5ea5d-9d37-4630-80b9-deb3e1d76e91}, !- Handle
+  Rendering Color 32,                     !- Name
+  255,                                    !- Rendering Red Value
+  180,                                    !- Rendering Green Value
+  105;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {a574c3bb-14a3-44de-bfd3-9c46b3b02912}, !- Handle
+  Rendering Color 33,                     !- Name
+  218,                                    !- Rendering Red Value
+  32,                                     !- Rendering Green Value
+  165;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {b6c17cc6-2242-4f7e-a467-501ec9078572}, !- Handle
+  Rendering Color 34,                     !- Name
+  211,                                    !- Rendering Red Value
+  211,                                    !- Rendering Green Value
+  211;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {a427db8b-dab7-4b87-bf29-06c82b52a336}, !- Handle
+  Rendering Color 35,                     !- Name
+  250,                                    !- Rendering Red Value
+  210,                                    !- Rendering Green Value
+  250;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {d3f7e048-1bd7-478b-897d-b23ca4fc9241}, !- Handle
+  Rendering Color 36,                     !- Name
+  222,                                    !- Rendering Red Value
+  135,                                    !- Rendering Green Value
+  184;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {7a761449-e9ae-4ddf-aaeb-2b592c3cac16}, !- Handle
+  Rendering Color 37,                     !- Name
+  210,                                    !- Rendering Red Value
+  140,                                    !- Rendering Green Value
+  180;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {6bf59eb7-3023-4125-b508-eaa88b071ac2}, !- Handle
+  Rendering Color 38,                     !- Name
+  25,                                     !- Rendering Red Value
+  112,                                    !- Rendering Green Value
+  25;                                     !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {887a7812-4c0d-4266-a3a6-5a9dfc8d631f}, !- Handle
+  Rendering Color 39,                     !- Name
+  0,                                      !- Rendering Red Value
+  139,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {b6a089a7-afa8-4953-8f65-96e0570865b7}, !- Handle
+  Rendering Color 40,                     !- Name
+  245,                                    !- Rendering Red Value
+  220,                                    !- Rendering Green Value
+  245;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5741ec4e-d16a-4b4e-95ea-548a9a156374}, !- Handle
+  Rendering Color 41,                     !- Name
+  0,                                      !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {63f4075d-fc0b-4b12-acc3-f44f0351f920}, !- Handle
+  Rendering Color 42,                     !- Name
+  0,                                      !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {dbe94da7-3691-445a-abea-73752c9783b9}, !- Handle
+  Rendering Color 43,                     !- Name
+  245,                                    !- Rendering Red Value
+  250,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {06bad32e-201b-445c-a251-68915ac28642}, !- Handle
+  Rendering Color 44,                     !- Name
+  244,                                    !- Rendering Red Value
+  96,                                     !- Rendering Green Value
+  164;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {7bff26f1-6841-4311-925c-ebf966bcc043}, !- Handle
+  Rendering Color 45,                     !- Name
+  70,                                     !- Rendering Red Value
+  180,                                    !- Rendering Green Value
+  130;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5f0b17a8-c6b3-4bd5-8ef4-d31a47b373bd}, !- Handle
+  Rendering Color 46,                     !- Name
+  160,                                    !- Rendering Red Value
+  45,                                     !- Rendering Green Value
+  82;                                     !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {06d5351d-47fa-4b45-a7b2-e16acc42b2da}, !- Handle
+  Rendering Color 47,                     !- Name
+  255,                                    !- Rendering Red Value
+  224,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {541b0442-cd1d-41aa-99d1-b9df29d817fd}, !- Handle
+  Rendering Color 48,                     !- Name
+  255,                                    !- Rendering Red Value
+  180,                                    !- Rendering Green Value
+  105;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {fe058c55-505f-4c6f-b372-db0d021802f5}, !- Handle
+  Rendering Color 49,                     !- Name
+  230,                                    !- Rendering Red Value
+  250,                                    !- Rendering Green Value
+  230;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {41900310-2ad4-408b-9c71-99cdae1bf231}, !- Handle
+  Rendering Color 50,                     !- Name
+  176,                                    !- Rendering Red Value
+  222,                                    !- Rendering Green Value
+  196;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {1c01314d-e69a-4b8b-9845-ae79ea1be0ce}, !- Handle
+  Rendering Color 51,                     !- Name
+  138,                                    !- Rendering Red Value
+  226,                                    !- Rendering Green Value
+  43;                                     !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {3d168386-d3f3-4993-99de-78fdb56ab99b}, !- Handle
+  Rendering Color 52,                     !- Name
+  205,                                    !- Rendering Red Value
+  92,                                     !- Rendering Green Value
+  92;                                     !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {1f09c7b4-9cbe-4318-8677-7a9c2fc28bcd}, !- Handle
+  Rendering Color 53,                     !- Name
+  65,                                     !- Rendering Red Value
+  225,                                    !- Rendering Green Value
+  105;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {c593f26a-2416-47c8-be82-417a68f17120}, !- Handle
+  Rendering Color 54,                     !- Name
+  220,                                    !- Rendering Red Value
+  220,                                    !- Rendering Green Value
+  220;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {1b159cba-6f4d-4c4a-a811-c0eb32a0ce99}, !- Handle
+  Rendering Color 55,                     !- Name
+  0,                                      !- Rendering Red Value
+  0,                                      !- Rendering Green Value
+  100;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {0e3ddec9-fc6a-4ba8-a532-fd115e5ac0fc}, !- Handle
+  Rendering Color 56,                     !- Name
+  0,                                      !- Rendering Red Value
+  0,                                      !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {7a816099-2b1f-4079-ab29-ffe52ca30aea}, !- Handle
+  Rendering Color 57,                     !- Name
+  250,                                    !- Rendering Red Value
+  210,                                    !- Rendering Green Value
+  250;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {e11394ea-0088-419a-843c-1351d52ab5ca}, !- Handle
+  Rendering Color 58,                     !- Name
+  128,                                    !- Rendering Red Value
+  128,                                    !- Rendering Green Value
+  128;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {c1e83dec-918f-42c6-b9bf-e4901086a8ce}, !- Handle
+  Rendering Color 59,                     !- Name
+  176,                                    !- Rendering Red Value
+  222,                                    !- Rendering Green Value
+  196;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {4eec23b3-dfd1-46fa-99a7-141d2aa21d14}, !- Handle
+  Rendering Color 60,                     !- Name
+  0,                                      !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  191;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {e055d65b-398f-459b-9e8f-bfd4778eb674}, !- Handle
+  Rendering Color 61,                     !- Name
+  255,                                    !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {dded7300-a7a8-4084-a636-bef25339dcca}, !- Handle
+  Rendering Color 62,                     !- Name
+  0,                                      !- Rendering Red Value
+  128,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {19b00072-d8e8-4d5e-8912-122a2e2e277d}, !- Handle
+  Rendering Color 63,                     !- Name
+  240,                                    !- Rendering Red Value
+  240,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {dc00fbf9-98a4-4b5e-996e-931b3b797870}, !- Handle
+  Rendering Color 64,                     !- Name
+  75,                                     !- Rendering Red Value
+  130,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5313bd4d-4dd0-446f-a678-4d5bd4366090}, !- Handle
+  Rendering Color 65,                     !- Name
+  218,                                    !- Rendering Red Value
+  32,                                     !- Rendering Green Value
+  165;                                    !- Rendering Blue Value
 
