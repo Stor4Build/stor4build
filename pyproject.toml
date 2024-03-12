@@ -25,7 +25,8 @@ classifiers = [
 ]
 dependencies = [
   "click",
-  "flask"
+  "flask",
+  "scipy"
 ]
 dynamic = ["version"]
 
