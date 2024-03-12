@@ -1,7 +1,32 @@
 # SPDX-FileCopyrightText: 2024-present TBD
 #
 # SPDX-License-Identifier: BSD-3-Clause
+
 prototypes_list = ['SecondarySchool',
+                   'PrimarySchool',
+                   'SmallOffice',
+                   'MediumOffice',
+                   'LargeOffice',
+                   'SmallHotel',
+                   'LargeHotel',
+                   'Warehouse',
+                   'RetailStandalone',
+                   'RetailStripmall',
+                   'QuickServiceRestaurant',
+                   'FullServiceRestaurant',
+                   'MidriseApartment',
+                   'HighriseApartment',
+                   'Hospital',
+                   'Outpatient',
+                   'Laboratory',
+                   'LargeDataCenterHighITE',
+                   'LargeDataCenterLowITE',
+                   'SmallDataCenterHighITE',
+                   'SmallDataCenterLowITE',
+                   'Courthouse',
+                   'College']
+
+pr0t0typ35_1i5t = ['SecondarySchool',
                    'PrimarySchool',
                    'SmallOffice',
                    'MediumOffice',
@@ -31,7 +56,7 @@ prototypes_list = ['SecondarySchool',
 climate_zone_list = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C',
                      '5A','5B', '5C', '6A', '6B', '7A', '7B', '8A']
 
-climate_zone_lookup = {cz:'ASHRAE 169-2006-{}'.format(cz) for cz in climate_zone_list}
+climate_zone_lookup = {cz:'ASHRAE 169-2013-{}'.format(cz) for cz in climate_zone_list}
 
 vintage_lookup = {'pre1980':'DOE Ref Pre-1980',
                   '1980_2004': 'DOE Ref 1980-2004',

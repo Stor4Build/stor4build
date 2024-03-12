@@ -42,7 +42,7 @@ def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, ou
     Run the OpenStudion command line on a particular prototype model with the weather in EPW.
     """
     click.echo('Run Prototype!')
-    stor4build.seed_model(openstudio, run_dir, 'seed.osm')
+    #stor4build.seed_model(openstudio, run_dir, 'seed.osm')
     cz_arg = stor4build.climate_zone_lookup[climate_zone]
     vintage_arg = stor4build.vintage_lookup[vintage]
     osw = {
@@ -57,7 +57,7 @@ def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, ou
                     'climate_zone': cz_arg,
                     'template': vintage_arg
                     },
-                'measure_dir_name' : 'create_doe_prototype_building_extended',
+                'measure_dir_name' : 'create_doe_prototype_building',
                 'name' : 'Create DOE Prototype Building Extended'
             }
         ],
