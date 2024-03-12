@@ -4,6 +4,11 @@
 # Mac
 .DS_Store
 
+# OpenStudio
+run/
+out.osw
+reports/
+
 # EnergyPlus
 eplusmtr.csv
 eplusout.audit
