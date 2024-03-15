@@ -14,7 +14,7 @@ from ..__about__ import __version__
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 def run(osm, epw, openstudio, run_dir):
     """
-    Run the OpenStudion command line on the model in OSM with the weather in EPW.
+    Run the OpenStudio command line on the model in OSM with the weather in EPW.
     """
     click.echo('Run!')
     osw = {
@@ -39,7 +39,7 @@ def run(osm, epw, openstudio, run_dir):
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir):
     """
-    Run the OpenStudion command line on a particular prototype model with the weather in EPW.
+    Run the OpenStudio command line on a particular prototype model with the weather in EPW.
     """
     click.echo('Run Prototype!')
     #stor4build.seed_model(openstudio, run_dir, 'seed.osm')
@@ -75,9 +75,10 @@ def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, ou
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
-def run_tank(vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir):
+@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+def run_tank(vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
     """
-    Run the OpenStudion command line on a TES model.
+    Run the OpenStudio command line on a TES model.
     """
     click.echo('Run Tank!')
     prototype = 'LargeOffice'
@@ -115,7 +116,7 @@ def run_tank(vintage, climate_zone, epw, openstudio, run_dir, output_dir, measur
         ],
         'weather_file': os.path.abspath(epw)
     }
-    stor4build.run(openstudio, run_dir, osw)
+    stor4build.run(openstudio, run_dir, osw, measures_only=measures_only)
 
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
 @click.version_option(version=__version__, prog_name='s4b')
