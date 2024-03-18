@@ -241,12 +241,21 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
 
     # modify chilled water loop parameters to permit ice making
     ot = 'PlantLoop'
+    plant_loop_name = 'Chilled Water Loop'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.getString(0, false).get == 'Chilled Water Loop'
+      if o.getString(0, false).get == plant_loop_name
         o.setDouble(5, 100)
         o.setDouble(6, -50)
       end
     end
+
+    # get chiller name, node names, and adjust minimum temperature
+    ot = 'Chiller_Electric_EIR'
+    chiller = ws.getObjectsByType(ot.to_IddObjectType)[0]
+    chiller_name = chiller.getString(0, false).get
+    chiller_in_node = chiller.getString(14, false).get
+    chiller_out_node = chiller.getString(15, false).get
+    chiller.setDouble(21, chrg_temp)
 
     # add user-defined plant component
     ot = 'PlantComponent_UserDefined'
@@ -254,7 +263,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     no.setString(0, 'Ice Tank')
     no.setString(1, '')
     no.setInt(2,1)
-    no.setString(3, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Outlet Water Node')
+    no.setString(3, chiller_out_node)
     no.setString(4, 'Ice Tank Outlet Node')
     no.setString(5, 'MeetsLoadWithNominalCapacityLowOutLimit')
     no.setString(6, 'NeedsFlowAndTurnsLoopOn')
@@ -269,30 +278,22 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     # add ice tank to cooling supply equipment branch
     ot = 'Branch'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.getString(0, false).get == 'Chilled Water Loop Supply Branch 1'
-        o.setString(5, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Outlet Water Node')
+      if o.getString(4, false).get == chiller_in_node
+        o.setString(5, chiller_out_node)
         o.setString(6, 'PlantComponent:UserDefined')
         o.setString(7, 'Ice Tank')
-        o.setString(8, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Outlet Water Node')
+        o.setString(8, chiller_out_node)
         o.setString(9, 'Ice Tank Outlet Node')
-      end
-    end
-
-    # modify chiller outlet node and minimum temperature
-    ot = 'Chiller_Electric_EIR'
-    ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.name.get == '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton'
-        o.setDouble(21, chrg_temp)
       end
     end
 
     # add chiller setpoint manager
     ot = 'SetpointManager_Scheduled'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, 'Chilled Water Loop Chiller 1 Setpoint Manager')
+    no.setString(0, "#{chiller_name} Setpoint Manager")
     no.setString(1, 'Temperature')
     no.setString(2, 'Chiller Temp Sch')
-    no.setString(3, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Outlet Water Node')
+    no.setString(3, chiller_out_node)
     ws.addObject(no)
 
     # add user-defined plant component OA node
@@ -314,7 +315,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     # modify plant equipment list
     ot = 'PlantEquipmentList'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.getString(0,false).get == 'Chilled Water Loop Cooling Equipment List'
+      if o.getString(0, false).get == "#{plant_loop_name} Cooling Equipment List"
         o.setString(5, 'PlantComponent:UserDefined')
         o.setString(6, 'Ice Tank')
       end
@@ -324,7 +325,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     uv = OpenStudio::UUIDVector.new
     ot = 'PlantEquipmentOperation_CoolingLoad'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.name.get == 'Chilled Water Loop Cooling Operation Scheme'
+      if o.name.get == "#{plant_loop_name} Cooling Operation Scheme"
         uv << o.handle
       end
     end
@@ -333,16 +334,16 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     # add a component setpoint operation scheme
     ot = 'PlantEquipmentOperation_ComponentSetpoint'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, 'Chilled Water Loop Op Scheme')
+    no.setString(0, "#{plant_loop_name} Op Scheme")
     no.setString(1, 'Chiller:Electric:EIR')
-    no.setString(2, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton')
-    no.setString(3, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Inlet Water Node')
-    no.setString(4, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Outlet Water Node')
+    no.setString(2, chiller_name)
+    no.setString(3, chiller_in_node)
+    no.setString(4, chiller_out_node)
     no.setString(5, 'Autosize')
     no.setString(6, 'Cooling')
     no.setString(7, 'PlantComponent:UserDefined')
     no.setString(8, 'Ice Tank')
-    no.setString(9, '90.1-2007 WaterCooled  Centrifugal Chiller 0 374tons 0.6kW/ton Supply Outlet Water Node')
+    no.setString(9, chiller_out_node)
     no.setString(10, 'Ice Tank Outlet Node')
     no.setString(11, 'Autosize')
     no.setString(12, 'Cooling')
@@ -351,9 +352,9 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     # modify plant equipment operation scheme
     ot = 'PlantEquipmentOperationSchemes'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.getString(0 ,false).get == 'Chilled Water Loop Operation Schemes'
+      if o.getString(0 ,false).get == "#{plant_loop_name} Operation Schemes"
         o.setString(1, 'PlantEquipmentOperation:ComponentSetpoint')
-        o.setString(2, 'Chilled Water Loop Op Scheme')
+        o.setString(2, "#{plant_loop_name} Op Scheme")
       end
     end
 
