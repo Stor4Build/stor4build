@@ -67,6 +67,44 @@ def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, ou
     stor4build.run(openstudio, run_dir, osw)
 
 @click.command()
+@click.argument('OSM', type=click.Path(exists=True))
+@click.argument('EPW', type=click.Path(exists=True))
+@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
+@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
+@click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
+@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+def run_tank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
+    """
+    Run the OpenStudio command line on a TES model.
+    """
+    click.echo('Run Tank!')
+    osw = {
+        'measure_paths': [ os.path.abspath(measures_dir) ],
+        'run_directory': os.path.join(run_dir, output_dir),
+        'seed_file': osm,
+        'steps': [
+            {
+                "measure_dir_name" : "add_pytank",
+                "name" : "Add Python Tank",
+                "description" : "This measure will add the Python tank model.",
+                "modeler_description" : "This measure will add the Python tank model.",
+                "arguments" : {
+                    "chrg_start" : "22:00",
+                    "chrg_end" : "07:58",
+                    "dchrg_start" : "07:59",
+                    "dchrg_end" : "18:00",
+                    "chrg_temp" : -3.8,
+                    "num_tanks" : 1,
+                    "trim_temp" : 10
+                }
+            }
+        ],
+        'weather_file': os.path.abspath(epw)
+    }
+    stor4build.run(openstudio, run_dir, osw, measures_only=measures_only)
+
+@click.command()
 #@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
 @click.argument('VINTAGE', type=click.Choice(stor4build.vintage_list))
 @click.argument('CLIMATE_ZONE', type=click.Choice(stor4build.climate_zone_list))
@@ -76,11 +114,11 @@ def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, ou
 @click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
-def run_tank(vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
+def run_prototype_tank(vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
     """
     Run the OpenStudio command line on a TES model.
     """
-    click.echo('Run Tank!')
+    click.echo('Run Prototype Tank!')
     prototype = 'LargeOffice'
     cz_arg = stor4build.climate_zone_lookup[climate_zone]
     vintage_arg = stor4build.vintage_lookup[vintage]
@@ -127,3 +165,4 @@ def s4b(ctx: click.Context):
 s4b.add_command(run)
 s4b.add_command(run_prototype)
 s4b.add_command(run_tank)
+s4b.add_command(run_prototype_tank)
