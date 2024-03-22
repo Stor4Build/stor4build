@@ -143,6 +143,14 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     no.setDouble(2, num_tanks)
     ws.addObject(no)
 
+    # add chiller(s) electricity rate output variable
+    ot = 'Output_Variable'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, '*')
+    no.setString(1, 'Chiller Electricity Rate')
+    no.setString(2, 'Timestep')
+    ws.addObject(no)
+
     # add num tanks schedule output variable (for python plugin)
     ot = 'Output_Variable'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
