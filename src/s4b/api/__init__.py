@@ -16,7 +16,8 @@ def create_app(config=None, instance_path=None):
         app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         OPENSTUDIO='openstudio',
-        MEASURES_DIR='.'
+        MEASURES_DIR='.',
+        WEATHER_DIR='.'
     )
 
     if config is None:
@@ -25,6 +26,10 @@ def create_app(config=None, instance_path=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(config)
+
+    # Make some assumptions if specific variables are missing
+    if 'MODEL_DIR' not in app.config:
+        app.config['MODEL_DIR'] = app.config['WEATHER_DIR']
 
     # ensure the instance folder exists
     try:
@@ -58,7 +63,7 @@ def create_app(config=None, instance_path=None):
                     }
                 ],
                 'updated_at': '20200127T213540Z',
-                'weather_file': epw
+                'weather_file': os.path.join(app.config['WEATHER_DIR'], epw)
             }
             stor4build.run(app.config['OPENSTUDIO'], app.instance_path, osw)
 
@@ -104,7 +109,7 @@ def create_app(config=None, instance_path=None):
             osw = {
                 'measure_paths': [ os.path.abspath(app.config['MEASURES_DIR']) ],
                 'run_directory': os.path.join(app.instance_path, 'run'),
-                'seed_file': stor4build.prototype_lookup(prototype, cz, vintage),
+                'seed_file': os.path.join(app.config['MODELS_DIR'], stor4build.prototype_lookup(prototype, cz, vintage)),
                 'steps': [
                     {
                         "measure_dir_name" : "add_pytank",
@@ -122,7 +127,7 @@ def create_app(config=None, instance_path=None):
                         }
                     }
                 ],
-                'weather_file': epw
+                'weather_file': os.path.join(app.config['WEATHER_DIR'], epw)
             }
             stor4build.run(app.config['OPENSTUDIO'], app.instance_path, osw)
 
@@ -165,13 +170,16 @@ def create_app(config=None, instance_path=None):
 @click.option('--instance-path', show_default=False, default=None, help='Instance folder path.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.',
               help='Directory containing measures.')
+@click.option('-w', '--weather-dir', type=click.Path(exists=True), show_default=True, default='.',
+              help='Directory containing weather files.')
 def prototype(openstudio, instance_path, measures_dir):
     """
     Run the OpenStudion command line on a particular prototype.
     """
     config = {
         'OPENSTUDIO': openstudio,
-        'MEASURES_DIR': measures_dir
+        'MEASURES_DIR': measures_dir,
+        'WEATHER_DIR': weather_dir
     }
     app = create_app(config=config, instance_path=instance_path)
     app.run(host='127.0.0.1', port=5000, debug=True)
