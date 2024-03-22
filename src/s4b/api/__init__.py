@@ -28,8 +28,8 @@ def create_app(config=None, instance_path=None):
         app.config.from_mapping(config)
 
     # Make some assumptions if specific variables are missing
-    if 'MODEL_DIR' not in app.config:
-        app.config['MODEL_DIR'] = app.config['WEATHER_DIR']
+    if 'MODELS_DIR' not in app.config:
+        app.config['MODELS_DIR'] = app.config['WEATHER_DIR']
 
     # ensure the instance folder exists
     try:
@@ -177,7 +177,7 @@ def create_app(config=None, instance_path=None):
               help='Directory containing measures.')
 @click.option('-w', '--weather-dir', type=click.Path(exists=True), show_default=True, default='.',
               help='Directory containing weather files.')
-def prototype(openstudio, instance_path, measures_dir):
+def prototype(openstudio, instance_path, measures_dir, weather_dir):
     """
     Run the OpenStudion command line on a particular prototype.
     """
