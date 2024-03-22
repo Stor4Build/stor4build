@@ -11,11 +11,10 @@ def seed_model(openstudio_exe, path, filename):
     os.chdir(cur_dir)
 
 def weather_lookup(climate_zone):
-    path = os.path.dirname(os.path.realpath(__file__))
     # Cheat for now, all the world is 4A
     return 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'
 
 def prototype_lookup(type, climate_zone, vintage):
-    path = os.path.dirname(os.path.realpath(__file__))
     # Cheat for now, all buildings are this one large office
     return 'LargeOffice.osm'
+

@@ -28,8 +28,8 @@ def create_app(config=None, instance_path=None):
         app.config.from_mapping(config)
 
     # Make some assumptions if specific variables are missing
-    if 'MODEL_DIR' not in app.config:
-        app.config['MODEL_DIR'] = app.config['WEATHER_DIR']
+    if 'MODELS_DIR' not in app.config:
+        app.config['MODELS_DIR'] = app.config['WEATHER_DIR']
 
     # ensure the instance folder exists
     try:
@@ -112,6 +112,11 @@ def create_app(config=None, instance_path=None):
                 'seed_file': os.path.join(app.config['MODELS_DIR'], stor4build.prototype_lookup(prototype, cz, vintage)),
                 'steps': [
                     {
+                        "measure_dir_name" : "add_csv_output",
+                        "name" : "Add CSV Output",
+                        "arguments" : {}
+                    },
+                    {
                         "measure_dir_name" : "add_pytank",
                         "name" : "Add Python Tank",
                         "description" : "This measure will add the Python tank model.",
@@ -153,9 +158,9 @@ def create_app(config=None, instance_path=None):
     <div><label>Charge End Time: <input type="time" id="charge_end" name="charge_end" min="00:00" max="24:00" value="07:00" required /></label></div>
     <div><label>Discharge Start Time: <input type="time" id="discharge_start" name="discharge_start" min="00:00" max="24:00" value="12:00" required /></label></div>
     <div><label>Discharge End Time: <input type="time" id="discharge_end" name="discharge_end" min="00:00" max="24:00" value="18:00" required /></label></div>
-    <div><label>Charge Temperature: <input type="number" id="charge_temp" name="charge_temp" min="-10.0" max="10.0" value="-3.8" required /></label></div>
+    <div><label>Charge Temperature: <input type="number" id="charge_temp" name="charge_temp" min="-10.0" max="10.0" value="-3.8" step="any" required /></label></div>
     <div><label>Number of Tanks: <input type="number" id="ntanks" name="ntanks" min="1" step="1" max="50" value="1" required /></label></div>
-    <div><label>Trim Temperature: <input type="number" id="trim_temp" name="trim_temp" min="0.0" max="20.0" value="10.0" required /></label></div>
+    <div><label>Trim Temperature: <input type="number" id="trim_temp" name="trim_temp" min="0.0" max="20.0" value="10.0" step="any" required /></label></div>
     <input type="submit" value="Submit">
 </form>''' % (''.join(['<option value="LargeOffice">Large Office</option>']),
               ''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.climate_zone_list]),
@@ -172,7 +177,7 @@ def create_app(config=None, instance_path=None):
               help='Directory containing measures.')
 @click.option('-w', '--weather-dir', type=click.Path(exists=True), show_default=True, default='.',
               help='Directory containing weather files.')
-def prototype(openstudio, instance_path, measures_dir):
+def prototype(openstudio, instance_path, measures_dir, weather_dir):
     """
     Run the OpenStudion command line on a particular prototype.
     """
