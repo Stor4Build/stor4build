@@ -21,10 +21,10 @@ def run(osm, epw, openstudio, run_dir):
         'created_at': '20200127T205012Z',
         'measure_paths': [ '.' ],
         'run_directory': run_dir,
-        'seed_file': osm,
+        'seed_file': os.path.abspath(osm),
         'steps': [],
         'updated_at': '20200127T213540Z',
-        'weather_file': epw
+        'weather_file': os.path.abspath(epw)
     }
     stor4build.run(openstudio, run_dir, osw)
 
@@ -74,29 +74,42 @@ def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, ou
 @click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
-def run_tank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
+@click.option('--charge-start', metavar='HH:MM', show_default=True, default='21:00', help='Time to start charging tank.')
+@click.option('--charge-end', metavar='HH:MM', show_default=True, default='07:00', help='Time to end charging tank.')
+@click.option('--discharge-start', metavar='HH:MM', show_default=True, default='12:00', help='Time to start discharging tank.')
+@click.option('--discharge-end', metavar='HH:MM', show_default=True, default='18:00', help='Time to end discharging tank.')
+@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True, default=-3.8, help='Tank charging temperature.')
+@click.option('-n', '--ntanks', type=click.IntRange(min=1), metavar='N', show_default=True, default=1, help='Number of tanks.')
+@click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True, default='10.0', help='Trim temperature.')
+def run_tank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only,
+             charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp):
     """
-    Run the OpenStudio command line on a TES model.
+    Add an ice tank TES system to an OpenStudio model and run it.
     """
     click.echo('Run Tank!')
     osw = {
         'measure_paths': [ os.path.abspath(measures_dir) ],
         'run_directory': os.path.join(run_dir, output_dir),
-        'seed_file': osm,
+        'seed_file': os.path.abspath(osm),
         'steps': [
+            {
+                "measure_dir_name" : "add_csv_output",
+                "name" : "Add CSV Output",
+                "arguments" : {}
+            },
             {
                 "measure_dir_name" : "add_pytank",
                 "name" : "Add Python Tank",
                 "description" : "This measure will add the Python tank model.",
                 "modeler_description" : "This measure will add the Python tank model.",
                 "arguments" : {
-                    "chrg_start" : "22:00",
-                    "chrg_end" : "07:58",
-                    "dchrg_start" : "07:59",
-                    "dchrg_end" : "18:00",
-                    "chrg_temp" : -3.8,
-                    "num_tanks" : 1,
-                    "trim_temp" : 10
+                    "chrg_start" : charge_start,
+                    "chrg_end" : charge_end,
+                    "dchrg_start" : discharge_start,
+                    "dchrg_end" : discharge_end,
+                    "chrg_temp" : charge_temp,
+                    "num_tanks" : ntanks,
+                    "trim_temp" : trim_temp
                 }
             }
         ],
@@ -116,7 +129,7 @@ def run_tank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_o
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 def run_prototype_tank(vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
     """
-    Run the OpenStudio command line on a TES model.
+    Run the OpenStudio command line on a prototype with a ice tank TES model.
     """
     click.echo('Run Prototype Tank!')
     prototype = 'LargeOffice'
