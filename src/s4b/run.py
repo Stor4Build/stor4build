@@ -10,9 +10,9 @@ def run_workflow(openstudio_exe, run_dir, osw_json, measures_only=False):
     with open('s4b.osw', 'w') as fp:
         json.dump(osw_json, fp, indent=4)
     if measures_only:
-        os.system('%s run -m -w s4b.osw' % (openstudio_exe, ))
+        os.system('%s run --show-stdout --measures_only -w s4b.osw' % (openstudio_exe, ))
     else:
-        os.system('%s run -w s4b.osw' % (openstudio_exe, ))
+        os.system('%s run --show-stdout -w s4b.osw' % (openstudio_exe, ))
     os.chdir(cur_dir)
     
 class Runner:

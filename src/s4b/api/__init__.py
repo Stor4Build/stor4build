@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import click
 import os
+import csv
 import s4b as stor4build
 from flask import Flask, request
 
@@ -91,13 +92,14 @@ def create_app(config=None, instance_path=None):
               ''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.vintage_values]))
 
     #
-    @app.route('/tank', methods=['GET', 'POST'])
-    def tank_route():
+    @app.route('/icetank', methods=['GET', 'POST'])
+    def icetank_route():
         # POST request
         if request.method == 'POST':
-            prototype = request.form.get('prototype')
-            cz = 'ASHRAE 169-2006-%s' % request.form.get('cz')
-            vintage = request.form.get('vintage')
+            # Get the inputs
+            prototype = request.form.get('prototype') # Unused for now
+            cz = 'ASHRAE 169-2006-%s' % request.form.get('cz') # Unused for now
+            vintage = request.form.get('vintage') # Unused for now
             charge_start = request.form.get('charge_start')
             charge_end = request.form.get('charge_end')
             discharge_start = request.form.get('discharge_start')
@@ -105,53 +107,128 @@ def create_app(config=None, instance_path=None):
             charge_temp = request.form.get('charge_temp')
             ntanks = request.form.get('ntanks')
             trim_temp = request.form.get('trim_temp')
-            epw = stor4build.weather_lookup(cz)
-            osw = {
-                'measure_paths': [ os.path.abspath(app.config['MEASURES_DIR']) ],
-                'run_directory': os.path.join(app.instance_path, 'run'),
-                'seed_file': os.path.join(app.config['MODELS_DIR'], stor4build.prototype_lookup(prototype, cz, vintage)),
-                'steps': [
-                    {
-                        "measure_dir_name" : "add_csv_output",
-                        "name" : "Add CSV Output",
-                        "arguments" : {}
-                    },
-                    {
-                        "measure_dir_name" : "add_pytank",
-                        "name" : "Add Python Tank",
-                        "description" : "This measure will add the Python tank model.",
-                        "modeler_description" : "This measure will add the Python tank model.",
-                        "arguments" : {
-                            "chrg_start" : charge_start,
-                            "chrg_end" : charge_end,
-                            "dchrg_start" : discharge_start,
-                            "dchrg_end" : discharge_end,
-                            "chrg_temp" : charge_temp,
-                            "num_tanks" : ntanks,
-                            "trim_temp" : trim_temp
-                        }
-                    }
-                ],
-                'weather_file': os.path.join(app.config['WEATHER_DIR'], epw)
-            }
-            stor4build.run(app.config['OPENSTUDIO'], app.instance_path, osw)
+            
+            osm = os.path.join(app.config['MODELS_DIR'], stor4build.prototype_lookup(prototype, cz, vintage))
+            epw = os.path.join(app.config['WEATHER_DIR'], stor4build.weather_lookup(cz))
 
-            return '''
-<h1>%s</h1>
-<h2>Climate zone: %s</h2>
+            # Run the simulation
+            runner = stor4build.Runner(app.config['OPENSTUDIO'], app.instance_path, 'run', app.config['MEASURES_DIR'])
+            arguments = {
+                "chrg_start" : charge_start,
+                "chrg_end" : charge_end,
+                "dchrg_start" : discharge_start,
+                "dchrg_end" : discharge_end,
+                "chrg_temp" : charge_temp,
+                "num_tanks" : ntanks,
+                "trim_temp" : trim_temp
+            }
+            icetank = stor4build.IceTank()
+            icetank.run(runner, osm, epw, **arguments)
+            
+            # Process the outputs
+            csv_path = os.path.join(runner.output_dir, 'eplusout.csv')
+            if not os.path.exists(csv_path):
+                return '''
+<h1>Simulation Failed</h1>
+<h2>Failed to find eplusout.csv</h2>
 <h2>Vintage: %s</h2>
-''' % (prototype, cz, vintage)
+''' % csv_path
+
+            # Make a plot
+            titles = {'soc': 'soc:PythonPlugin:OutputVariable [](TimeStep)',
+                      'chiller': '90.1-2007 WATERCOOLED  CENTRIFUGAL CHILLER 1 374TONS 0.6KW/TON:Chiller Electricity Rate [W](TimeStep)'}
+
+            variables = list(titles.keys())
+
+            timestamps = []
+            values = []
+            for var in titles.keys():
+                values.append([])
+            N = len(values)
+                    
+            with open(csv_path, 'r') as fp:
+                reader = csv.reader(fp)
+                header = next(reader)
+                indices = {}
+                for var in variables:
+                    indices[var] = header.index(titles[var])
+
+                for line in reader:
+                    timestamp = line[0]
+                    if timestamp.startswith(' 07/15'):
+                        timestamps.append(timestamp)
+                        for i,var in enumerate(variables):
+                            values[i].append(line[indices[var]])
+
+            # Should process the timestamps, but whatever
+            minutes = list(range(0, 24*60, 10))
+
+            txt = ''
+            for i in range(len(timestamps)):
+                line = '    {minute: %d' % minutes[i]
+                for j,var in enumerate(variables):
+                    line += ', %s: %s' % (var, values[j][i])
+                line += '},\n'
+                txt += line
+            
+            return '''
+<div style="width: 800px;"><canvas id="graph"></canvas></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(async function() { const data = [
+%s
+];
+  
+new Chart(
+document.getElementById('graph'),
+{
+    type: 'line',
+    data: {
+    labels: data.map(row => row.minute),
+    datasets: [
+        {
+            label: 'soc',
+            data: data.map(row => row.soc),
+            tension: 0,
+            yAxisID: 'y'
+        },
+        {
+            label: 'chiller',
+            data: data.map(row => row.chiller),
+            tension: 0,
+            yAxisID: 'y1'
+        }
+    ]
+    },
+    options: {
+    scales: {
+        y: {
+            type: 'linear',
+            position: 'left',
+            ticks: { max: 1 }
+        }, 
+        y1: {
+            type: 'linear',
+            position: 'right',
+        }
+    }
+  }
+}
+);
+})();
+</script>
+''' % txt
 
         # GET request
         return '''
 <form method="POST">
-    <div><label>Prototype: <select id="prototype" name="prototype">
+    <div><label>Prototype (temporarily unused): <select id="prototype" name="prototype">
         %s
         </select></label></div>
-    <div><label>Climate Zone: <select id="cz" name="cz">
+    <div><label>Climate Zone (temporarily unused): <select id="cz" name="cz">
         %s
         </select></label></div>
-    <div><label>Vintage: <select id="vintage" name="vintage">
+    <div><label>Vintage (temporarily unused): <select id="vintage" name="vintage">
         %s
         </select></label></div>
     <div><label>Charge Start Time: <input type="time" id="charge_start" name="charge_start" min="00:00" max="24:00" value="21:00" required /></label></div>
@@ -166,7 +243,6 @@ def create_app(config=None, instance_path=None):
               ''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.climate_zone_list]),
               ''.join(['<option value="%s">%s</option>' % (el,el) for el in stor4build.vintage_values]))
 
-
     return app
 
 
@@ -179,13 +255,14 @@ def create_app(config=None, instance_path=None):
               help='Directory containing weather files.')
 def prototype(openstudio, instance_path, measures_dir, weather_dir):
     """
-    Run the OpenStudion command line on a particular prototype.
+    Run the prototype-based demo app.
     """
     config = {
         'OPENSTUDIO': openstudio,
         'MEASURES_DIR': measures_dir,
         'WEATHER_DIR': weather_dir
     }
+    print(measures_dir)
     app = create_app(config=config, instance_path=instance_path)
     app.run(host='127.0.0.1', port=5000, debug=True)
 

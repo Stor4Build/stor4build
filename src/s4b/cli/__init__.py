@@ -73,7 +73,7 @@ def run(osm, epw, openstudio, measures_only, run_dir):
 @click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True, default=-3.8, help='Tank charging temperature.')
 @click.option('-n', '--ntanks', type=click.IntRange(min=1), metavar='N', show_default=True, default=1, help='Number of tanks.')
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True, default='10.0', help='Trim temperature.')
-def run_tank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only,
+def run_icetank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only,
              charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
@@ -128,5 +128,5 @@ def s4b_compute(ctx: click.Context):
 
 s4b_compute.add_command(run)
 #s4b.add_command(run_prototype)
-s4b_compute.add_command(run_tank)
+s4b_compute.add_command(run_icetank)
 #s4b.add_command(run_prototype_tank)

@@ -37,7 +37,7 @@ Issues = "https://github.com/unknown/s4b/issues"
 Source = "https://github.com/unknown/s4b"
 
 [project.scripts]
-s4b-compute = "s4b.cli:s4b"
+s4b-compute = "s4b.cli:s4b_compute"
 s4b-api = "s4b.api:s4b_api"
 
 [tool.hatch.version]
