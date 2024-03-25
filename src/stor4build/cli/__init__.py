@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import click
 import os
-import s4b as stor4build
+import stor4build
 
 from ..__about__ import __version__
 

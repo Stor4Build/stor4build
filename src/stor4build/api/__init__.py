@@ -4,7 +4,7 @@
 import click
 import os
 import csv
-import s4b as stor4build
+import stor4build
 from flask import Flask, request
 
 from ..__about__ import __version__
@@ -114,12 +114,12 @@ def create_app(config=None, instance_path=None):
             # Run the simulation
             runner = stor4build.Runner(app.config['OPENSTUDIO'], app.instance_path, 'run', app.config['MEASURES_DIR'])
             arguments = {
-                "chrg_start" : charge_start,
-                "chrg_end" : charge_end,
-                "dchrg_start" : discharge_start,
-                "dchrg_end" : discharge_end,
-                "chrg_temp" : charge_temp,
-                "num_tanks" : ntanks,
+                "charge_start" : charge_start,
+                "charge_end" : charge_end,
+                "discharge_start" : discharge_start,
+                "discharge_end" : discharge_end,
+                "charge_temp" : charge_temp,
+                "ntanks" : ntanks,
                 "trim_temp" : trim_temp
             }
             icetank = stor4build.IceTank()
