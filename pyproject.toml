@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "s4b"
+name = "stor4build"
 description = 'Stor4Build TES benefits and decision tool'
 readme = "README.md"
 requires-python = ">=3.8"
@@ -24,20 +24,24 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "click"
+  "click",
+  "flask",
+  "scipy",
+  "SecondaryCoolantProps"
 ]
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/unknown/s4b#readme"
-Issues = "https://github.com/unknown/s4b/issues"
-Source = "https://github.com/unknown/s4b"
+Documentation = "https://github.com/unknown/stor4build#readme"
+Issues = "https://github.com/unknown/stor4build/issues"
+Source = "https://github.com/unknown/stor4build"
 
 [project.scripts]
-s4b = "s4b.cli:s4b"
+s4b-compute = "stor4build.cli:s4b_compute"
+s4b-api = "stor4build.api:s4b_api"
 
 [tool.hatch.version]
-path = "src/s4b/__about__.py"
+path = "src/stor4build/__about__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -45,7 +49,7 @@ dependencies = [
   "pytest-cov",
 ]
 [tool.hatch.envs.default.scripts]
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/s4b --cov=tests {args}"
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/stor4build --cov=tests {args}"
 no-cov = "cov --no-cov {args}"
 
 [[tool.hatch.envs.test.matrix]]
@@ -55,7 +59,7 @@ python = ["38", "39", "310", "311", "312"]
 branch = true
 parallel = true
 omit = [
-  "src/s4b/__about__.py",
+  "src/stor4build/__about__.py",
 ]
 
 [tool.coverage.report]

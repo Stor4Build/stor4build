@@ -9,6 +9,7 @@
 
 - [Installation](#installation)
 - [VS Code/Hatch Dev Environment](#vs_codehatch_dev_environment)
+- [Web API Demo](#web_api_demo)
 - [License](#license)
 
 ## Installation
@@ -46,10 +47,26 @@ hatch shell
 to enter the environment that was created, and then execute
 
 ```console
-s4b --help
+s4b-compute --help
 ```
 
 You should see the help output from the tool.
+
+## Web API Demo
+
+A very simple flask-based web api demo is included. To launch the demo back end (that does the calculation) run
+
+```console
+s4b-api prototype --openstudio <openstudio/cli/path> -m <measures/path> --instance-path <path/to/run/in>
+```
+
+This will start up the flask **development** server in **debug** mode, and debugging output will appear on the console. Next, navigate a browser to 
+
+```
+http://127.0.0.1:5000/prototype
+```
+
+Make choices for the prototype, climate zone, and vintage, then click submit. Wait a few moments, and the page will change once the calculation is complete.
 
 ## License
 
