@@ -12,7 +12,7 @@ class IceTank(System):
     default_charge_temp = -3.8
     default_ntanks = 1
     default_trim_temp = 10.0
-    def run(self, runner, baseline, epw, measures_only=False, **kwargs):
+    def run(self, runner, baseline, epw, measures_only=False, run_baseline=False, **kwargs):
         charge_start = kwargs.get('charge_start', self.default_charge_start)
         charge_end = kwargs.get('charge_end', self.default_charge_end)
         discharge_start = kwargs.get('discharge_start', self.default_discharge_start)
@@ -20,8 +20,14 @@ class IceTank(System):
         charge_temp = kwargs.get('charge_temp', self.default_charge_temp)
         ntanks = kwargs.get('ntanks', self.default_ntanks)
         trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
-        osw = runner.osw(baseline, epw)
-        osw['steps'].append({
+        if run_baseline:
+            osws = [runner.osw(baseline, epw)]
+            subdirs = ['baseline']
+        else:
+            osws = []
+            subdirs = []
+        osw_tes = runner.osw(baseline, epw)
+        osw_tes['steps'].append({
             "measure_dir_name" : "add_pytank",
             "name" : "Add Python Tank",
             "description" : "This measure will add the Python tank model.",
@@ -36,5 +42,7 @@ class IceTank(System):
                 "trim_temp" : trim_temp
             }
         })
-        runner.run(osw, measures_only=measures_only)
+        osws.append(osw_tes)
+        subdirs.append('tes')
+        runner.multirun(osws, subdirs=subdirs, measures_only=measures_only)
 

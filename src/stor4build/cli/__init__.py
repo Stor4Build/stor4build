@@ -73,8 +73,9 @@ def run(osm, epw, openstudio, measures_only, run_dir):
 @click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True, default=-3.8, help='Tank charging temperature.')
 @click.option('-n', '--ntanks', type=click.IntRange(min=1), metavar='N', show_default=True, default=1, help='Number of tanks.')
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True, default='10.0', help='Trim temperature.')
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
 def run_icetank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only,
-             charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp):
+                charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -89,7 +90,7 @@ def run_icetank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measure
         "trim_temp" : trim_temp
     }
     icetank = stor4build.IceTank()
-    icetank.run(runner, osm, epw, measures_only=measures_only, **arguments)
+    icetank.run(runner, osm, epw, measures_only=measures_only, run_baseline=run_baseline, **arguments)
 
 #@click.command()
 #@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))

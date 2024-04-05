@@ -19,7 +19,7 @@ class Runner:
     def __init__(self, openstudio, run_dir, output_dir, measures_dir):
         self.openstudio = openstudio
         self.run_dir = os.path.abspath(run_dir)
-        self.output_dir = os.path.join(self.run_dir, output_dir)
+        self.output_dir = output_dir
         self.measures_dir = os.path.abspath(measures_dir)
     def osw(self, seed, epw):
         return {
@@ -37,6 +37,17 @@ class Runner:
         }
     def run(self, osw_json, measures_only=False):
         run_workflow(self.openstudio, self.run_dir, osw_json, measures_only=measures_only)
+    def multirun(self, osws, measures_only=False, subdirs = None):
+        if subdirs is not None:
+            if len(osws) != len(subdirs):
+                subdirs = None
+        if subdirs is None:
+            subdirs = [str(el) for el in range(len(osws))]
+        for osw, subdir in zip(osws, subdirs):
+            run_dir = os.path.join(self.run_dir, subdir)
+            if not os.path.exists(run_dir):
+                os.mkdir(run_dir)
+            run_workflow(self.openstudio, run_dir, osw, measures_only=measures_only)
         
 class PrototypeBuilder:
     def __init__(self, openstudio, run_dir, output_dir, measures_dir):
