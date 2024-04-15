@@ -49,7 +49,7 @@ class Runner:
                 os.mkdir(run_dir)
             run_workflow(self.openstudio, run_dir, osw, measures_only=measures_only)
         
-class PrototypeBuilder:
+class PrototypeRunner:
     def __init__(self, openstudio, run_dir, output_dir, measures_dir):
         self.openstudio = openstudio
         self.run_dir = os.path.abspath(run_dir)

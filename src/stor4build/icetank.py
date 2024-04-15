@@ -21,8 +21,14 @@ class IceTank(System):
         ntanks = kwargs.get('ntanks', self.default_ntanks)
         trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
         if run_baseline:
-            osws = [runner.osw(baseline, epw)]
+            osw_baseline = runner.osw(baseline, epw)
+            osw_baseline['steps'].append({
+                    "measure_dir_name" : "add_output_variables",
+                    "name" : "Add Output Variables",
+                    "arguments" : {}
+                })
             subdirs = ['baseline']
+            osws = [osw_baseline]
         else:
             osws = []
             subdirs = []
@@ -42,6 +48,11 @@ class IceTank(System):
                 "trim_temp" : trim_temp
             }
         })
+        osw_tes['steps'].append({
+                    "measure_dir_name" : "add_output_variables",
+                    "name" : "Add Output Variables",
+                    "arguments" : {}
+                })
         osws.append(osw_tes)
         subdirs.append('tes')
         runner.multirun(osws, subdirs=subdirs, measures_only=measures_only)

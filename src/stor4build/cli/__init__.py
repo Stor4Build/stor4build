@@ -21,42 +21,25 @@ def run(osm, epw, openstudio, measures_only, run_dir):
     osw = runner.osw(osm, epw)
     runner.run(osw, measures_only=measures_only)
 
-#@click.command()
-#@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
-#@click.argument('VINTAGE', type=click.Choice(stor4build.vintage_list))
-#@click.argument('CLIMATE_ZONE', type=click.Choice(stor4build.climate_zone_list))
-#@click.argument('EPW', type=click.Path(exists=True))
-#@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
-#@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
-#@click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
-#@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
-#def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir):
-#    """
-#    Run the OpenStudio command line on a particular prototype model with the weather in EPW.
-#    """
-#    click.echo('Run Prototype!')
-#    cz_arg = stor4build.climate_zone_lookup[climate_zone]
-#    vintage_arg = stor4build.vintage_lookup[vintage]
-#    osw = {
-#        'created_at': '20200127T205012Z',
-#        'measure_paths': [ os.path.abspath(measures_dir) ],
-#        'run_directory': os.path.join(run_dir, output_dir),
-#        'seed_file': '',
-#        'steps': [
-#            {
-#                'arguments' : {
-#                    'building_type': prototype,
-#                    'climate_zone': cz_arg,
-#                    'template': vintage_arg
-#                    },
-#                'measure_dir_name' : 'create_doe_prototype_building',
-#                'name' : 'Create DOE Prototype Building Extended'
-#            }
-#        ],
-#        'updated_at': '20200127T213540Z',
-#        'weather_file': os.path.abspath(epw)
-#    }
-#    stor4build.run(openstudio, run_dir, osw)
+@click.command()
+@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
+@click.argument('VINTAGE', type=click.Choice(stor4build.vintage_list))
+@click.argument('CLIMATE_ZONE', type=click.Choice(stor4build.climate_zone_list))
+@click.argument('EPW', type=click.Path(exists=True))
+@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
+@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
+@click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
+@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
+    """
+    Run the OpenStudio command line on a particular prototype model with the weather in EPW.
+    """
+    runner = stor4build.PrototypeRunner(openstudio, run_dir, 'run', measures_dir)
+    cz_arg = stor4build.climate_zone_lookup[climate_zone]
+    vintage_arg = stor4build.vintage_lookup[vintage]
+    osw = runner.osw(prototype, cz_arg, vintage_arg, epw)
+    runner.run(osw, measures_only=measures_only)
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -128,6 +111,6 @@ def s4b_compute(ctx: click.Context):
     pass
 
 s4b_compute.add_command(run)
-#s4b.add_command(run_prototype)
+s4b_compute.add_command(run_prototype)
 s4b_compute.add_command(run_icetank)
 #s4b.add_command(run_prototype_tank)
