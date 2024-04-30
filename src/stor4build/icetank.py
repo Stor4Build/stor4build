@@ -10,7 +10,7 @@ class IceTank(System):
     default_discharge_start = '12:00'
     default_discharge_end = '18:00'
     default_charge_temp = -3.8
-    default_ntanks = 1
+    default_num_tanks = 1
     default_trim_temp = 10.0
     def run(self, runner, baseline, epw, measures_only=False, run_baseline=False, **kwargs):
         charge_start = kwargs.get('charge_start', self.default_charge_start)
@@ -18,7 +18,7 @@ class IceTank(System):
         discharge_start = kwargs.get('discharge_start', self.default_discharge_start)
         discharge_end = kwargs.get('discharge_end', self.default_discharge_end)
         charge_temp = kwargs.get('charge_temp', self.default_charge_temp)
-        ntanks = kwargs.get('ntanks', self.default_ntanks)
+        num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
         if run_baseline:
             osw_baseline = runner.osw(baseline, epw)
@@ -44,7 +44,7 @@ class IceTank(System):
                 "dchrg_start" : discharge_start,
                 "dchrg_end" : discharge_end,
                 "chrg_temp" : charge_temp,
-                "num_tanks" : ntanks,
+                "num_tanks" : num_tanks,
                 "trim_temp" : trim_temp
             }
         })
