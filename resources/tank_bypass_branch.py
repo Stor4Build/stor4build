@@ -63,6 +63,7 @@ class TankBypassBranch(object):
             self.outlet_temp = inlet_temp
             self.tank.calculate(inlet_temp, 0, env_temp, sim_time, timestep)
             self.bypass_fraction = 1
+            self.tank_mass_flow = 0.0
             return
 
         # charging condition
@@ -86,6 +87,7 @@ class TankBypassBranch(object):
                 self.tank.calculate(inlet_temp, 0, env_temp, sim_time, timestep)
                 self.outlet_temp = inlet_temp
                 self.bypass_fraction = 1
+                self.tank_mass_flow = 0.0
                 return
 
             # if we've made it here, we need to discharge
@@ -98,6 +100,7 @@ class TankBypassBranch(object):
             if t_out_high > branch_set_point:
                 self.outlet_temp = t_out_high
                 self.bypass_fraction = 0
+                self.tank_mass_flow = mass_flow_rate
                 return
 
         # finally, if we've made it here, we need to split flow between the tank and the bypass
