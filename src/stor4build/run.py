@@ -25,11 +25,13 @@ class Runner:
         self.measures_dir = os.path.abspath(measures_dir)
         self.seed = os.path.abspath(seed)
         self.epw = os.path.abspath(epw)
-    def osw(self):
+    def osw(self, seed_model=None):
+        seed = seed_model
+        if seed_model is None:
+            seed = self.seed
         return {
             'measure_paths': [ self.measures_dir ],
-            'run_directory': self.output_dir,
-            'seed_file': self.seed,
+            'seed_file': seed,
             'steps': [
                 {
                     "measure_dir_name" : "add_csv_output",

@@ -3,19 +3,26 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import os
 
-class System:
-    def name(self):
-    	raise NotImplementedError('System object must implement the "name" method')
-    def osw(self, osw, **kwargs):
-    	# Implement this one if the system is a one-shot through deal
-        return None
-    def run(self, runner, osm, epw, run_dir, output_dir, measures_dir, measures_only=False, run_baseline=False, **kwargs):
-        return None
-        
-class Baseline(System):
-    def name(self):
-    	return 'baseline'
-    def osw(self, osw_src, **kwargs):
-        osw = osw_src()
-        #osw['run_directory'] = os.path.join(osw['run_directory'], 'baseline')
+class Simulation:
+    def __init__(self, name):
+    	self.name = name
+    def needs_baseline(self):
+        return True
+    def tag(self):
+        return self.name
+    def osw(self, seed_file, measures_directory, epw_file, **kwargs):
+        osw = {
+            'measure_paths': [ measures_directory ],
+            'seed_file': seed_file,
+            'steps': [
+                {
+                    "measure_dir_name" : "add_csv_output",
+                    "name" : "Add CSV Output",
+                    "arguments" : {}
+                }
+            ],
+            'weather_file': epw_file
+        }
         return osw
+    def run(self, runner, seed_file, measures_directory, **kwargs):
+        return None
