@@ -89,7 +89,12 @@ def run_icetank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measure
     }
     work = []
     if run_baseline:
-        work.append(stor4build.Simulation('baseline'))
+        added = [{
+                    "measure_dir_name" : "add_output_variables",
+                    "name" : "Add Output Variables",
+                    "arguments" : {}
+                }]
+        work.append(stor4build.Simulation('baseline', added_steps=added))
     icetank = stor4build.IceTank('icetank',**arguments)
     work.append(icetank)
     # Make paths absolute

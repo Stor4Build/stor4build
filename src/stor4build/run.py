@@ -55,29 +55,4 @@ class Runner:
             if not os.path.exists(run_dir):
                 os.mkdir(run_dir)
             run_workflow(self.openstudio, run_dir, osw, measures_only=measures_only)
-        
-class PrototypeRunner:
-    def __init__(self, openstudio, run_dir, output_dir, measures_dir):
-        self.openstudio = openstudio
-        self.run_dir = os.path.abspath(run_dir)
-        self.output_dir = os.path.join(self.run_dir, output_dir)
-        self.measures_dir = os.path.abspath(measures_dir)
-    def osw(self, type, cz, vintage, epw):
-        return {
-            'measure_paths': [ self.measures_dir ],
-            'run_directory': self.output_dir,
-            'steps': [
-                {
-                    'arguments' : {
-                        'building_type': type,
-                        'climate_zone': cz,
-                        'template': vintage
-                        },
-                    'measure_dir_name' : 'create_doe_prototype_building',
-                    'name' : 'Create DOE Prototype Building'
-                }
-            ],
-            'weather_file': os.path.abspath(epw)
-        }
-    def run(self, osw_json, measures_only=False):
-        run_workflow(self.openstudio, self.run_dir, osw_json, measures_only=True)
+
