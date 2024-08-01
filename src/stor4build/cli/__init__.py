@@ -11,15 +11,23 @@ from ..__about__ import __version__
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
+@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
-def run(osm, epw, openstudio, measures_only, run_dir):
+def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
     """
     Run the OpenStudio command line on the model in OSM with the weather in EPW.
-    """
-    runner = stor4build.Runner(openstudio, run_dir, 'run', '.')
-    osw = runner.osw(osm, epw)
-    runner.run(osw, measures_only=measures_only)
+    """    
+    # Make paths absolute
+    osm_path = os.path.abspath(osm)
+    measures_path = os.path.abspath(measures_dir)
+    epw_path = os.path.abspath(epw)
+
+    runner = stor4build.Runner(osm, epw, openstudio, run_dir, 'run', measures_dir)
+    
+    case = stor4build.Simulation('simulation')
+    osw = case.osw(osm_path, measures_path, epw_path)
+    runner.run(osw, case.tag(), measures_only=measures_only)
 
 #@click.command()
 #@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
@@ -30,33 +38,16 @@ def run(osm, epw, openstudio, measures_only, run_dir):
 #@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 #@click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
 #@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
-#def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir):
+#@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+#def run_prototype(prototype, vintage, climate_zone, epw, openstudio, run_dir, output_dir, measures_dir, measures_only):
 #    """
 #    Run the OpenStudio command line on a particular prototype model with the weather in EPW.
 #    """
-#    click.echo('Run Prototype!')
+#    runner = stor4build.PrototypeRunner(openstudio, run_dir, 'run', measures_dir)
 #    cz_arg = stor4build.climate_zone_lookup[climate_zone]
 #    vintage_arg = stor4build.vintage_lookup[vintage]
-#    osw = {
-#        'created_at': '20200127T205012Z',
-#        'measure_paths': [ os.path.abspath(measures_dir) ],
-#        'run_directory': os.path.join(run_dir, output_dir),
-#        'seed_file': '',
-#        'steps': [
-#            {
-#                'arguments' : {
-#                    'building_type': prototype,
-#                    'climate_zone': cz_arg,
-#                    'template': vintage_arg
-#                    },
-#                'measure_dir_name' : 'create_doe_prototype_building',
-#                'name' : 'Create DOE Prototype Building Extended'
-#            }
-#        ],
-#        'updated_at': '20200127T213540Z',
-#        'weather_file': os.path.abspath(epw)
-#    }
-#    stor4build.run(openstudio, run_dir, osw)
+#    osw = runner.osw(prototype, cz_arg, vintage_arg, epw)
+#    runner.run(osw, measures_only=measures_only)
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -66,30 +57,53 @@ def run(osm, epw, openstudio, measures_only, run_dir):
 @click.option('-o', '--output-dir', show_default=True, default='run', help='Directory for OpenStudio outputs.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
-@click.option('--charge-start', metavar='HH:MM', show_default=True, default='21:00', help='Time to start charging tank.')
-@click.option('--charge-end', metavar='HH:MM', show_default=True, default='07:00', help='Time to end charging tank.')
-@click.option('--discharge-start', metavar='HH:MM', show_default=True, default='12:00', help='Time to start discharging tank.')
-@click.option('--discharge-end', metavar='HH:MM', show_default=True, default='18:00', help='Time to end discharging tank.')
-@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True, default=-3.8, help='Tank charging temperature.')
-@click.option('-n', '--ntanks', type=click.IntRange(min=1), metavar='N', show_default=True, default=1, help='Number of tanks.')
-@click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True, default='10.0', help='Trim temperature.')
+@click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
+              help='Time to start charging tank.')
+@click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_end,
+              help='Time to end charging tank.')
+@click.option('--discharge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_start,
+              help='Time to start discharging tank.')
+@click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_end,
+              help='Time to end discharging tank.')
+@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True,
+              default=stor4build.IceTank.default_charge_temp, help='Tank charging temperature.')
+@click.option('-n', '--ntanks', type=click.IntRange(min=1), metavar='N', show_default=True,
+              default=stor4build.IceTank.default_num_tanks, help='Number of tanks.')
+@click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
+              default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
 def run_icetank(osm, epw, openstudio, run_dir, output_dir, measures_dir, measures_only,
-             charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp):
+                charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
-    runner = stor4build.Runner(openstudio, run_dir, output_dir, measures_dir)
+    runner = stor4build.Runner(osm, epw, openstudio, run_dir, output_dir, measures_dir)
     arguments = {
-        "chrg_start" : charge_start,
-        "chrg_end" : charge_end,
-        "dchrg_start" : discharge_start,
-        "dchrg_end" : discharge_end,
-        "chrg_temp" : charge_temp,
+        "charge_start" : charge_start,
+        "charge_end" : charge_end,
+        "discharge_start" : discharge_start,
+        "discharge_end" : discharge_end,
+        "charge_temp" : charge_temp,
         "num_tanks" : ntanks,
         "trim_temp" : trim_temp
     }
-    icetank = stor4build.IceTank()
-    icetank.run(runner, osm, epw, measures_only=measures_only, **arguments)
+    work = []
+    if run_baseline:
+        added = [{
+                    "measure_dir_name" : "add_output_variables",
+                    "name" : "Add Output Variables",
+                    "arguments" : {}
+                }]
+        work.append(stor4build.Simulation('baseline', added_steps=added))
+    icetank = stor4build.IceTank('icetank',**arguments)
+    work.append(icetank)
+    # Make paths absolute
+    osm_path = os.path.abspath(osm)
+    measures_path = os.path.abspath(measures_dir)
+    epw_path = os.path.abspath(epw)
+    for case in work:
+        osw = case.osw(osm_path, measures_path, epw_path)
+        runner.run(osw, case.tag(), measures_only=measures_only)
 
 #@click.command()
 #@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
@@ -127,6 +141,6 @@ def s4b_compute(ctx: click.Context):
     pass
 
 s4b_compute.add_command(run)
-#s4b.add_command(run_prototype)
+#s4b_compute.add_command(run_prototype)
 s4b_compute.add_command(run_icetank)
 #s4b.add_command(run_prototype_tank)
