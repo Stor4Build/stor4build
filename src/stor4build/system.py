@@ -30,5 +30,7 @@ class Simulation:
             'weather_file': epw_file
         }
         return osw
+    def osw_from_baseline(self, seed_file, measures_directory, epw_file, baseline_results, **kwargs):
+        return None
     def run(self, runner, seed_file, measures_directory, **kwargs):
         return None
