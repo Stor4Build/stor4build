@@ -135,7 +135,7 @@ def create_app(config=None):
                 baseline_path = os.path.join(run_dir, baseline)
                 
                 # Run the technology
-                osw = technology_object(osm, measures_dir, epw, baseline_path)
+                osw = technology_object.osw_from_baseline(osm, measures_dir, epw, baseline_path)
                 runner.run(osw, technology_object.tag())
         else:
             # Run things in a loop, this could be done in parallel

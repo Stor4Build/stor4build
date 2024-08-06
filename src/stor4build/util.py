@@ -17,4 +17,20 @@ def weather_lookup(climate_zone):
 def prototype_lookup(type, climate_zone, vintage):
     # Cheat for now, all buildings are this one large office
     return 'LargeOffice.osm'
+    
+def convert_string_time_interval(start, end):
+    hour, minute = start.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    window_start = hour
+    if minute != 0:
+        raise NotImplementedError('Non-zero minute not yet implemented')
+    hour, minute = end.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    window_end = hour
+    if minute != 0:
+        raise NotImplementedError('Non-zero minute not yet implemented')
+    #print(window_start, window_end)
+    return window_start, window_end
 

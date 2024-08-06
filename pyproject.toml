@@ -28,7 +28,8 @@ dependencies = [
   "flask",
   "scipy",
   "SecondaryCoolantProps",
-  "httpx"
+  "httpx",
+  "numpy"
 ]
 dynamic = ["version"]
 

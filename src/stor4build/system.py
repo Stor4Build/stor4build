@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import os
 
+class BadSizing(Exception):
+    pass
+
 class Simulation:
     def __init__(self, name, added_steps=None):
     	self.name = name

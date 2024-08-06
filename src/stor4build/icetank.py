@@ -2,7 +2,11 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
-from .system import Simulation
+import csv
+from .system import Simulation, BadSizing
+import numpy as np
+import math
+from .util import convert_string_time_interval
 
 class IceTank(Simulation):
     default_charge_start = '21:00'
@@ -12,6 +16,7 @@ class IceTank(Simulation):
     default_charge_temp = -3.8
     default_num_tanks = 1
     default_trim_temp = 10.0
+    default_peak_reduction = 15.0
     def __init__(self, name, **kwargs):
         super().__init__(name)
         self.charge_start = kwargs.get('charge_start', self.default_charge_start)
@@ -21,23 +26,51 @@ class IceTank(Simulation):
         self.charge_temp = kwargs.get('charge_temp', self.default_charge_temp)
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
-        self.capacity = kwargs.get('capacity')
+        self.peak_reduction = kwargs.get('peak_reduction')
     @classmethod
-    def from_utility_rate(self, name, **kwargs):
+    def from_utility_rates(cls, name, **kwargs):
         # Get the utility rate inputs
-        
+        peak_start = kwargs.get('peak_start', cls.default_discharge_start)
+        peak_end = kwargs.get('peak_end', cls.default_discharge_end)
         # Package up the arguments
         args = {
-                'charge_start': self.default_charge_start,
-                'charge_end': self.default_charge_end,
-                'discharge_start': self.default_discharge_start,
-                'discharge_end': self.default_discharge_end,
-                'charge_temp': self.default_charge_temp,
-                'num_tanks': kwargs.get('num_tanks', self.default_num_tanks),
-                'trim_temp': kwargs.get('trim_temp', self.default_trim_temp),
-                'capacity': kwargs.get('trim_temp')
+                'charge_start': cls.default_charge_start,
+                'charge_end': cls.default_charge_end,
+                'discharge_start': peak_start,
+                'discharge_end': peak_end,
+                'charge_temp': cls.default_charge_temp,
+                'num_tanks': kwargs.get('num_tanks'),
+                'trim_temp': kwargs.get('trim_temp'),
+                'peak_reduction': kwargs.get('peak_reduction')
                }
         return cls(name, **args)
+    def compute_sizing(self, baseline_results):
+        if self.peak_reduction is None:
+            raise BadSizing('Sizing was requested but no peak reduction input was found.')
+        joules_to_kwh = 1.0e-5/36.0
+        # Figure out the window we're looking at
+        k0, k1 = convert_string_time_interval(self.discharge_start, self.discharge_end)
+        # Open the baseline csv
+        with open(os.path.join(baseline_results, 'eplusout.csv'), 'r') as fp:
+            reader = csv.reader(fp)
+            header = next(reader)
+            indices = []
+            for col,title in enumerate(header):
+                if 'Chiller Evaporator Cooling Energy' in title:
+                    indices.append(col)
+            assert len(indices) > 1
+            results = []
+            for data in reader:
+                try:
+                    results.append(sum([float(data[el]) for el in indices]))
+                except ValueError:
+                    pass
+            print(len(results))
+            assert len(results) == 8760
+            v = np.array(results)
+            v = np.reshape(v, (365, 24))
+            max_val = np.max(v[:,k0:k1])*joules_to_kwh
+            self.num_tanks = math.ceil(max_val/668.0)
     def needs_baseline(self):
         return self.num_tanks is None or self.trim_temp is None
     def osw(self, seed_file, measures_directory, epw_file, **kwargs):
@@ -78,7 +111,7 @@ class IceTank(Simulation):
         return osw
     def osw_from_baseline(self, seed_file, measures_directory, epw_file, baseline_results, **kwargs):
         # Compute the number of tanks and the trim temperature from baseline results
-        self.compute_sizing(self, baseline_results)
+        self.compute_sizing(baseline_results)
         osw = {
             'measure_paths': [ measures_directory ],
             'seed_file': seed_file,
