@@ -101,27 +101,30 @@ def create_app(config=None):
         vintage = data.get('vintage') # Unused for now
         tech = data.get('technology')
         tes_type = tech.get('type')
+        needs_baseline = False
         if tes_type == 'icetank':
+            needs_baseline = True
             # Check the inputs, should use one of those schema checker deals, do that later
-            parameters = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end', 'capacity']
+            parameters = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end', 'peak_reduction']
             for param in parameters:
                 if param not in tech:
                     return make_response({'error': 'MissingParameter', 'message': 'Expected parameter "%s" is missing.' % param}, 500)
                     
             # Translation of the utility rate parameters to charge/discharge start/end will happen here
-            technology_object = stor4build.IceTank.from_utility_rates('icetank',**arguments)
+            technology_object_factory = stor4build.IceTank.size
             added = [{
                         "measure_dir_name" : "add_output_variables",
                         "name" : "Add Output Variables",
                         "arguments" : {}
                     }]
+            tech.pop('type', None)
         else:
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 500)
             
         osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
         epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
             
-        if technology_object.needs_baseline():
+        if needs_baseline:
             # Run the baseline first, then the technology
             with tempfile.TemporaryDirectory() as run_dir:
                 runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
@@ -132,20 +135,22 @@ def create_app(config=None):
                 runner.run(osw, 'baseline')
                 
                 # Baseline results are in this directory
-                baseline_path = os.path.join(run_dir, baseline)
+                baseline_path = os.path.join(run_dir, 'baseline', 'run')
                 
                 # Run the technology
-                osw = technology_object.osw_from_baseline(osm, measures_dir, epw, baseline_path)
+                technology_object = technology_object_factory('sized_icetank', baseline_path, **tech)
+                osw = technology_object.osw(osm, measures_dir, epw)
                 runner.run(osw, technology_object.tag())
         else:
             # Run things in a loop, this could be done in parallel
             with tempfile.TemporaryDirectory() as run_dir:
                 runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
+                technology_object = technology_object_factory('sized_icetank', **tech)
                 for case in [stor4build.Simulation('baseline', added_steps=added), technology_object]:
                     osw = case.osw(osm, measures_dir, epw)
                     runner.run(osw, case.tag())
 
-        response = make_response({'message': 'Yay!'}, 200) 
+        response = make_response(technology_object.sizing, 200)
         response.headers["Content-Type"] = "application/json" 
         return response
     return app

@@ -5,10 +5,14 @@ inputs = {'type': 'LargeOffice',
           'cz': '4A',
           'vintage': '2007',
           'technology': {'type': 'icetank',
-                         'num_tanks': 2}}
+                         'charge_start': '21:00',
+                         'charge_end': '07:00',
+                         'discharge_start': '12:00',
+                         'discharge_end': '18:00',
+                         'peak_reduction': 100.0}}
 
 start = time.time()
-r = httpx.post('http://127.0.0.1:5000/simple', json=inputs, timeout=None)
+r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
 delta = time.time() - start
 
 print('Done! (%s seconds)' % delta)

@@ -7,6 +7,15 @@ import stor4build
 
 from ..__about__ import __version__
 
+units = {'maximum_load': '(J)',
+         'peak_reduction': '(%)',
+         'window_start': '(HH:MM)',
+         'window_end': '(HH:MM)',
+         'num_tanks': '(before round up)',
+         'interval_start': '(hour of day)',
+         'interval_end': '(hour of day)',
+         'capacity': '(J)'}
+
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
@@ -126,9 +135,9 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
               help='Target percentage to reduce the peak load.')
 #@click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
 #              default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
-#@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
+@click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
-                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction):
+                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -155,20 +164,16 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
     osw = baseline.osw(osm, measures_dir, epw)
     #runner.run(osw, 'baseline')
     baseline_results = os.path.join(run_dir, 'baseline', 'run')
-    icetank = stor4build.IceTank.from_rates_and_peak('sized_icetank', baseline_results, **arguments)
-    print(icetank.num_tanks, icetank.sizing['num_tanks'])
+    icetank = stor4build.IceTank.size('sized_icetank', baseline_results, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
-    runner.run(osw, icetank.tag())
-    #icetank = stor4build.IceTank.from_utility_rates('sized_icetank',**arguments)
-    #osw = icetank.osw_from_baseline(osm, measures_dir, epw, baseline_results)
-    #work.append(icetank)
-    # Make paths absolute
-    #osm_path = os.path.abspath(osm)
-    #measures_path = os.path.abspath(measures_dir)
-    #epw_path = os.path.abspath(epw)
-    #for case in work:
-    #    osw = case.osw(osm_path, measures_path, epw_path)
-    #    runner.run(osw, case.tag(), measures_only=measures_only)
+    #runner.run(osw, icetank.tag())
+    if show_sizing:
+        print('Number of tanks:', icetank.num_tanks)
+        for k,v in icetank.sizing.items():
+            if k in units:
+                print(k+':', v, units[k])
+            else:
+                print(k+':', v)
 
 #@click.command()
 #@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
