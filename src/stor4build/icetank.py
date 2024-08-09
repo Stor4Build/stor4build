@@ -27,7 +27,6 @@ class IceTank(Simulation):
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
         self.sizing = kwargs.get('sizing', {})
-        self.peak_reduction = kwargs.get('peak_reduction')
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
         joules_to_kwh = 1.0e-5/36.0
@@ -58,16 +57,17 @@ class IceTank(Simulation):
                     datetime.append(data[0])
                 except ValueError:
                     pass
-        print(len(results))
+        #print(len(results))
         assert len(results) == 8760
         v = np.array(results)
         daily_sum = np.reshape(v, (365, 24))[:,k0:k1].sum(axis=1)
-        print(daily_sum.shape)
+        #print(daily_sum.shape)
         assert daily_sum.shape == (365,)
         max_sum = np.max(daily_sum)
+        print(max_sum, type(max_sum), peak_reduction, type(peak_reduction))
         capacity = max_sum * peak_reduction * 0.01
         index = np.where(daily_sum == max_sum)
-        print(index[0][0], joules_to_kwh*max_sum/668.0)
+        #print(index[0][0], joules_to_kwh*max_sum/668.0)
         num_tanks_float = joules_to_kwh*max_sum/668.0
         num_tanks = math.ceil(num_tanks_float)
         
@@ -88,8 +88,6 @@ class IceTank(Simulation):
         kwargs.pop('num_tanks', None)
         kwargs.pop('trim_temp', None)
         return cls(name, num_tanks=num_tanks, trim_temp=trim_temp, sizing=sizing, **kwargs)
-    def needs_baseline(self):
-        return self.num_tanks is None or self.trim_temp is None
     def osw(self, seed_file, measures_directory, epw_file, **kwargs):
         if self.num_tanks is None or self.trim_temp is None:
             return None

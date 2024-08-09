@@ -162,11 +162,11 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
             }]
     baseline = stor4build.Simulation('baseline', added_steps=added)
     osw = baseline.osw(osm, measures_dir, epw)
-    #runner.run(osw, 'baseline')
+    runner.run(osw, 'baseline')
     baseline_results = os.path.join(run_dir, 'baseline', 'run')
     icetank = stor4build.IceTank.size('sized_icetank', baseline_results, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
-    #runner.run(osw, icetank.tag())
+    runner.run(osw, icetank.tag())
     if show_sizing:
         print('Number of tanks:', icetank.num_tanks)
         for k,v in icetank.sizing.items():

@@ -9,7 +9,7 @@ inputs = {'type': 'LargeOffice',
                          'charge_end': '07:00',
                          'discharge_start': '12:00',
                          'discharge_end': '18:00',
-                         'peak_reduction': 100.0}}
+                         'peak_reduction': 50.0}}
 
 start = time.time()
 r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
