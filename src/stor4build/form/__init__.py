@@ -112,11 +112,10 @@ def create_app(config=None):
 
             # Run the simulation
             with tempfile.TemporaryDirectory() as run_dir:
-                runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
+                run_path = os.path.abspath(run_dir)
                 icetank = stor4build.IceTank('icetank', **arguments)
                 osw = icetank.osw(osm, measures_dir, epw)
-                runner.run(osw, icetank.tag())
-            
+                stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
                 # Process the outputs
                 csv_path = os.path.join(run_dir, icetank.tag(), 'run', 'eplusout.csv')
                 if not os.path.exists(csv_path):
@@ -249,8 +248,7 @@ document.getElementById('graph'),
                 "discharge_start" : request.form.get('discharge_start'),
                 "discharge_end" : request.form.get('discharge_end'),
                 "charge_temp" : request.form.get('charge_temp'),
-                "peak_reduction" : float(request.form.get('peak_reduction')),
-                "trim_temp": 10.0
+                "peak_reduction" : float(request.form.get('peak_reduction'))
             }
             
             added = [{
@@ -266,19 +264,19 @@ document.getElementById('graph'),
 
             # Run the simulation
             with tempfile.TemporaryDirectory() as run_dir:
-                runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
+                run_path = os.path.abspath(run_dir)
                 
                 # Baseline first
                 baseline = stor4build.Simulation('baseline', added_steps=added)
                 osw = baseline.osw(osm, measures_dir, epw)
-                runner.run(osw, 'baseline')
+                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
                 
                 # Baseline results are in this directory
                 baseline_path = os.path.join(run_dir, 'baseline', 'run')
                 
                 icetank = stor4build.IceTank.size('sized_icetank', baseline_path, **arguments)
                 osw = icetank.osw(osm, measures_dir, epw)
-                runner.run(osw, icetank.tag())
+                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
             
                 # Process the outputs
                 csv_path = os.path.join(run_dir, icetank.tag(), 'run', 'eplusout.csv')

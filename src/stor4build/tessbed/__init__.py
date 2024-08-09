@@ -77,14 +77,13 @@ def create_app(config=None):
         epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
         
         with tempfile.TemporaryDirectory() as run_dir:
-        
-            runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
+            run_path = os.path.abspath(run_dir)
     
             work = [stor4build.Simulation('baseline', added_steps=added), technology_object]
             
             for case in work:
                 osw = case.osw(osm, measures_dir, epw)
-                runner.run(osw, case.tag())
+                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
 
         response = make_response({'message': 'Yay!'}, 200) 
         response.headers["Content-Type"] = "application/json" 
@@ -127,12 +126,12 @@ def create_app(config=None):
         if needs_baseline:
             # Run the baseline first, then the technology
             with tempfile.TemporaryDirectory() as run_dir:
-                runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
+                run_path = os.path.abspath(run_dir)
                 
                 # Run the baseline
                 baseline = stor4build.Simulation('baseline', added_steps=added)
                 osw = baseline.osw(osm, measures_dir, epw)
-                runner.run(osw, 'baseline')
+                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
                 
                 # Baseline results are in this directory
                 baseline_path = os.path.join(run_dir, 'baseline', 'run')
@@ -140,15 +139,16 @@ def create_app(config=None):
                 # Run the technology
                 technology_object = technology_object_factory('sized_icetank', baseline_path, **tech)
                 osw = technology_object.osw(osm, measures_dir, epw)
-                runner.run(osw, technology_object.tag())
+                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
+                                        technology_object.tag()), osw, measures_only=False)
         else:
             # Run things in a loop, this could be done in parallel
             with tempfile.TemporaryDirectory() as run_dir:
-                runner = stor4build.Runner(osm, epw, openstudio_exe, run_dir, 'run', measures_dir)
+                run_path = os.path.abspath(run_dir)
                 technology_object = technology_object_factory('sized_icetank', **tech)
                 for case in [stor4build.Simulation('baseline', added_steps=added), technology_object]:
                     osw = case.osw(osm, measures_dir, epw)
-                    runner.run(osw, case.tag())
+                    stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
 
         response = make_response(technology_object.sizing, 200)
         response.headers["Content-Type"] = "application/json" 

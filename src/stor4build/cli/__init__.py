@@ -31,15 +31,14 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
     Run the OpenStudio command line on the model in OSM with the weather in EPW.
     """    
     # Make paths absolute
+    run_path = os.path.abspath(run_dir)
     osm_path = os.path.abspath(osm)
     measures_path = os.path.abspath(measures_dir)
     epw_path = os.path.abspath(epw)
-
-    runner = stor4build.Runner(osm, epw, openstudio, run_dir, 'run', measures_dir)
     
     case = stor4build.Simulation('simulation')
     osw = case.osw(osm_path, measures_path, epw_path)
-    runner.run(osw, case.tag(), measures_only=measures_only)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, case.tag()), osw, measures_only=measures_only)
 
 #@click.command()
 #@click.argument('PROTOTYPE', type=click.Choice(stor4build.prototypes_list))
@@ -109,12 +108,13 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
     icetank = stor4build.IceTank('icetank',**arguments)
     work.append(icetank)
     # Make paths absolute
+    run_path = os.path.abspath(run_dir)
     osm_path = os.path.abspath(osm)
     measures_path = os.path.abspath(measures_dir)
     epw_path = os.path.abspath(epw)
     for case in work:
         osw = case.osw(osm_path, measures_path, epw_path)
-        runner.run(osw, case.tag(), measures_only=measures_only)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, case.tag()), osw, measures_only=measures_only)
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -122,7 +122,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
-@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+#@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 @click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
               help='Time to start charging tank.')
 @click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_end,
@@ -139,15 +139,15 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
 #@click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
 #              default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
-def size_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
+def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
+    run_path = os.path.abspath(run_dir)
     osm = os.path.abspath(osm)
     epw = os.path.abspath(epw)
     measures_dir = os.path.abspath(measures_dir)
-    runner = stor4build.Runner(osm, epw, openstudio, run_dir, 'run', measures_dir)
     arguments = {
         "charge_start" : charge_start,
         "charge_end" : charge_end,
@@ -165,11 +165,11 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
             }]
     baseline = stor4build.Simulation('baseline', added_steps=added)
     osw = baseline.osw(osm, measures_dir, epw)
-    runner.run(osw, 'baseline')
+    stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
     baseline_results = os.path.join(run_dir, 'baseline', 'run')
     icetank = stor4build.IceTank.size('sized_icetank', baseline_results, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
-    runner.run(osw, icetank.tag())
+    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
     if show_sizing:
         print('Number of tanks:', icetank.num_tanks)
         for k,v in icetank.sizing.items():

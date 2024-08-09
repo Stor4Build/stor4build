@@ -52,13 +52,13 @@ class IceTank(Simulation):
         df['total_w'] = df[energy_cols].sum(axis=1)
         df['total_flow'] = df[flow_cols].sum(axis=1)
         dft = df.groupby('ordinal_day', as_index=False).agg({'total_w': 'sum', 'total_flow': 'mean'})
-        #print(dft)
-        #print(dft['total_w'])
-        #print(dft['total_w'].idxmax())
+
+        index = dft['total_w'].idxmax()
         #print(dft.iloc[[dft['total_w'].idxmax()]])
-        df_max = dft.iloc[[dft['total_w'].idxmax()]]
+        df_max = dft.iloc[[index]]
         # Could try to use the CSV for this, but would need to parse the date
-        date = datetime.date.fromordinal(datetime.date(2006, 1, 1).toordinal() + 220)
+        # The start year should be 2006 for all these simulations
+        date = datetime.date.fromordinal(datetime.date(2006, 1, 1).toordinal() + index)
         #print(date)
         energy_max = df_max['total_w'].iat[0]
         mass_flow = df_max['total_flow'].iat[0]
