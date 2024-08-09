@@ -14,7 +14,10 @@ units = {'maximum_load': '(J)',
          'num_tanks': '(before round up)',
          'interval_start': '(hour of day)',
          'interval_end': '(hour of day)',
-         'capacity': '(J)'}
+         'requested_capacity': '(J)',
+         'actual_capacity': '(J)',
+         'mass_flow': '(kg/s)',
+         'computed_trim_temperature': '(C)'}
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))

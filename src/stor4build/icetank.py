@@ -5,7 +5,9 @@ import os
 import csv
 from .system import Simulation, BadSizing
 import numpy as np
+import pandas as pd
 import math
+import datetime
 from .util import convert_string_time_interval
 
 class IceTank(Simulation):
@@ -39,55 +41,56 @@ class IceTank(Simulation):
         k0, k1 = convert_string_time_interval(window_start, window_end)
         
         # Open the baseline csv and process it
-        # This code is all pretty terrible and needs to be cleaned up
-        with open(os.path.join(baseline_results, 'eplusout.csv'), 'r') as fp:
-            reader = csv.reader(fp)
-            header = next(reader)
-            indices = []
-            for col,title in enumerate(header):
-                if 'Chiller Evaporator Cooling Energy' in title:
-                    indices.append(col)
-            assert len(indices) > 1
-            print(indices)
-            results = []
-            datetime = []
-            for data in reader:
-                try:
-                    results.append(sum([float(data[el]) for el in indices]))
-                    datetime.append(data[0])
-                except ValueError:
-                    pass
-        #print(len(results))
-        assert len(results) == 8760
-        v = np.array(results)
-        daily_sum = np.reshape(v, (365, 24))[:,k0:k1].sum(axis=1)
-        #print(daily_sum.shape)
-        assert daily_sum.shape == (365,)
-        max_sum = np.max(daily_sum)
-        print(max_sum, type(max_sum), peak_reduction, type(peak_reduction))
-        capacity = max_sum * peak_reduction * 0.01
-        index = np.where(daily_sum == max_sum)
-        #print(index[0][0], joules_to_kwh*max_sum/668.0)
-        num_tanks_float = joules_to_kwh*max_sum/668.0
-        num_tanks = math.ceil(num_tanks_float)
-        
-        # Compute the trim temp
-        trim_temp = 10.0
+        csv_path = os.path.join(baseline_results, 'eplusout.csv')
+        df = pd.read_csv(csv_path).dropna()
+        assert len(df) == 8760
+        df['hour_of_day'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]*365
+        df['ordinal_day'] = [i for i in range(1,366) for _ in range(24)]
+        energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
+        flow_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Mass Flow Rate' in el]
+        df = df.loc[(df['hour_of_day'] >= k0) & (df['hour_of_day'] < k1)]
+        df['total_w'] = df[energy_cols].sum(axis=1)
+        df['total_flow'] = df[flow_cols].sum(axis=1)
+        dft = df.groupby('ordinal_day', as_index=False).agg({'total_w': 'sum', 'total_flow': 'mean'})
+        #print(dft)
+        #print(dft['total_w'])
+        #print(dft['total_w'].idxmax())
+        #print(dft.iloc[[dft['total_w'].idxmax()]])
+        df_max = dft.iloc[[dft['total_w'].idxmax()]]
+        # Could try to use the CSV for this, but would need to parse the date
+        date = datetime.date.fromordinal(datetime.date(2006, 1, 1).toordinal() + 220)
+        #print(date)
+        energy_max = df_max['total_w'].iat[0]
+        mass_flow = df_max['total_flow'].iat[0]
+        requested_capacity = energy_max * peak_reduction * 0.01
+        requested_num_tanks = joules_to_kwh*requested_capacity/668.0
+        actual_num_tanks = int(math.ceil(requested_num_tanks))
+        actual_capacity = actual_num_tanks*668.0/joules_to_kwh
+        # Compute the trim temp from Q = mCp(Ti-To)
+        Cp = 4180.0 # J/(kg K)
+        m = mass_flow * (k1-k0) * 3600.0  # kg
+        To = 6.7 # C
+        Ti = actual_capacity/(m*Cp) + To
         
         # Package up the sizing info
         sizing = {'peak_reduction': peak_reduction,
                   'window_start': window_start,
                   'window_end': window_end,
-                  'maximum_load': max_sum,
-                  'maximum_datetime': datetime[24*index[0][0]],
-                  'num_tanks': num_tanks_float,
+                  'maximum_load': energy_max,
+                  'mass_flow': mass_flow,
+                  'maximum_date': str(date),
+                  'requested_num_tanks': requested_num_tanks,
+                  'actual_num_tanks': actual_num_tanks,
                   'interval_start': k0,
                   'interval_end': k1,
-                  'capacity': capacity}
+                  'requested_capacity': requested_capacity,
+                  'actual_capacity': actual_capacity,
+                  'computed_trim_temperature': Ti
+                  }
         # Remove any arguments that might intefere
         kwargs.pop('num_tanks', None)
         kwargs.pop('trim_temp', None)
-        return cls(name, num_tanks=num_tanks, trim_temp=trim_temp, sizing=sizing, **kwargs)
+        return cls(name, num_tanks=actual_num_tanks, trim_temp=Ti, sizing=sizing, **kwargs)
     def osw(self, seed_file, measures_directory, epw_file, **kwargs):
         if self.num_tanks is None or self.trim_temp is None:
             return None
