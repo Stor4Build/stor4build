@@ -160,6 +160,11 @@ def create_app(config=None):
                         "measure_dir_name" : "add_output_variables",
                         "name" : "Add Output Variables",
                         "arguments" : {}
+                    },
+                    {
+                        "measure_dir_name" : "run_cooling_season_only",
+                        "name" : "Run Cooling Season Only",
+                        "arguments" : {}
                     }]
         else:
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)

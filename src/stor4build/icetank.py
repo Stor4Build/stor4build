@@ -43,8 +43,21 @@ class IceTank(Simulation):
         # Open the baseline csv and process it
         csv_path = os.path.join(baseline_results, 'eplusout.csv')
         df = pd.read_csv(csv_path).dropna()
+        # This check needs some work
+        jan1 = datetime.date(month=1, day=1, year=2006).toordinal()
+        start = datetime.date(month=4, day=1, year=2006).toordinal() - jan1 + 1
+        end = datetime.date(month=9, day=30, year=2006).toordinal() - jan1 + 1
+        numdays = end - start + 1
+        print('NOOOOOOOOOOOOOOOOOOOOOO!')
+        print(len(df))
+        print('NOOOOOOOOOOOOOOOOOOOOOO!')
+        assert numdays == 183
+        assert len(df) == 4392
         assert len(df) == 8760
         df['hour_of_day'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]*365
+        #start = 1
+        #end = 365 + 1
+        #start
         df['ordinal_day'] = [i for i in range(1,366) for _ in range(24)]
         energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
         flow_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Mass Flow Rate' in el]
