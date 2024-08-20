@@ -190,18 +190,18 @@ inputs = {
         "userId": "2",
         "__typename": "Charge"
     },
-    "error": null,
+    "error": '',
     "id": "clzv9djuq000012dn0rtrbd67",
     "label": "",
     "metadata": {
     },
-    "result": null,
+    "result": '',
     "schedule": {
         "createdAt": "2024-08-15T12:30:28.035Z",
         "fridayEnd": 18,
         "fridayStart": 6,
         "id": "clzv9djur000a12dn0o22q2b7",
-        "label": null,
+        "label": '',
         "mondayEnd": 18,
         "mondayStart": 6,
         "saturdayEnd": 18,
@@ -220,7 +220,7 @@ inputs = {
     },
     "stage": "Created",
     "storage": {
-        "capacity": 25,
+        "capacity": 100,
         "createdAt": "2024-08-15T12:30:28.035Z",
         "id": "clzv9djur000b12dnp08vaxqs",
         "updatedAt": "2024-08-15T12:34:04.114Z",

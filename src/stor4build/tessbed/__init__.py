@@ -4,6 +4,7 @@
 import os
 import csv
 import tempfile
+import io
 import stor4build
 from flask import Flask, request, make_response
 
@@ -101,7 +102,7 @@ def create_app(config=None):
         baseline_data = data.get('baseline')
         # Get the building data
         # There's a better way to do all of this, no time now
-        if baseline is None:
+        if baseline_data is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "baseline" data in input.'}, 400)
         type = baseline_data.get('building') # Unused for now
         if type is None:
@@ -116,7 +117,7 @@ def create_app(config=None):
         if two_letter not in supported_czs:
             return make_response({'error': 'Bad request', 'message': 'Climate zone "%s" specified "baseline" data input is not supported.' % two_letter}, 400)
         cz = 'ASHRAE 169-2006-%s' % two_letter # Unused for now
-        vintage = baseline_date.get('vintage') # Unused for now
+        vintage = baseline_data.get('vintage') # Unused for now
         if vintage is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "vintage" parameter in "baseline" data input.'}, 400)
         try:
@@ -129,7 +130,7 @@ def create_app(config=None):
             energy_sch = data['energy']['schedule']['months'][0]['periods']
         except (KeyError, TypeError, IndexError):
             return make_response({'error': 'Bad request', 'message': 'Expected energy cost schedule was not found in input.'}, 400)
-        if len(sch) != 24:
+        if len(energy_sch) != 24:
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
         
         # Type is still not sent, punt for now
@@ -138,7 +139,9 @@ def create_app(config=None):
             return make_response({'error': 'Bad request', 'message': 'Expected input on storage technology not in input.'}, 400)
         #tes_type = tech.get('type')
         tes_type = 'icetank'
+        needs_baseline = False
         if tes_type == 'icetank':
+            needs_baseline = True
             # Translate the utility rate parameters to charge/discharge start/end
             capacity = tech.get('capacity')
             if capacity is None:
@@ -148,7 +151,7 @@ def create_app(config=None):
             except ValueError:
                 return make_response({'error': 'Bad request', 'message': '"capacity" parameter "%s" value for ice tank storage in non-numeric.' % capacity}, 400)
             results = stor4build.process_energy_schedule(energy_sch)
-            arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results}
+            arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
             arguments['peak_reduction'] = capacity
 
             technology_object_factory = stor4build.IceTank.size
@@ -158,13 +161,13 @@ def create_app(config=None):
                         "name" : "Add Output Variables",
                         "arguments" : {}
                     }]
-            tech.pop('type', None)
         else:
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
             
         osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
         epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
-            
+        
+        response_txt = ''
         if needs_baseline:
             # Run the baseline first, then the technology
             with tempfile.TemporaryDirectory() as run_dir:
@@ -183,6 +186,10 @@ def create_app(config=None):
                 osw = technology_object.osw(osm, measures_dir, epw)
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
                                         technology_object.tag()), osw, measures_only=False)
+                tech_csv = os.path.join(run_dir, 'sized_icetank', 'run', 'eplusout.csv')
+                with open(tech_csv, 'r') as fp:
+                    response_txt = fp.read()
+                
         else:
             # Run things in a loop, this could be done in parallel
             with tempfile.TemporaryDirectory() as run_dir:
@@ -192,8 +199,11 @@ def create_app(config=None):
                     osw = case.osw(osm, measures_dir, epw)
                     stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
 
-        response = make_response(technology_object.sizing, 200)
-        response.headers["Content-Type"] = "application/json" 
+        response = make_response(response_txt)
+        response.headers["Content-Disposition"] = "attachment; filename=results.csv"
+        response.headers["Content-type"] = "text/csv"
+        #response = make_response(technology_object.sizing, 200)
+        #response.headers["Content-Type"] = "application/json" 
         return response
     return app
 
