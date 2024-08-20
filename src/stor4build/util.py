@@ -34,4 +34,19 @@ def process_energy_schedule(sch, peak=3):
             '%02d:00' % discharge_start_hour,
             '%02d:00' % discharge_end_hour)
     
+def convert_string_time_interval(start, end):
+    hour, minute = start.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    window_start = hour
+    if minute != 0:
+        raise NotImplementedError('Non-zero minute not yet implemented')
+    hour, minute = end.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    window_end = hour
+    if minute != 0:
+        raise NotImplementedError('Non-zero minute not yet implemented')
+    #print(window_start, window_end)
+    return window_start, window_end
 
