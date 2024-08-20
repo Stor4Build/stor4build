@@ -14,6 +14,9 @@ this_dir = os.path.abspath(os.path.dirname(__file__))
 default_measures_dir = os.path.join(this_dir, '..', '..', '..', 'measures')
 default_weather_dir = os.path.join(this_dir, '..', '..', '..', 'resources')
 
+# Supported climate zones
+supported_czs = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C', '5A', '5B', '6A', '6B', '7A', '8A']
+
 
 def create_app(config=None):
     # create and configure the app
@@ -71,7 +74,7 @@ def create_app(config=None):
                         "arguments" : {}
                     }]
         else:
-            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 500)
+            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
         
         osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
         epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
@@ -96,27 +99,70 @@ def create_app(config=None):
         """
         # Get the inputs
         data = request.get_json()
-        type = data.get('type') # Unused for now
-        cz = 'ASHRAE 169-2006-%s' % data.get('cz') # Unused for now
-        vintage = data.get('vintage') # Unused for now
-        tech = data.get('technology')
-        tes_type = tech.get('type')
+        baseline_data = data.get('baseline')
+        # Get the building data
+        # There's a better way to do all of this, no time now
+        if baseline is None:
+            return make_response({'error': 'Bad request', 'message': 'Expected "baseline" data in input.'}, 400)
+        type = baseline_data.get('building') # Unused for now
+        if type is None:
+            return make_response({'error': 'Bad request', 'message': 'Expected "building" parameter in "baseline" data input.'}, 400)
+        climate_string = baseline_data.get('climate')
+        if climate_string is None:
+            return make_response({'error': 'Bad request', 'message': 'Expected "climate" parameter in "baseline" data input.'}, 400)
+        climate_string = str(climate_string).strip()
+        if len(climate_string) != 5:
+            return make_response({'error': 'Bad request', 'message': '"climate" parameter value "%s" in "baseline" data input is incorrect.' % climate_string}, 400)
+        two_letter = climate_string[3:].upper()
+        if two_letter not in supported_czs:
+            return make_response({'error': 'Bad request', 'message': 'Climate zone "%s" specified "baseline" data input is not supported.' % two_letter}, 400)
+        cz = 'ASHRAE 169-2006-%s' % two_letter # Unused for now
+        vintage = baseline_date.get('vintage') # Unused for now
+        if vintage is None:
+            return make_response({'error': 'Bad request', 'message': 'Expected "vintage" parameter in "baseline" data input.'}, 400)
+        try:
+            vintage = int(vintage)
+        except ValueError:
+            return make_response({'error': 'Bad request', 'message': '"vintage" parameter value "%s" in "baseline" data input is not an integer.' % vintage}, 400)
+        
+        # Get utility rate info, just the one energy schedule for now
+        try:
+            energy_sch = data['energy']['schedule']['months'][0]['periods']
+        except (KeyError, TypeError, IndexError):
+            return make_response({'error': 'Bad request', 'message': 'Expected energy cost schedule was not found in input.'}, 400)
+        if len(sch) != 24:
+            return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
+        
+        # Type is still not sent, punt for now
+        tech = data.get('storage')
+        if tech is None:
+            return make_response({'error': 'Bad request', 'message': 'Expected input on storage technology not in input.'}, 400)
+        #tes_type = tech.get('type')
+        tes_type = 'icetank'
         if tes_type == 'icetank':
-            # Check the inputs, should use one of those schema checker deals, do that later
+            capacity = tech.get('capacity')
+            if capacity is None:
+                return make_response({'error': 'Bad request', 'message': 'Expected "capacity" parameter for ice tank storage is not in input.'}, 400)
+            try:
+                capacity = float(capacity)
+            except ValueError:
+                return make_response({'error': 'Bad request', 'message': '"capacity" parameter "%s" value for ice tank storage in non-numeric.' % capacity}, 400)
+            results = stor4build.process_energy_schedule(energy_sch)
+            arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results}
             parameters = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end', 'capacity']
             for param in parameters:
                 if param not in tech:
-                    return make_response({'error': 'MissingParameter', 'message': 'Expected parameter "%s" is missing.' % param}, 500)
+                    return make_response({'error': 'Bad request', 'message': 'Expected parameter "%s" is missing.' % param}, 400)
                     
             # Translation of the utility rate parameters to charge/discharge start/end will happen here
-            technology_object = stor4build.IceTank.from_utility_rates('icetank',**arguments)
+            technology_object = stor4build.IceTank.from_utility_rates('icetank', capacity=capacity, **arguments)
             added = [{
                         "measure_dir_name" : "add_output_variables",
                         "name" : "Add Output Variables",
                         "arguments" : {}
                     }]
         else:
-            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 500)
+            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
             
         osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
         epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))

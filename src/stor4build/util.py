@@ -17,4 +17,21 @@ def weather_lookup(climate_zone):
 def prototype_lookup(type, climate_zone, vintage):
     # Cheat for now, all buildings are this one large office
     return 'LargeOffice.osm'
+    
+def process_energy_schedule(sch, peak=3):
+    # Process the energy schedule and produce charge/discharge windows
+    reverse_sch = list(reversed(sch)) # This is probably bad, just do it for now
+    discharge_start_hour = sch.index(peak) + 1
+    discharge_end_hour = len(sch) - reverse_sch.index(peak)
+    charge_start_hour = discharge_end_hour + 1
+    charge_end_hour = discharge_start_hour - 1
+    if discharge_start_hour == 1:
+        charge_end_hour = 24
+    if discharge_end_hour == 24:
+        charge_start_hour = 1
+    return ('%02d:00' % charge_start_hour,
+            '%02d:00' % charge_end_hour,
+            '%02d:00' % discharge_start_hour,
+            '%02d:00' % discharge_end_hour)
+    
 
