@@ -43,22 +43,20 @@ class IceTank(Simulation):
         # Open the baseline csv and process it
         csv_path = os.path.join(baseline_results, 'eplusout.csv')
         df = pd.read_csv(csv_path).dropna()
-        # This check needs some work
+        # Figure out how much is there, this will need to be fixed to pass the unit test
         jan1 = datetime.date(month=1, day=1, year=2006).toordinal()
         start = datetime.date(month=4, day=1, year=2006).toordinal() - jan1 + 1
         end = datetime.date(month=9, day=30, year=2006).toordinal() - jan1 + 1
+        #start = 1
+        #end = 365
         numdays = end - start + 1
-        print('NOOOOOOOOOOOOOOOOOOOOOO!')
-        print(len(df))
-        print('NOOOOOOOOOOOOOOOOOOOOOO!')
+        # These checks need some improvement
+        #assert numdays == 365
         assert numdays == 183
         assert len(df) == 4392
-        assert len(df) == 8760
-        df['hour_of_day'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]*365
-        #start = 1
-        #end = 365 + 1
+        df['hour_of_day'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]*numdays
         #start
-        df['ordinal_day'] = [i for i in range(1,366) for _ in range(24)]
+        df['ordinal_day'] = [i for i in range(start, end+1) for _ in range(24)]
         energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
         flow_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Mass Flow Rate' in el]
         df = df.loc[(df['hour_of_day'] >= k0) & (df['hour_of_day'] < k1)]
@@ -79,7 +77,7 @@ class IceTank(Simulation):
         requested_num_tanks = joules_to_kwh*requested_capacity/668.0
         actual_num_tanks = int(math.ceil(requested_num_tanks))
         actual_capacity = actual_num_tanks*668.0/joules_to_kwh
-        # Compute the trim temp from Q = mCp(Ti-To)
+        # Compute the trim temp from Q = mCp(Ti-To), need to add division by zero protection etc.
         Cp = 4180.0 # J/(kg K)
         m = mass_flow * (k1-k0) * 3600.0  # kg
         To = 6.7 # C
@@ -114,6 +112,11 @@ class IceTank(Simulation):
                 {
                     "measure_dir_name" : "add_csv_output",
                     "name" : "Add CSV Output",
+                    "arguments" : {}
+                },
+                {
+                    "measure_dir_name" : "run_cooling_season_only",
+                    "name" : "Run Cooling Season Only",
                     "arguments" : {}
                 }
             ],

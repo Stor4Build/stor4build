@@ -175,7 +175,9 @@ def create_app(config=None):
         response_txt = ''
         if needs_baseline:
             # Run the baseline first, then the technology
-            with tempfile.TemporaryDirectory() as run_dir:
+            #with tempfile.TemporaryDirectory() as run_dir:
+            run_dir = '/home/jason/Desktop/s4b-run'
+            if '/home/jason/Desktop/s4b-run' == run_dir:
                 run_path = os.path.abspath(run_dir)
                 
                 # Run the baseline
@@ -185,6 +187,8 @@ def create_app(config=None):
                 
                 # Baseline results are in this directory
                 baseline_path = os.path.join(run_dir, 'baseline', 'run')
+                baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
+                stor4build.fix_csv(baseline_csv)
                 
                 # Run the technology
                 technology_object = technology_object_factory('sized_icetank', baseline_path, **arguments)
@@ -192,17 +196,18 @@ def create_app(config=None):
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
                                         technology_object.tag()), osw, measures_only=False)
                 tech_csv = os.path.join(run_dir, 'sized_icetank', 'run', 'eplusout.csv')
-                with open(tech_csv, 'r') as fp:
-                    response_txt = fp.read()
+                stor4build.fix_csv(tech_csv)
+                response_txt = stor4build.combine_csvs(baseline_csv, tech_csv)
                 
         else:
+            return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)
             # Run things in a loop, this could be done in parallel
-            with tempfile.TemporaryDirectory() as run_dir:
-                run_path = os.path.abspath(run_dir)
-                technology_object = technology_object_factory('sized_icetank', **tech)
-                for case in [stor4build.Simulation('baseline', added_steps=added), technology_object]:
-                    osw = case.osw(osm, measures_dir, epw)
-                    stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
+            #with tempfile.TemporaryDirectory() as run_dir:
+            #    run_path = os.path.abspath(run_dir)
+            #    technology_object = technology_object_factory('sized_icetank', **tech)
+            #    for case in [stor4build.Simulation('baseline', added_steps=added), technology_object]:
+            #        osw = case.osw(osm, measures_dir, epw)
+            #        stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"

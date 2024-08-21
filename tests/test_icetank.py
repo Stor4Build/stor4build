@@ -9,4 +9,4 @@ def test_100pct_sizing():
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=100.0)
     assert icetank.sizing['peak_reduction'] == 100.0
     assert icetank.sizing['actual_num_tanks'] == 18
-
+    assert icetank.sizing['maximum_date'] == ''

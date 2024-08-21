@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
+import pandas as pd
+import tempfile
+import shutil
 
 def seed_model(openstudio_exe, path, filename):
     cur_dir = os.getcwd()
@@ -49,4 +52,24 @@ def convert_string_time_interval(start, end):
         raise NotImplementedError('Non-zero minute not yet implemented')
     #print(window_start, window_end)
     return window_start, window_end
+    
+def fix_csv(filepath):
+    with tempfile.NamedTemporaryFile('w', delete=False) as tmp: # This is different in later versions of Python
+        with open(filepath, 'r') as fp:
+            for line in fp:
+                if not line.lstrip().startswith('0000'):
+                    tmp.write(line)
+        tmp.close()
+        df = pd.read_csv(tmp.name).dropna()
+        df.to_csv(filepath, index=False)
+
+def prefix_with_baseline(name):
+    return 'Baseline ' + name
+
+def combine_csvs(baseline_csv, tech_csv):
+    baseline = pd.read_csv(baseline_csv)
+    baseline.rename(prefix_with_baseline, axis='columns')
+    tech = pd.read_csv(tech_csv)
+    result = pd.concat([baseline, tech])
+    return result.to_csv(index=False)
 
