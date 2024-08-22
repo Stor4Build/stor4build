@@ -187,9 +187,9 @@ def create_app(config=None):
         response_txt = ''
         if needs_baseline:
             # Run the baseline first, then the technology
-            #with tempfile.TemporaryDirectory() as run_dir:
-            run_dir = '/home/jason/Desktop/s4b-run'
-            if '/home/jason/Desktop/s4b-run' == run_dir:
+            with tempfile.TemporaryDirectory() as run_dir:
+                #run_dir = '/home/jason/Desktop/s4b-run'
+                #if '/home/jason/Desktop/s4b-run' == run_dir:
                 run_path = os.path.abspath(run_dir)
                 
                 # Run the baseline

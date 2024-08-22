@@ -266,8 +266,8 @@ inputs = {
 }
 
 start = time.time()
-#r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
-r = httpx.post('http://127.0.0.1:5000/simple', json={'technology': {'type': 'icetank'}}, timeout=None)
+r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
+#r = httpx.post('http://127.0.0.1:5000/simple', json={'technology': {'type': 'icetank'}}, timeout=None)
 delta = time.time() - start
 
 print('Done! (%s seconds)' % delta)

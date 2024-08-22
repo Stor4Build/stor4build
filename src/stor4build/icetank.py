@@ -45,7 +45,7 @@ class IceTank(Simulation):
         # Open the baseline csv and process it
         csv_path = os.path.join(baseline_results, csvfile)
         df = pd.read_csv(csv_path).dropna()
-        # Figure out how much is there
+        # Figure out how much of the year is there
         jan1 = datetime.date(month=1, day=1, year=2006).toordinal()
         start_datetime = datetime.datetime.fromisoformat(df['Date/Time'][0].strip())
         start = start_datetime.date().toordinal() - jan1 + 1
@@ -56,7 +56,6 @@ class IceTank(Simulation):
         numdays = end - start + 1
         # Could perhaps just use the datetimes, will need to do that if the resolution is refined
         df['hour_of_day'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]*numdays
-        #start
         df['ordinal_day'] = [i for i in range(start, end+1) for _ in range(24)]
         energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
         flow_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Mass Flow Rate' in el]
@@ -66,7 +65,6 @@ class IceTank(Simulation):
         dft = df.groupby('ordinal_day', as_index=False).agg({'total_w': 'sum', 'total_flow': 'mean'})
 
         index = dft['total_w'].idxmax()
-        #print(dft.iloc[[dft['total_w'].idxmax()]])
         df_max = dft.iloc[[index]]
         # Could try to use the CSV for this, but would need to parse the date
         # The start year should be 2006 for all these simulations
