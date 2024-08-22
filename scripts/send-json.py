@@ -1,5 +1,8 @@
 import httpx
 import time
+import sys
+import os
+import json
 
 inputs = {
     "baseline": {
@@ -265,6 +268,11 @@ inputs = {
     "__typename": "Calculation"
 }
 
+if len(sys.argv) > 1:
+    if os.path.exists(sys.argv[1]):
+        with open(sys.argv[1], 'r') as fp:
+            inputs =json.load(fp)['request']['body']
+    
 start = time.time()
 r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
 #r = httpx.post('http://127.0.0.1:5000/simple', json={'technology': {'type': 'icetank'}}, timeout=None)

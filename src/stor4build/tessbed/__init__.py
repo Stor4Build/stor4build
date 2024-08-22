@@ -116,19 +116,19 @@ def create_app(config=None):
         # There's a better way to do all of this, no time now
         if baseline_data is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "baseline" data in input.'}, 400)
-        type = baseline_data.get('building') # Unused for now
+        type = baseline_data.get('type') # Unused for now
         if type is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "building" parameter in "baseline" data input.'}, 400)
         climate_string = baseline_data.get('climate')
         if climate_string is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "climate" parameter in "baseline" data input.'}, 400)
         climate_string = str(climate_string).strip()
-        if len(climate_string) != 5:
+        if len(climate_string) != 2:
             return make_response({'error': 'Bad request', 'message': '"climate" parameter value "%s" in "baseline" data input is incorrect.' % climate_string}, 400)
-        two_letter = climate_string[3:].upper()
-        if two_letter not in supported_czs:
-            return make_response({'error': 'Bad request', 'message': 'Climate zone "%s" specified "baseline" data input is not supported.' % two_letter}, 400)
-        cz = 'ASHRAE 169-2006-%s' % two_letter # Unused for now
+        climate_string = climate_string.upper()
+        if climate_string not in supported_czs:
+            return make_response({'error': 'Bad request', 'message': 'Climate zone "%s" specified in "baseline" data input is not supported.' % climate_string}, 400)
+        cz = 'ASHRAE 169-2006-%s' % climate_string # Unused for now
         vintage = baseline_data.get('vintage') # Unused for now
         if vintage is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "vintage" parameter in "baseline" data input.'}, 400)
