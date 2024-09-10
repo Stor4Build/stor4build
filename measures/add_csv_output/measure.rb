@@ -30,6 +30,10 @@ class AddCSVOutput < OpenStudio::Measure::ModelMeasure
     
     ocf = model.getOutputControlFiles()
     ocf.setOutputCSV(true)
+    
+    oct = model.getOutputControlTimestamp()
+    oct.setISO8601Format(true)
+    oct.setTimestampAtBeginningOfInterval(true)
 
     return true
   end

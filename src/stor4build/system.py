@@ -3,14 +3,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import os
 
+class BadSizing(Exception):
+    pass
+
 class Simulation:
     def __init__(self, name, added_steps=None):
     	self.name = name
     	self.added_steps = None
     	if added_steps is not None:
     	    self.added_steps = added_steps
-    def needs_baseline(self):
-        return True
     def tag(self):
         return self.name
     def osw(self, seed_file, measures_directory, epw_file, **kwargs):

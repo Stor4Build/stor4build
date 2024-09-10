@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
+import pandas as pd
+import tempfile
+import shutil
 
 def seed_model(openstudio_exe, path, filename):
     cur_dir = os.getcwd()
@@ -17,4 +20,58 @@ def weather_lookup(climate_zone):
 def prototype_lookup(type, climate_zone, vintage):
     # Cheat for now, all buildings are this one large office
     return 'LargeOffice.osm'
+    
+def process_energy_schedule(sch, peak=3):
+    # Process the energy schedule and produce charge/discharge windows
+    reverse_sch = list(reversed(sch)) # This is probably bad, just do it for now
+    discharge_start_hour = sch.index(peak) + 1
+    discharge_end_hour = len(sch) - reverse_sch.index(peak)
+    charge_start_hour = discharge_end_hour + 1
+    charge_end_hour = discharge_start_hour - 1
+    if discharge_start_hour == 1:
+        charge_end_hour = 24
+    if discharge_end_hour == 24:
+        charge_start_hour = 1
+    return ('%02d:00' % charge_start_hour,
+            '%02d:00' % charge_end_hour,
+            '%02d:00' % discharge_start_hour,
+            '%02d:00' % discharge_end_hour)
+    
+def convert_string_time_interval(start, end):
+    hour, minute = start.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    window_start = hour
+    if minute != 0:
+        raise NotImplementedError('Non-zero minute not yet implemented')
+    hour, minute = end.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    window_end = hour
+    if minute != 0:
+        raise NotImplementedError('Non-zero minute not yet implemented')
+    #print(window_start, window_end)
+    return window_start, window_end
+    
+def fix_csv(filepath):
+    with tempfile.NamedTemporaryFile('w', delete=False) as tmp: # This is different in later versions of Python
+        with open(filepath, 'r') as fp:
+            for line in fp:
+                if not line.lstrip().startswith('0000'):
+                    tmp.write(line)
+        tmp.close()
+        df = pd.read_csv(tmp.name).dropna()
+        df.to_csv(filepath, index=False)
+
+def prefix_with_baseline(name):
+    return 'Baseline ' + name
+
+def combine_csvs(baseline_csv, tech_csv):
+    baseline = pd.read_csv(baseline_csv)
+    baseline.rename(prefix_with_baseline, axis='columns', inplace=True)
+    tech = pd.read_csv(tech_csv)
+    result = pd.concat([baseline, tech], axis=1)
+    result.drop(['Date/Time'], axis=1, inplace=True)
+    result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
+    return result.to_csv(index=False)
 

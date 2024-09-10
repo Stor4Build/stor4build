@@ -45,7 +45,8 @@ class AddOutputVariables < OpenStudio::Measure::ModelMeasure
                    "Chiller Electricity Energy",
                    "Chiller Evaporator Inlet Temperature",
                    "Chiller Evaporator Outlet Temperature",
-                   "Chiller Evaporator Mass Flow Rate"]
+                   "Chiller Evaporator Mass Flow Rate",
+                   "Chiller Evaporator Cooling Energy"]
 
     hourly_vars.each{ |var|
       ov = OpenStudio::Model::OutputVariable.new(var, model)
@@ -55,11 +56,12 @@ class AddOutputVariables < OpenStudio::Measure::ModelMeasure
     }
     
     # add timestep output variables
-    timstp_vars = ["Chiller Electricity Rate",
-                   "Chiller Electricity Energy",
-                   "Chiller Evaporator Inlet Temperature",
-                   "Chiller Evaporator Outlet Temperature",
-                   "Chiller Evaporator Mass Flow Rate"]
+    #timstp_vars = ["Chiller Electricity Rate",
+    #               "Chiller Electricity Energy",
+    #               "Chiller Evaporator Inlet Temperature",
+    #               "Chiller Evaporator Outlet Temperature",
+    #               "Chiller Evaporator Mass Flow Rate"]
+    timstp_vars = []
 
     timstp_vars.each{ |var|
       ov = OpenStudio::Model::OutputVariable.new(var, model)

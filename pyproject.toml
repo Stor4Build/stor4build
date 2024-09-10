@@ -27,7 +27,9 @@ dependencies = [
   "click",
   "flask",
   "scipy",
-  "SecondaryCoolantProps"
+  "SecondaryCoolantProps",
+  "httpx",
+  "pandas"
 ]
 dynamic = ["version"]
 
@@ -38,7 +40,7 @@ Source = "https://github.com/unknown/stor4build"
 
 [project.scripts]
 s4b-compute = "stor4build.cli:s4b_compute"
-s4b-api = "stor4build.api:s4b_api"
+s4b-form = "stor4build.api:s4b_form"
 
 [tool.hatch.version]
 path = "src/stor4build/__about__.py"
