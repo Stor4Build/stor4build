@@ -379,7 +379,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
         no.setString(
           4,
           '/usr/local/lib/python3.8/dist-packages'
-      )
+        )
       elsif (RUBY_PLATFORM =~ /darwin/) != nil
         no.setString(
           4,
