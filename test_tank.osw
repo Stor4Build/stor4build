@@ -1,5 +1,5 @@
 {
-  "seed_file" : "in.osm",
+  "seed_file" : "LargeOffice.osm",
   "weather_file": "USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw",
   "measure_paths": [
     "./measures/"
