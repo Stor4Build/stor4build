@@ -423,7 +423,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
                 )
                 self.t_out = self.tank_branch.outlet_temp
 
-            # in flow mode or tank too full/empty, bypass tank but compute env losses
+            # in float mode or tank too full/empty, bypass tank but compute env losses
             else:
                 t_set_chiller = 6.7
                 self.tank_branch.simulate(
