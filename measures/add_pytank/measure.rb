@@ -257,67 +257,80 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       end
     end
 
-    # get chiller name, node names, and adjust minimum temperature
+    # adjust chiller minimum temperature and get info
+    chiller_info = []
     ot = 'Chiller_Electric_EIR'
-    chiller = ws.getObjectsByType(ot.to_IddObjectType)[0]
-    chiller_name = chiller.getString(0, false).get
-    chiller_in_node = chiller.getString(14, false).get
-    chiller_out_node = chiller.getString(15, false).get
-    chiller.setDouble(21, chrg_temp)
+    ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+      o.setDouble(21, chrg_temp)
+      chiller_info << [
+        o.name.get,
+        o.getString(14, false).get,
+        o.getString(15, false).get
+      ]
+    end
 
-    # add user-defined plant component
-    ot = 'PlantComponent_UserDefined'
-    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, 'Ice Tank')
-    no.setString(1, '')
-    no.setInt(2,1)
-    no.setString(3, chiller_out_node)
-    no.setString(4, 'Ice Tank Outlet Node')
-    no.setString(5, 'MeetsLoadWithNominalCapacityLowOutLimit')
-    no.setString(6, 'NeedsFlowAndTurnsLoopOn')
-    no.setString(7, 'Ice Tank Set Prgm')
-    no.setString(8, 'Ice Tank Sim Prgm')
-    (9..26).each {|i| no.setString(i, '')}
-    no.setString(27, 'Ice Tank OA Inlet Node')
-    no.setString(28, 'Ice Tank OA Outlet Node')
-    (29..31).each {|i| no.setString(i, '')}
-    ws.addObject(no)
+    # remove supply outlet pipe
+    uv = OpenStudio::UUIDVector.new
+    ot = 'Pipe_Adiabatic'
+    ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+      if o.name.get == "#{plant_loop_name} Supply Outlet"
+        uv << o.handle
+      end
+    end
+    ws.removeObjects(uv)
 
-    # add ice tank to cooling supply equipment branch
+    # add ice tank to cooling supply outlet branch, get node names
+    tank_in_node = ''
+    tank_out_node = ''
     ot = 'Branch'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      if o.getString(4, false).get == chiller_in_node
-        o.setString(5, chiller_out_node)
-        o.setString(6, 'PlantComponent:UserDefined')
-        o.setString(7, 'Ice Tank')
-        o.setString(8, chiller_out_node)
-        o.setString(9, 'Ice Tank Outlet Node')
+      if o.name.get == "#{plant_loop_name} Supply Outlet Branch"
+        # set component type
+        o.setString(2, 'PlantComponent:UserDefined')
+
+        # get node names
+        tank_in_node = o.getString(4, false).get
+        tank_out_node = o.getString(5, false).get
+
+        # add user-defined plant component
+        ot = 'PlantComponent_UserDefined'
+        no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+        no.setString(0, 'Ice Tank')
+        no.setString(1, '')
+        no.setInt(2,1)
+        no.setString(3, tank_in_node)
+        no.setString(4, tank_out_node)
+        no.setString(5, 'MeetsLoadWithNominalCapacityLowOutLimit')
+        no.setString(6, 'NeedsFlowAndTurnsLoopOn')
+        no.setString(7, 'Ice Tank Set Prgm')
+        no.setString(8, 'Ice Tank Sim Prgm')
+        (9..26).each {|i| no.setString(i, '')}
+        no.setString(27, 'Ice Tank OA Inlet Node')
+        no.setString(28, 'Ice Tank OA Outlet Node')
+        (29..31).each {|i| no.setString(i, '')}
+        ws.addObject(no)
+
+        # set component name (on branch)
+        o.setString(3, 'Ice Tank')
       end
     end
 
-    # add chiller setpoint manager
+    # add chiller setpoint manager(s)
     ot = 'SetpointManager_Scheduled'
-    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, "#{chiller_name} Setpoint Manager")
-    no.setString(1, 'Temperature')
-    no.setString(2, 'Chiller Temp Sch')
-    no.setString(3, chiller_out_node)
-    ws.addObject(no)
+    chiller_info.each do |a|
+      no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+      no.setString(0, "#{a[0]} Setpoint Manager")
+      no.setString(1, 'Temperature')
+      no.setString(2, 'Chiller Temp Sch')
+      no.setString(3, a[2])
+      ws.addObject(no)
+    end
 
     # add user-defined plant component OA node
     ot = 'OutdoorAir_Node'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
     no.setString(0, 'Ice Tank OA Inlet Node')
     no.setDouble(1,0)
-    ws.addObject(no)
-
-    # add user-defined plant component setpoint manager
-    ot = 'SetpointManager_Scheduled'
-    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, 'Ice Tank Setpoint Manager')
-    no.setString(1, 'Temperature')
-    no.setString(2, 'Ice Tank Temp Sch')
-    no.setString(3, 'Ice Tank Outlet Node')
     ws.addObject(no)
 
     # modify plant equipment list
@@ -341,20 +354,22 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
 
     # add a component setpoint operation scheme
     ot = 'PlantEquipmentOperation_ComponentSetpoint'
-    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, "#{plant_loop_name} Op Scheme")
-    no.setString(1, 'Chiller:Electric:EIR')
-    no.setString(2, chiller_name)
-    no.setString(3, chiller_in_node)
-    no.setString(4, chiller_out_node)
-    no.setString(5, 'Autosize')
-    no.setString(6, 'Cooling')
-    no.setString(7, 'PlantComponent:UserDefined')
-    no.setString(8, 'Ice Tank')
-    no.setString(9, chiller_out_node)
-    no.setString(10, 'Ice Tank Outlet Node')
-    no.setString(11, 'Autosize')
-    no.setString(12, 'Cooling')
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType); i=0
+    no.setString(0, "#{plant_loop_name} Op Scheme"); i+=1
+    chiller_info.each do |a|
+      no.setString(i, 'Chiller:Electric:EIR'); i+=1
+      no.setString(i, a[0]); i+=1
+      no.setString(i, a[1]); i+=1
+      no.setString(i, a[2]); i+=1
+      no.setString(i, 'Autosize'); i+=1
+      no.setString(i, 'Cooling'); i+=1
+    end
+    no.setString(i, 'PlantComponent:UserDefined'); i+=1
+    no.setString(i, 'Ice Tank'); i+=1
+    no.setString(i, tank_in_node); i+=1
+    no.setString(i, tank_out_node); i+=1
+    no.setString(i, 'Autosize'); i+=1
+    no.setString(i, 'Cooling')
     ws.addObject(no)
 
     # modify plant equipment operation scheme
