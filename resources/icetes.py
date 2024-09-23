@@ -409,8 +409,10 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
 
             # if discharge but tank is between 5-20%, linearly lower chiller outlet temperature to use all of the ice
             if ((chrg_sch == -1) and (self.tank_branch.tank.state_of_charge > 0.05)):
-                # line between 20%, 10C and 5%, 6.7C (assume 5% is empty)
-                t_set_chiller = 22 * self.tank_branch.tank.state_of_charge + 5.6
+                # line between 20%, t_trim and 5%, 6.7C (assume 5% is empty)
+                slope = (t_trim - 6.7) / (0.2 - 0.05)
+                intercept = t_trim - slope * 0.2
+                t_set_chiller = slope * self.tank_branch.tank.state_of_charge + intercept
                 self.tank_branch.simulate(
                     self.t_in,
                     self.mdot_in,
