@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>add_py_tank</name>
   <uid>26791029-4af7-4b3d-8cec-9737104ed42f</uid>
-  <version_id>7e7af74a-db7b-468d-82d8-5003911f1a86</version_id>
-  <version_modified>2024-03-06T23:52:21Z</version_modified>
+  <version_id>de8f26fe-9d84-4447-91fc-5c058e9cad44</version_id>
+  <version_modified>2024-09-25T15:23:04Z</version_modified>
   <xml_checksum>C9E2315D</xml_checksum>
   <class_name>AddPyTank</class_name>
   <display_name>Add Python Tank</display_name>
@@ -68,6 +68,15 @@
       <model_dependent>false</model_dependent>
       <default_value>10</default_value>
     </argument>
+    <argument>
+      <name>strg_type</name>
+      <display_name>strg_type</display_name>
+      <description>Options are ice or chw</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>ice</default_value>
+    </argument>
   </arguments>
   <outputs />
   <provenances />
@@ -96,7 +105,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>44AE9608</checksum>
+      <checksum>05F6415B</checksum>
     </file>
   </files>
 </measure>

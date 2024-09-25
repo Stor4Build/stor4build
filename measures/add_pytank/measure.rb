@@ -114,6 +114,15 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     trim_temp.setDefaultValue(10)
     args << trim_temp
 
+    # create argument for storage type
+    strg_type = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'strg_type',
+      false
+    )
+    strg_type.setDefaultValue('ice')
+    strg_type.setDescription('Options are ice or chw')
+    args << strg_type
+
     return args
   end
 
@@ -134,6 +143,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     chrg_temp = runner.getDoubleArgumentValue('chrg_temp', usr_args)
     num_tanks = runner.getDoubleArgumentValue('num_tanks', usr_args)
     trim_temp = runner.getDoubleArgumentValue('trim_temp', usr_args)
+    strg_type = runner.getStringArgumentValue('strg_type', usr_args)
 
     # add num tanks schedule
     ot = 'Schedule_Constant'
@@ -234,18 +244,14 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
 
     # add python plugin instances
     ot = 'PythonPlugin_Instance'
-    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, 'Ice Tank Set Prgm')
-    no.setString(1, 'No')
-    no.setString(2, 'icetes')
-    no.setString(3, 'UsrDefPlntCmpSet')
-    ws.addObject(no)
-    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    no.setString(0, 'Ice Tank Sim Prgm')
-    no.setString(1, 'No')
-    no.setString(2, 'icetes')
-    no.setString(3, 'UsrDefPlntCmpSim')
-    ws.addObject(no)
+    ['Set', 'Sim'].each do |s|
+      no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+      no.setString(0, "Ice Tank #{s} Prgm")
+      no.setString(1, 'No')
+      no.setString(2, "#{strg_type}tes")
+      no.setString(3, "UsrDefPlntCmp#{s}")
+      ws.addObject(no)
+    end
 
     # modify chilled water loop parameters to permit ice making
     ot = 'PlantLoop'
