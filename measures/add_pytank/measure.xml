@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>add_py_tank</name>
   <uid>26791029-4af7-4b3d-8cec-9737104ed42f</uid>
-  <version_id>de8f26fe-9d84-4447-91fc-5c058e9cad44</version_id>
-  <version_modified>2024-09-25T15:23:04Z</version_modified>
+  <version_id>acfd127a-49e3-4368-8936-f5cb5bfc6d99</version_id>
+  <version_modified>2024-09-25T16:04:26Z</version_modified>
   <xml_checksum>C9E2315D</xml_checksum>
   <class_name>AddPyTank</class_name>
   <display_name>Add Python Tank</display_name>
@@ -105,7 +105,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>05F6415B</checksum>
+      <checksum>78B67CE1</checksum>
     </file>
   </files>
 </measure>

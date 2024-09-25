@@ -417,42 +417,47 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       ws.addObject(no)
     end
 
-    # add python global variables
-    ot = 'PythonPlugin_Variables'
-    if ws.getObjectsByType(ot.to_IddObjectType).empty?
-      no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-      no.setString(0, 'PyVars')
-      no.setString(1, 'soc')
-      no.setString(2, 't_branch_in')
-      no.setString(3, 't_branch_out')
-      no.setString(4, 't_tank_out')
-      no.setString(5, 'mdot_branch')
-      no.setString(6, 'mdot_tank')
-      ws.addObject(no)
-    else
-      ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-        i = o.numFields
-        ['soc',
-          't_branch_in',
-          't_branch_out',
-          't_tank_out',
-          'mdot_branch',
-          'mdot_tank'
-        ].each do |v|
-          o.setString(i,v)
-          i+=1
-        end
-      end
+    # determine tank control variable
+    ctrl_var = ''
+    if strg_type == 'ice'
+      ctrl_var = 'soc'
+    elsif strg_type == 'chw'
+      ctrl_var = 'tank_temp'
     end
 
-    # add python plugin output variables
-    ['soc',
+    # define python global variables
+    py_vars = [
+      ctrl_var,
       't_branch_in',
       't_branch_out',
       't_tank_out',
       'mdot_branch',
       'mdot_tank'
-    ].each do |v|
+    ]
+
+    # add python global variables
+    ot = 'PythonPlugin_Variables'
+    if ws.getObjectsByType(ot.to_IddObjectType).empty?
+      no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+      no.setString(0, 'PyVars')
+      i = 1
+      py_vars.each do |v|
+        no.setString(i, v)
+        i+=1
+      end
+      ws.addObject(no)
+    else
+      ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+        i = o.numFields
+        py_vars.each do |v|
+          o.setString(i, v)
+          i+=1
+        end
+      end
+    end
+
+    # add python plugin output variables and correspinding output variables
+    py_vars.each do |v|
       ot = 'PythonPlugin_OutputVariable'
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
       no.setString(0, v)
@@ -469,7 +474,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       ws.addObject(no)
     end
 
-    # add output variables
+    # add other output variables
     ['Charge Sch', 'Chiller Temp Sch', 'Ice Tank Temp Sch'].each do |v|
       ot = 'Output_Variable'
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
