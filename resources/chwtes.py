@@ -174,7 +174,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         self.t_set_chiller_hndl = None
 
         # global variable handles
-        self.soc_hndl = None
+        self.tank_temp_hndl = None
         self.t_branch_in_hndl = None
         self.t_branch_out_hndl = None
         self.t_tank_out_hndl = None
@@ -189,7 +189,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             "r_value_lid": 24 / 5.67826,
             "r_value_base": 9 / 5.67826,
             "r_value_wall": 9 / 5.67826,
-            "latent_state_of_charge": 0.5,
+            "initial_temperature": 5,
             "coeff_c0_ua_charging": 4.950e+04,
             "coeff_c1_ua_charging": -1.262e+05,
             "coeff_c2_ua_charging": 2.243e+05,
@@ -293,9 +293,9 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         )
 
         # get global handles
-        self.soc_hndl = self.api.exchange.get_global_handle(
+        self.tank_temp_hndl = self.api.exchange.get_global_handle(
             state,
-            "soc"
+            "tank_temp"
         )
         self.t_branch_in_hndl = self.api.exchange.get_global_handle(
             state,
@@ -339,7 +339,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         self.tank_branch = TankBypassBranch(num_tanks, self.tank_data)
 
         # init tank state
-        self.tank_branch.tank.init_state(latent_state_of_charge=0.5)
+        self.tank_branch.tank.init_state(tank_init_temp=5)
         self.tank_is_full = False
 
         return 0
@@ -388,31 +388,31 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         elif chrg_sch > 0 and chrg_sch < 1:
             t_set_chiller = 6.7 - (chrg_sch * (6.7 - t_chrg))
 
-        # charge to 100% SOC, considered fully charged until 95%
-        if self.tank_branch.tank.state_of_charge == 1:
+        # charge to charge temp, considered fully charged until 0.5C above
+        if self.tank_branch.tank.tank_temp == t_chrg:
             self.tank_is_full = True
         else:
             if self.tank_is_full:
-                if self.tank_branch.tank.state_of_charge > 0.95:
+                if self.tank_branch.tank.tank_temp > (t_chrg + 0.5):
                     self.tank_is_full = True
                 else:
                     self.tank_is_full = False
             else:
                 self.tank_is_full = False
 
-        # in float, or in charge but tank is full, or in discharge but tank is <20%
+        # in float, or in charge but tank is full, or in discharge but tank is >1C below 6.7
         if (
             (chrg_sch == 0) or
             ((chrg_sch == 1) and (self.tank_is_full)) or
-            ((chrg_sch == -1) and (self.tank_branch.tank.state_of_charge < 0.2))
+            ((chrg_sch == -1) and (self.tank_branch.tank.tank_temp > 5.7))
         ):
 
-            # if discharge but tank is between 5-20%, linearly lower chiller outlet temperature to use all of the ice
-            if ((chrg_sch == -1) and (self.tank_branch.tank.state_of_charge > 0.05)):
-                # line between 20%, t_trim and 5%, 6.7C (assume 5% is empty)
-                slope = (t_trim - 6.7) / (0.2 - 0.05)
-                intercept = t_trim - slope * 0.2
-                t_set_chiller = slope * self.tank_branch.tank.state_of_charge + intercept
+            # if discharge but tank is > 5.7C, linearly lower chiller outlet temperature
+            if ((chrg_sch == -1) and (self.tank_branch.tank.tank_temp > 5.7)):
+                # line between 5.7C, t_trim and 7.7C, 6.7C (assume 7.7C is empty)
+                slope = (t_trim - 6.7) / (5.7 - 7.7)
+                intercept = t_trim - slope * 5.7
+                t_set_chiller = slope * self.tank_branch.tank.tank_temp + intercept
                 self.tank_branch.simulate(
                     self.t_in,
                     self.mdot_in,
@@ -454,8 +454,8 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             )
             self.t_out = self.tank_branch.outlet_temp
 
-        # get SOC
-        soc = self.tank_branch.tank.state_of_charge
+        # get tank temp
+        tank_temp = self.tank_branch.tank.tank_temp
 
         # actuate chiller
         self.api.exchange.set_actuator_value(
@@ -467,8 +467,8 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         # set global variables
         self.api.exchange.set_global_value(
             state,
-            self.soc_hndl,
-            soc
+            self.tank_temp_hndl,
+            tank_temp
         )
         self.api.exchange.set_global_value(
             state,

@@ -214,11 +214,12 @@ class IceTank(object):
         if mass_flow_rate <= 0.0:
             return 1
 
-        ua_hx = 0
-        if self.tank_is_charging:
+        if temperature < self.tank_temp_prev:
             ua_hx = self.set_ua_hx_charging()
+            self.tank_is_charging = True
         else:
             ua_hx = self.set_ua_hx_discharging()
+            self.tank_is_charging = False
 
         # set effectiveness due to mass flow effects
         num_transfer_units = ua_hx / (mass_flow_rate * self.brine.specific_heat(temperature))
@@ -282,10 +283,8 @@ class IceTank(object):
 
         if dq < 0:
             self.compute_charging(dq)
-            self.tank_is_charging = True
         else:
             self.compute_discharging(dq)
-            self.tank_is_charging = False
 
     def compute_charging(self, dq: float):
         """
@@ -444,7 +443,7 @@ class IceTank(object):
 
         # tank_temp and ice_mass are our state variables
         # if time has advanced, we need to lock down the 'previous' state from the last iteration
-        # otherwise, we will set them to to previous state and then update assuming we're in an iteration
+        # otherwise, we will set them to previous state and then update assuming we're in an iteration
 
         if sim_time > self.time:
             self.time = sim_time
@@ -458,11 +457,11 @@ class IceTank(object):
         # sum(q_env * dt, q_brine * dt)
         q_brine = self.q_brine(inlet_temp, mass_flow_rate, timestep)
         q_env = self.q_env(env_temp, timestep)
-        q_tot = q_brine + q_env
+        self.q_tot = q_brine + q_env
 
         # left-hand side
         # M_fluid du = M_fluid * (u_fluid - u_fluid_old)
-        self.compute_state(q_tot)
+        self.compute_state(self.q_tot)
 
         # compute new outlet fluid temp
         self.outlet_fluid_temp = self.calculate_outlet_fluid_temp(inlet_temp, mass_flow_rate)

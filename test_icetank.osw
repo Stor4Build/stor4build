@@ -1,5 +1,5 @@
 {
-  "seed_file" : "in.osm",
+  "seed_file" : "LargeOffice.osm",
   "weather_file": "USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw",
   "measure_paths": [
     "./measures/"
@@ -15,13 +15,14 @@
       "description" : "This measure will add the Python tank model.",
       "modeler_description" : "This measure will add the Python tank model.",
       "arguments" : {
-        "chrg_start" : "22:00",
-        "chrg_end" : "07:58",
-        "dchrg_start" : "07:59",
+        "chrg_start" : "21:00",
+        "chrg_end" : "07:00",
+        "dchrg_start" : "12:00",
         "dchrg_end" : "18:00",
         "chrg_temp" : -3.8,
-        "num_tanks" : 1,
-        "trim_temp" : 10
+        "num_tanks" : 5,
+        "trim_temp" : 10,
+        "strg_type" : "ice"
       }
     }
   ]
