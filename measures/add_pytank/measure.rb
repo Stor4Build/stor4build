@@ -253,11 +253,22 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       ws.addObject(no)
     end
 
+    # add ethylene glycol
+    ot = 'FluidProperties_GlycolConcentration')
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'TES EG30')
+    no.setString(1, 'EthyleneGlycol')
+    no.setString(2, '')
+    no.setDouble(3, 0.3)
+    ws.addObject(no)
+
     # modify chilled water loop parameters to permit ice making
     ot = 'PlantLoop'
     plant_loop_name = 'Chilled Water Loop'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
       if o.getString(0, false).get == plant_loop_name
+        o.setString(1, 'UserDefinedFluidType')
+        o.setString(2, 'TES EG30')
         o.setDouble(5, 100)
         o.setDouble(6, -50)
       end
