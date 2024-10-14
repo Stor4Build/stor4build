@@ -57,6 +57,10 @@ def create_app(config=None):
     measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
     weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
     
+    debug_run_dir = None
+    if 'RUN_DIRECTORY' in app.config:
+        debug_run_dir = app.config['RUN_DIRECTORY']
+    
     # Connect to the database
     try:
         database = app.config['TIMESCALE_DB']
@@ -217,15 +221,11 @@ def create_app(config=None):
                     }]
         else:
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
-            
-        #osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
-        #epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
-        
-        input_run_dir = '/home/jason/Desktop/s4b-run'
+
         response_txt = ''
         if needs_baseline:
             # Run the baseline first, then the technology
-            with managed_directory(input_run_dir) as run_dir:
+            with managed_directory(debug_run_dir) as run_dir:
                 run_path = os.path.abspath(run_dir)
                 
                 # Get the weather
