@@ -254,7 +254,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # add ethylene glycol
-    ot = 'FluidProperties_GlycolConcentration')
+    ot = 'FluidProperties_GlycolConcentration'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
     no.setString(0, 'TES EG30')
     no.setString(1, 'EthyleneGlycol')
