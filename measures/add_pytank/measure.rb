@@ -123,6 +123,15 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     strg_type.setDescription('Options are ice or chw')
     args << strg_type
 
+    # create argument for control type
+    ctrl_type = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'ctrl_type',
+      false
+    )
+    ctrl_type.setDefaultValue('sch')
+    ctrl_type.setDescription('Options are sch or soc')
+    args << ctrl_type
+
     return args
   end
 
@@ -144,6 +153,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     num_tanks = runner.getDoubleArgumentValue('num_tanks', usr_args)
     trim_temp = runner.getDoubleArgumentValue('trim_temp', usr_args)
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
+    ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
 
     # add num tanks schedule
     ot = 'Schedule_Constant'
@@ -248,7 +258,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
       no.setString(0, "Ice Tank #{s} Prgm")
       no.setString(1, 'No')
-      no.setString(2, "#{strg_type}tes")
+      no.setString(2, "#{strg_type}tes_#{ctrl_type}ctrl")
       no.setString(3, "UsrDefPlntCmp#{s}")
       ws.addObject(no)
     end
