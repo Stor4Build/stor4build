@@ -22,7 +22,8 @@
         "chrg_temp" : -3.8,
         "num_tanks" : 5,
         "trim_temp" : 10,
-        "strg_type" : "ice"
+        "strg_type" : "ice",
+        "ctrl_type" : "soc"
       }
     }
   ]
