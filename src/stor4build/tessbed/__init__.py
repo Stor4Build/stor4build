@@ -5,6 +5,7 @@ import os
 import csv
 import tempfile
 import io
+import contextlib
 import stor4build
 from flask import Flask, request, make_response
 
@@ -18,6 +19,22 @@ default_weather_dir = os.path.join(this_dir, '..', '..', '..', 'resources')
 # Supported climate zones
 supported_czs = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C', '5A', '5B', '6A', '6B', '7A', '8A']
 
+@contextlib.contextmanager
+def managed_directory(run_dir):
+    if run_dir is None:
+        tmp = tempfile.TemporaryDirectory()
+        try:
+            yield tmp.name
+        finally:
+            tmp.cleanup()
+    else:
+        try:
+            yield run_dir
+        finally:
+            pass
+
+class MissingConfig(Exception):
+    pass
 
 def create_app(config=None):
     # create and configure the app
@@ -26,7 +43,9 @@ def create_app(config=None):
     app.config.from_mapping(
         OPENSTUDIO='openstudio',
         MEASURES_DIR=default_measures_dir,
-        WEATHER_DIR=default_weather_dir
+        WEATHER_DIR=default_weather_dir,
+        TIMESCALE_HOST='timescale',
+        TIMESCALE_PORT='5432'
     )
 
     if config is None:
@@ -37,6 +56,28 @@ def create_app(config=None):
     openstudio_exe = app.config['OPENSTUDIO']
     measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
     weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
+    
+    debug_run_dir = None
+    if 'RUN_DIRECTORY' in app.config:
+        debug_run_dir = app.config['RUN_DIRECTORY']
+    
+    # Connect to the database
+    try:
+        database = app.config['TIMESCALE_DB']
+        user = app.config['TIMESCALE_USERNAME']
+        password = app.config['TIMESCALE_PASSWORD']
+    except KeyError as exc:
+        raise MissingConfig('Missing flask configuration variable: {}'.format(str(exc)))
+        
+    # Configuration complete
+    resultsdb = stor4build.ResultsDatabase(database = database,
+                                           user = user,
+                                           password = password,
+                                           host = app.config['TIMESCALE_HOST'],
+                                           port = app.config['TIMESCALE_PORT'],
+                                           prototype_cases_table = 'baseline_cases',
+                                           weather_table = 'weather',
+                                           verbose = True)
 
     # Route(s)
     @app.route('/simple', methods=['POST'])
@@ -128,15 +169,15 @@ def create_app(config=None):
         climate_string = climate_string.upper()
         if climate_string not in supported_czs:
             return make_response({'error': 'Bad request', 'message': 'Climate zone "%s" specified in "baseline" data input is not supported.' % climate_string}, 400)
-        cz = 'ASHRAE 169-2006-%s' % climate_string # Unused for now
-        vintage = baseline_data.get('vintage') # Unused for now
+        cz = 'ASHRAE 169-2006-%s' % climate_string
+        vintage = baseline_data.get('vintage')
         if vintage is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "vintage" parameter in "baseline" data input.'}, 400)
         try:
             vintage = int(vintage)
         except ValueError:
             return make_response({'error': 'Bad request', 'message': '"vintage" parameter value "%s" in "baseline" data input is not an integer.' % vintage}, 400)
-        
+        vintage_to_use = stor4build.map_to_vintage(vintage)
         # Get utility rate info, just the one energy schedule for now
         try:
             energy_sch = data['energy']['schedule']['months'][0]['periods']
@@ -180,18 +221,25 @@ def create_app(config=None):
                     }]
         else:
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
-            
-        osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
-        epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
-        
+
         response_txt = ''
         if needs_baseline:
             # Run the baseline first, then the technology
-            with tempfile.TemporaryDirectory() as run_dir:
-                #run_dir = '/home/jason/Desktop/s4b-run'
-                #if '/home/jason/Desktop/s4b-run' == run_dir:
+            with managed_directory(debug_run_dir) as run_dir:
                 run_path = os.path.abspath(run_dir)
                 
+                # Get the weather
+                epw = os.path.join(run_dir, 'weather.epw')
+                epw_file = resultsdb.get_weather(epw, climate_string)
+                if epw_file is None:
+                    return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
+                
+                # Get the baseline
+                osm = os.path.join(run_dir, 'baseline.osm')
+                building_id = resultsdb.get_prototype_model(osm, building_type='LargeOffice', climate_zone=climate_string, vintage=vintage_to_use)
+                if building_id is None:
+                    return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
+
                 # Run the baseline
                 baseline = stor4build.Simulation('baseline', added_steps=added)
                 osw = baseline.osw(osm, measures_dir, epw)

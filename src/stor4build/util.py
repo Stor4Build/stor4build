@@ -53,14 +53,18 @@ def convert_string_time_interval(start, end):
     #print(window_start, window_end)
     return window_start, window_end
     
-def fix_csv(filepath):
+def fix_csv(filepath, verbose=False):
     with tempfile.NamedTemporaryFile('w', delete=False) as tmp: # This is different in later versions of Python
         with open(filepath, 'r') as fp:
             for line in fp:
                 if not line.lstrip().startswith('0000'):
                     tmp.write(line)
         tmp.close()
-        df = pd.read_csv(tmp.name).dropna()
+        df = pd.read_csv(tmp.name)
+        drop_cols = [col for col in df.columns if 'Facility' in col]
+        if verbose:
+            print('Dropping columns: ' + ', '.join(drop_cols))
+        df = df.drop(drop_cols, axis=1).dropna()
         df.to_csv(filepath, index=False)
 
 def prefix_with_baseline(name):
