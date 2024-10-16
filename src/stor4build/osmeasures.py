@@ -65,6 +65,28 @@ vintage_lookup = {'pre1980':'DOE Ref Pre-1980',
                   '2010': '90.1-2010',
                   '2013': '90.1-2013'
                  }
+                 
+vintage_map = {
+               0:    'pre1980',
+               1980: 'post1980',
+               2004: '2004',
+               2007: '2007',
+               2010: '2010',
+               2013: '2013',
+               2016: '2016',
+               2019: '2019'
+              }
+
+vintage_keys = list(vintage_map.keys())
+vintage_keys.sort()
 
 vintage_list = list(vintage_lookup.keys())
 vintage_values = list(vintage_lookup.values())
+
+def map_to_vintage(vintage:int):
+    last_key = vintage_keys[0]
+    for key in vintage_keys[1:]:
+        if vintage < key:
+            break;
+        last_key = key
+    return vintage_map[last_key]

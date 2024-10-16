@@ -29,7 +29,8 @@ dependencies = [
   "scipy",
   "SecondaryCoolantProps",
   "httpx",
-  "pandas"
+  "pandas",
+  "psycopg2-binary"
 ]
 dynamic = ["version"]
 
