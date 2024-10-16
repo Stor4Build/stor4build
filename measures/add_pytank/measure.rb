@@ -354,8 +354,9 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     ot = 'PlantEquipmentList'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
       if o.getString(0, false).get == "#{plant_loop_name} Cooling Equipment List"
-        o.setString(5, 'PlantComponent:UserDefined')
-        o.setString(6, 'Ice Tank')
+        i = o.numFields
+        o.setString(i, 'PlantComponent:UserDefined')
+        o.setString(i + 1, 'Ice Tank')
       end
     end
 
