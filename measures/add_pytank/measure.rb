@@ -254,7 +254,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # add ethylene glycol
-    ot = 'FluidProperties_GlycolConcentration')
+    ot = 'FluidProperties_GlycolConcentration'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
     no.setString(0, 'TES EG30')
     no.setString(1, 'EthyleneGlycol')
@@ -354,8 +354,9 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     ot = 'PlantEquipmentList'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
       if o.getString(0, false).get == "#{plant_loop_name} Cooling Equipment List"
-        o.setString(5, 'PlantComponent:UserDefined')
-        o.setString(6, 'Ice Tank')
+        i = o.numFields
+        o.setString(i, 'PlantComponent:UserDefined')
+        o.setString(i + 1, 'Ice Tank')
       end
     end
 
