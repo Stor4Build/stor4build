@@ -40,7 +40,6 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
     osw = case.osw(osm_path, measures_path, epw_path)
     stor4build.run_workflow(openstudio, os.path.join(run_path, case.tag()), osw, measures_only=measures_only)
 
-
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
@@ -95,11 +94,11 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
                 }]
         baseline = stor4build.Simulation('baseline', added_steps=added)
         osw = baseline.osw(osm, measures_dir, epw)
-        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
     # Run the ice tank
     icetank = stor4build.IceTank('icetank',**arguments)
     osw = icetank.osw(osm, measures_dir, epw)
-    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -168,6 +167,41 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
             else:
                 print(k+':', v)
 
+@click.command()
+@click.argument('OSM', type=click.Path(exists=True))
+@click.argument('EPW', type=click.Path(exists=True))
+@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
+@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
+@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
+def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, measures_only,
+               run_baseline):
+    """
+    Add an DX coil TES system to an OpenStudio model and run it.
+    """
+    # Make paths absolute
+    run_path = os.path.abspath(run_dir)
+    osm = os.path.abspath(osm)
+    epw = os.path.abspath(epw)
+    measures_dir = os.path.abspath(measures_dir)
+    
+    # Run the baseline if requested
+    if run_baseline:
+        # Measures to add for baseline
+        added = [{
+                    "measure_dir_name" : "add_output_variables",
+                    "name" : "Add Output Variables",
+                    "arguments" : {}
+                }]
+        baseline = stor4build.Simulation('baseline', added_steps=added)
+        osw = baseline.osw(osm, measures_dir, epw)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+    # Run the DX coil model
+    dxcoil = stor4build.DxCoil('dxcoil')
+    osw = dxcoil.osw(osm, measures_dir, epw)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
+
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
 @click.version_option(version=__version__, prog_name='s4b-compute')
 @click.pass_context
@@ -177,3 +211,4 @@ def s4b_compute(ctx: click.Context):
 s4b_compute.add_command(run)
 s4b_compute.add_command(run_icetank)
 s4b_compute.add_command(size_icetank)
+s4b_compute.add_command(run_dxcoil)

@@ -4,7 +4,8 @@
 import os
 import pandas as pd
 import tempfile
-import shutil
+import dataclasses
+import json
 
 def seed_model(openstudio_exe, path, filename):
     cur_dir = os.getcwd()
@@ -79,3 +80,8 @@ def combine_csvs(baseline_csv, tech_csv):
     result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
     return result.to_csv(index=False)
 
+class DataclassJSONEncoder(json.JSONEncoder):
+        def default(self, o):
+            if dataclasses.is_dataclass(o) and not isinstance(o, type):
+                return dataclasses.asdict(o)
+            return super().default(o)
