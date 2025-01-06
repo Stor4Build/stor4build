@@ -2,9 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
-import csv
-from .system import Simulation, BadSizing
-import numpy as np
+from .system import Simulation
 import pandas as pd
 import math
 import datetime
