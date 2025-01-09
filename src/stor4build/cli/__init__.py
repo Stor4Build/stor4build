@@ -61,7 +61,7 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
               default=stor4build.IceTank.default_num_tanks, help='Number of tanks.')
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
-@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline):
     """
@@ -173,10 +173,12 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
-@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
-def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, measures_only,
-               run_baseline):
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
+@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
+               run_baseline, cooling_season_only):
     """
     Add an DX coil TES system to an OpenStudio model and run it.
     """
@@ -185,22 +187,33 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, measures_only,
     osm = os.path.abspath(osm)
     epw = os.path.abspath(epw)
     measures_dir = os.path.abspath(measures_dir)
+    if output:
+        run_baseline = True
+        measures_only = False
+
+    pre = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    if cooling_season_only:
+        pre.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     
-    # Run the baseline if requested
-    if run_baseline:
-        # Measures to add for baseline
-        added = [{
-                    "measure_dir_name" : "add_output_variables",
-                    "name" : "Add Output Variables",
-                    "arguments" : {}
-                }]
-        baseline = stor4build.Simulation('baseline', added_steps=added)
-        osw = baseline.osw(osm, measures_dir, epw)
-        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
     # Run the DX coil model
-    dxcoil = stor4build.DxCoil('dxcoil')
+    dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre)
     osw = dxcoil.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
+
+    # Run the baseline if requested
+    if run_baseline:
+        pre.append(stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs'))
+        baseline = stor4build.Simulation('baseline', pre_steps=pre)
+        osw = baseline.osw(osm, measures_dir, epw)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+    
+    # Combine the CSVs
+    if output:
+        baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+        dxcoil_csv = os.path.join(run_path, dxcoil.tag(),'run', 'eplusout.csv')
+        txt = stor4build.combine_csvs(baseline_csv, dxcoil_csv)
+        with open(output, 'w') as fp:
+            fp.write(txt)
 
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
 @click.version_option(version=__version__, prog_name='s4b-compute')

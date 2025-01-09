@@ -78,7 +78,7 @@ def combine_csvs(baseline_csv, tech_csv):
     result = pd.concat([baseline, tech], axis=1)
     result.drop(['Date/Time'], axis=1, inplace=True)
     result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
-    return result.to_csv(index=False)
+    return result.to_csv(index=False, lineterminator='\n')
 
 class DataclassJSONEncoder(json.JSONEncoder):
         def default(self, o):
