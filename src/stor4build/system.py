@@ -6,23 +6,19 @@ class BadSizing(Exception):
     pass
 
 class Simulation:
-    def __init__(self, name, pre_steps=None, post_steps=None, added_steps=None):
+    def __init__(self, name, pre_steps=None, post_steps=None):
         self.name = name
-        self.added_steps = None
-        if added_steps is not None:
-            self.added_steps = added_steps
-        pre = []
+        self.steps = []
         if pre_steps:
-            pre = pre_steps
-        post = []
+            self.steps.extend(pre_steps)
+        self.steps.extend(self.required_steps())
         if post_steps:
-            post = post_steps
-        self.steps = self.assemble_steps(pre, post)
+            self.steps.extend(post_steps)
     def tag(self):
         return self.name
-    def assemble_steps(self, pre_steps, post_steps):
-        return pre_steps + post_steps
-    def osw(self, seed_file, measures_directory, epw_file, **kwargs):
+    def required_steps(self):
+        return []
+    def osw(self, seed_file, measures_directory, epw_file):
         first_step = {
             "measure_dir_name" : "add_csv_output",
             "name" : "Add CSV Output",
@@ -30,8 +26,6 @@ class Simulation:
         }
         output_steps = [first_step]
         output_steps.extend([el.to_dict() for el in self.steps])
-        if self.added_steps is not None:
-            output_steps.extend(self.added_steps)
         osw = {
             'measure_paths': [measures_directory],
             'seed_file': seed_file,

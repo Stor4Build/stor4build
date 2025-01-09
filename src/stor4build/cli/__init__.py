@@ -62,8 +62,10 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
+@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
-                charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline):
+                charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
+                cooling_season_only):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -83,22 +85,22 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
         "num_tanks" : ntanks,
         "trim_temp" : trim_temp
     }
+
+    post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    if cooling_season_only:
+        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+
+    # Run the ice tank
+    icetank = stor4build.IceTank('icetank',post_steps=post, **arguments)
+    osw = icetank.osw(osm, measures_dir, epw)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
     
     # Run the baseline if requested
     if run_baseline:
-        # Measures to add for baseline
-        added = [{
-                    "measure_dir_name" : "add_output_variables",
-                    "name" : "Add Output Variables",
-                    "arguments" : {}
-                }]
-        baseline = stor4build.Simulation('baseline', added_steps=added)
+        baseline = stor4build.Simulation('baseline', post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
         stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
-    # Run the ice tank
-    icetank = stor4build.IceTank('icetank',**arguments)
-    osw = icetank.osw(osm, measures_dir, epw)
-    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
+    
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -191,7 +193,7 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
         run_baseline = True
         measures_only = False
 
-    pre = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    pre = []
     if cooling_season_only:
         pre.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     
