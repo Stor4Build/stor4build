@@ -15,5 +15,5 @@ class DxCoil(Simulation):
         # Nothing much to do here right now, just autosize for now
         # Package up the sizing info, add more later
         sizing = {'algorithm': 'autosize'}
-        # Remove any arguments that might intefere
+        # Remove any arguments that might intefere (maybe later?)
         return cls(name, sizing=sizing, **kwargs)

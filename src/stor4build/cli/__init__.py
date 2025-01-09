@@ -46,6 +46,7 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 @click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
               help='Time to start charging tank(s).')
@@ -63,7 +64,7 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
-def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
+def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
                 cooling_season_only):
     """
@@ -108,6 +109,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
               help='Time to start charging tank(s).')
 @click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_end,
@@ -122,7 +124,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
               show_default=True, default=stor4build.IceTank.default_peak_reduction,
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
-def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
+def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
