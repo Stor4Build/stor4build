@@ -86,13 +86,17 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         "num_tanks" : ntanks,
         "trim_temp" : trim_temp
     }
+    
+    if output:
+        run_baseline = True
+        measures_only = False
 
     post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
 
     # Run the ice tank
-    icetank = stor4build.IceTank('icetank',post_steps=post, **arguments)
+    icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
     
@@ -101,6 +105,14 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         baseline = stor4build.Simulation('baseline', post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
         stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+
+    # Combine the CSVs
+    if output:
+        baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+        icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+        txt = stor4build.combine_csvs(baseline_csv, icetank_csv)
+        with open(output, 'w') as fp:
+            fp.write(txt)
     
 
 @click.command()
@@ -124,8 +136,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               show_default=True, default=stor4build.IceTank.default_peak_reduction,
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
+@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
-                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing):
+                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
+                 cooling_season_only):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -145,13 +159,12 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "peak_reduction" : peak_reduction
     }
     
-    # Measures to add for baseline
-    added = [{
-                "measure_dir_name" : "add_output_variables",
-                "name" : "Add Output Variables",
-                "arguments" : {}
-            }]
-    baseline = stor4build.Simulation('baseline', added_steps=added)
+    post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    if cooling_season_only:
+        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+
+    # Run the baseline
+    baseline = stor4build.Simulation('baseline', post_steps=post)
     osw = baseline.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
     baseline_path = os.path.join(run_dir, 'baseline', 'run')
@@ -159,8 +172,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     # Repair the output CSV
     stor4build.fix_csv(baseline_csv)
 
-    # Run the ice tank
-    icetank = stor4build.IceTank.size('sized_icetank', baseline_path, **arguments)
+    # Size and run the ice tank
+    icetank = stor4build.IceTank.size('sized_icetank', baseline_path, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
     if show_sizing:
@@ -170,6 +183,13 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                 print(k+':', v, units[k])
             else:
                 print(k+':', v)
+
+    # Combine the CSVs
+    if output:
+        icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+        txt = stor4build.combine_csvs(baseline_csv, icetank_csv)
+        with open(output, 'w') as fp:
+            fp.write(txt)
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))

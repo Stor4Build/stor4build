@@ -49,10 +49,11 @@ class AddDXCoilOutputs(openstudio.measure.ModelMeasure):
         """
         args = openstudio.measure.OSArgumentVector()
 
-        #example_arg = openstudio.measure.OSArgument.makeStringArgument("space_name", True)
-        #example_arg.setDisplayName("New space name")
-        #example_arg.setDescription("This name will be used as the name of the new space.")
-        #args.append(example_arg)
+        hourly_arg = openstudio.measure.OSArgument.makeBoolArgument("hourly", False)
+        hourly_arg.setDisplayName("Report at hourly frequency")
+        hourly_arg.setDescription("Setting this flag will request hourly outputs.")
+        hourly_arg.setDefaultValue(False)
+        args.append(hourly_arg)
 
         return args
 
@@ -64,6 +65,13 @@ class AddDXCoilOutputs(openstudio.measure.ModelMeasure):
     ):
         """Defines what happens when the measure is run."""
         super().run(model, runner, user_arguments)  # Do **NOT** remove this line
+        
+        if not (runner.validateUserArguments(self.arguments(model), user_arguments)):
+            return False
+        
+        freq_string = 'Timestep'
+        if runner.getBoolArgumentValue('hourly', user_arguments):
+            freq_string = 'Hourly'
 
         runner.registerInitialCondition(f'The model started with {len(model.getOutputMeters())} output meters.')
 
@@ -79,7 +87,7 @@ class AddDXCoilOutputs(openstudio.measure.ModelMeasure):
             meter = openstudio.model.OutputMeter(model)
             meter.setName(name)
             meter.setMeterFileOnly(False)
-            meter.setReportingFrequency("Timestep")
+            meter.setReportingFrequency(freq_string)
             runner.registerInfo(f'Added "{name}" output meter.')
 
         # report final condition of model

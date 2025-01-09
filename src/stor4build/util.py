@@ -55,6 +55,7 @@ def convert_string_time_interval(start, end):
     return window_start, window_end
     
 def fix_csv(filepath, verbose=False):
+    # This needs to be rewritten to do everything in memory
     with tempfile.NamedTemporaryFile('w', delete=False) as tmp: # This is different in later versions of Python
         with open(filepath, 'r') as fp:
             for line in fp:
