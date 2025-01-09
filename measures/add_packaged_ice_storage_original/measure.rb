@@ -89,7 +89,7 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
     sched.setDefaultValue('Simple User Sched')
     args << sched
 
-    # make argument for weekend TES operation
+    # make arguement for weekend TES operation
     wknd = OpenStudio::Measure::OSArgument.makeBoolArgument('wknd', false)
     wknd.setDisplayName('Run TES on the weekends')
     wknd.setDescription('Select if building is occupied on weekends')
@@ -128,12 +128,6 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
     discharge_end.setDescription('Use 24 hour format')
     discharge_end.setDefaultValue('18:00')
     args << discharge_end
-    
-    hourly = OpenStudio::Measure::OSArgument.makeBoolArgument('hourly', false)
-    hourly.setDisplayName('Report at hourly frequency')
-    hourly.setDescription('Setting this flag will request hourly frequency for important outputs.')
-    hourly.setDefaultValue(false)
-    args << hourly
 
     args
     # end the arguments method
@@ -168,7 +162,6 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
     charge_end = runner.getStringArgumentValue('charge_end', user_arguments)            # time ice charging ends
     discharge_start = runner.getStringArgumentValue('discharge_start', user_arguments)  # time ice discharge begins
     discharge_end = runner.getStringArgumentValue('discharge_end', user_arguments)      # time ice discharge ends
-    hourly = runner.getBoolArgumentValue('hourly', user_arguments)                      # report at hourly frequency
 
     # retrieve user selected coils and assign to vector
     coils = workspace.getObjectsByType('Coil:Cooling:DX:SingleSpeed'.to_IddObjectType)
@@ -657,15 +650,6 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
       runner.registerInfo("Coil '#{old_coil_name}' was replaced with a unitary thermal storage system named" \
                           "'#{utss.name}' with a capacity of #{ice_cap} GJ.\n")
       # end of coil replacement routine
-    end
-    
-    # Mess with frequency of the outputs if requested
-    if hourly
-      workspace.getObjectsByType('Output:Meter'.to_IddObjectType).each do |output_meter|
-        new_meter = output_meter.clone()
-        new_meter.setString(1, 'Hourly')
-        workspace.addObject(new_meter)
-      end
     end
 
     # additional output for schedule verification

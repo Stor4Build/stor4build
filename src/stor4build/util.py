@@ -80,6 +80,30 @@ def combine_csvs(baseline_csv, tech_csv):
     result.drop(['Date/Time'], axis=1, inplace=True)
     result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
     return result.to_csv(index=False, lineterminator='\n')
+    
+def combine_single_frequency_csvs(baseline_csv, tech_csv, freq):
+    baseline = single_frequency_df(baseline_csv, freq)
+    baseline.rename(prefix_with_baseline, axis='columns', inplace=True)
+    tech = single_frequency_df(tech_csv, freq)
+    result = pd.concat([baseline, tech], axis=1)
+    result.drop(['Date/Time'], axis=1, inplace=True)
+    result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
+    return result.to_csv(index=False, lineterminator='\n')
+
+def single_frequency_csv(eplusout_csv, freq, verbose=False):
+    df = pd.read_csv(eplusout_csv)
+    drop_cols = [col for col in df.columns if col != 'Date/Time' and f'({freq})' not in col]
+    if verbose:
+         print('Dropping columns: ' + ', '.join(drop_cols))
+    df = df.drop(drop_cols, axis=1).dropna()
+    df.to_csv(eplusout_csv, index=False)
+    
+def single_frequency_df(eplusout_csv, freq, verbose=False):
+    df = pd.read_csv(eplusout_csv)
+    drop_cols = [col for col in df.columns if col != 'Date/Time' and f'({freq})' not in col]
+    if verbose:
+         print('Dropping columns: ' + ', '.join(drop_cols))
+    return df.drop(drop_cols, axis=1).dropna()
 
 class DataclassJSONEncoder(json.JSONEncoder):
         def default(self, o):

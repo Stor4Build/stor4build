@@ -201,8 +201,9 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('--hourly', is_flag=True, show_default=True, default=False, help='Run hourly outputs.')
 def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
-               run_baseline, cooling_season_only):
+               run_baseline, cooling_season_only, hourly):
     """
     Add an DX coil TES system to an OpenStudio model and run it.
     """
@@ -216,26 +217,33 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
         measures_only = False
 
     pre = []
+    post = []
     if cooling_season_only:
         pre.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
-    
-    # Run the DX coil model
-    dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre)
-    osw = dxcoil.osw(osm, measures_dir, epw)
-    stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
+        
+    arguments = {}
+    freq = 'Timestep'
+    if hourly:
+        arguments = {'hourly': True}
+        freq = 'Hourly'
 
     # Run the baseline if requested
     if run_baseline:
-        pre.append(stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs'))
-        baseline = stor4build.Simulation('baseline', pre_steps=pre)
+        post.append(stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments=arguments))
+        baseline = stor4build.Simulation('baseline', pre_steps=pre, post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
         stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+
+    # Run the DX coil model
+    dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre, hourly=hourly)
+    osw = dxcoil.osw(osm, measures_dir, epw)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
     
     # Combine the CSVs
     if output:
         baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
         dxcoil_csv = os.path.join(run_path, dxcoil.tag(),'run', 'eplusout.csv')
-        txt = stor4build.combine_csvs(baseline_csv, dxcoil_csv)
+        txt = stor4build.combine_single_frequency_csvs(baseline_csv, dxcoil_csv, freq)
         with open(output, 'w') as fp:
             fp.write(txt)
 
