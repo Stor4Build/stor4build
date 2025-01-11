@@ -8,3 +8,4 @@ from .database import ResultsDatabase
 from .system import Simulation
 from .icetank import IceTank
 from .dxcoil import DxCoil
+from .schema import InputData

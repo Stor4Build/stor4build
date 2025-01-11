@@ -30,7 +30,8 @@ dependencies = [
   "SecondaryCoolantProps",
   "httpx",
   "pandas",
-  "psycopg2-binary"
+  "psycopg2-binary",
+  "marshmallow"
 ]
 dynamic = ["version"]
 

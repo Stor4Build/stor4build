@@ -96,9 +96,9 @@ def create_app(config=None):
         # There's a better way to do all of this, no time now
         if baseline_data is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "baseline" data in input.'}, 400)
-        type = baseline_data.get('building') # Unused for now
+        type = baseline_data.get('type') # Unused for now
         if type is None:
-            return make_response({'error': 'Bad request', 'message': 'Expected "building" parameter in "baseline" data input.'}, 400)
+            return make_response({'error': 'Bad request', 'message': 'Expected "type" parameter in "baseline" data input.'}, 400)
         climate_string = baseline_data.get('climate')
         if climate_string is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "climate" parameter in "baseline" data input.'}, 400)
