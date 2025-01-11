@@ -51,6 +51,7 @@ path = "src/stor4build/__about__.py"
 dependencies = [
   "pytest",
   "pytest-cov",
+  "apispec"
 ]
 [tool.hatch.envs.default.scripts]
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/stor4build --cov=tests {args}"
