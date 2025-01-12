@@ -128,12 +128,13 @@ def create_app(config=None):
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
 
         needs_baseline = False
-        if inputs.storage.type == 'ThermalTank-Ice':
+        if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
             needs_baseline = True
             # Translate the utility rate parameters to charge/discharge start/end
             results = stor4build.process_energy_schedule(energy_sch)
             arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
             arguments['peak_reduction'] = inputs.storage.capacity
+            arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
 
             technology_object_factory = stor4build.IceTank.size
 
