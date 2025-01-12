@@ -388,7 +388,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         elif chrg_sch > 0 and chrg_sch < 1:
             t_set_chiller = 6.7 - (chrg_sch * (6.7 - t_chrg))
 
-        # charge to 100% SOC, considered fully charged until 95%
+        # charge to 100% soc, considered fully charged until 95%
         if self.tank_branch.tank.state_of_charge == 1:
             self.tank_is_full = True
         else:
@@ -454,7 +454,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             )
             self.t_out = self.tank_branch.outlet_temp
 
-        # get SOC
+        # get soc
         soc = self.tank_branch.tank.state_of_charge
 
         # actuate chiller

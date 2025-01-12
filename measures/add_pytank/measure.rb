@@ -123,6 +123,15 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     strg_type.setDescription('Options are ice or chw')
     args << strg_type
 
+    # create argument for control type
+    ctrl_type = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'ctrl_type',
+      false
+    )
+    ctrl_type.setDefaultValue('sch')
+    ctrl_type.setDescription('Options are sch or soc')
+    args << ctrl_type
+
     return args
   end
 
@@ -144,6 +153,43 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     num_tanks = runner.getDoubleArgumentValue('num_tanks', usr_args)
     trim_temp = runner.getDoubleArgumentValue('trim_temp', usr_args)
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
+    ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
+
+    # add discharge start time schedule
+    ot = 'Schedule_Constant'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Discharge Start Time')
+    no.setString(1, 'Any Number')
+    dchrg_start_hr = dchrg_start.split(':')[0].to_f
+    dchrg_start_min = dchrg_start.split(':')[1].to_f
+    no.setDouble(2, dchrg_start_hr + (dchrg_start_min / 60))
+    ws.addObject(no)
+
+    # add discharge start time schedule output variable
+    ot = 'Output_Variable'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Discharge Start Time')
+    no.setString(1, 'Schedule Value')
+    no.setString(2, 'Timestep')
+    ws.addObject(no)
+
+    # add discharge end time schedule
+    ot = 'Schedule_Constant'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Discharge End Time')
+    no.setString(1, 'Any Number')
+    dchrg_end_hr = dchrg_end.split(':')[0].to_f
+    dchrg_end_min = dchrg_end.split(':')[1].to_f
+    no.setDouble(2, dchrg_end_hr + (dchrg_end_min / 60))
+    ws.addObject(no)
+
+    # add discharge end time schedule output variable
+    ot = 'Output_Variable'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Discharge End Time')
+    no.setString(1, 'Schedule Value')
+    no.setString(2, 'Timestep')
+    ws.addObject(no)
 
     # add num tanks schedule
     ot = 'Schedule_Constant'
@@ -248,7 +294,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
       no.setString(0, "Ice Tank #{s} Prgm")
       no.setString(1, 'No')
-      no.setString(2, "#{strg_type}tes")
+      no.setString(2, "#{strg_type}tes_#{ctrl_type}ctrl")
       no.setString(3, "UsrDefPlntCmp#{s}")
       ws.addObject(no)
     end
