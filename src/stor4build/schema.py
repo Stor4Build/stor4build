@@ -102,5 +102,3 @@ class InputDataSchema(BaseSchema):
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)
     demand = fields.Nested(lambda: UtilityDataSchema(), required=True)
     promote_to = InputData
-
-    

@@ -8,6 +8,7 @@ import io
 import contextlib
 import stor4build
 from flask import Flask, request, make_response
+from marshmallow import ValidationError
 
 from ..__about__ import __version__
 
@@ -35,6 +36,25 @@ def managed_directory(run_dir):
 
 class MissingConfig(Exception):
     pass
+
+def process_validation_error(err):
+    mesgs = []
+    try:
+        for k,v in err.messages.items():
+            if isinstance(v, dict):
+                if 'type' in v:
+                    if isinstance(v['type'], list):
+                        mesg = ' '.join(v['type'])
+                    else:
+                        mesg = str(v['type'])
+                else:
+                    mesg = str(v)
+            else:
+                mesg = str(v)
+            mesgs.append(f'{k}: {mesg}')
+    except:
+        return str(err)
+    return '; '.join(mesgs)
 
 def create_app(config=None):
     # create and configure the app
@@ -87,64 +107,33 @@ def create_app(config=None):
         """
         # Get the inputs
         data = request.get_json()
+        # This may not be needed
         detailed_header = True
         if 'header_style' in data:
             if data['header_style'] == 'simple':
                 detailed_header = False
-        baseline_data = data.get('baseline')
-        # Get the building data
-        # There's a better way to do all of this, no time now
-        if baseline_data is None:
-            return make_response({'error': 'Bad request', 'message': 'Expected "baseline" data in input.'}, 400)
-        type = baseline_data.get('type') # Unused for now
-        if type is None:
-            return make_response({'error': 'Bad request', 'message': 'Expected "type" parameter in "baseline" data input.'}, 400)
-        climate_string = baseline_data.get('climate')
-        if climate_string is None:
-            return make_response({'error': 'Bad request', 'message': 'Expected "climate" parameter in "baseline" data input.'}, 400)
-        climate_string = str(climate_string).strip()
-        if len(climate_string) != 2:
-            return make_response({'error': 'Bad request', 'message': '"climate" parameter value "%s" in "baseline" data input is incorrect.' % climate_string}, 400)
-        climate_string = climate_string.upper()
-        if climate_string not in supported_czs:
-            return make_response({'error': 'Bad request', 'message': 'Climate zone "%s" specified in "baseline" data input is not supported.' % climate_string}, 400)
-        cz = 'ASHRAE 169-2006-%s' % climate_string
-        vintage = baseline_data.get('vintage')
-        if vintage is None:
-            return make_response({'error': 'Bad request', 'message': 'Expected "vintage" parameter in "baseline" data input.'}, 400)
         try:
-            vintage = int(vintage)
-        except ValueError:
-            return make_response({'error': 'Bad request', 'message': '"vintage" parameter value "%s" in "baseline" data input is not an integer.' % vintage}, 400)
-        vintage_to_use = stor4build.map_to_vintage(vintage)
+            inputs = stor4build.InputData.load(data)
+        except ValidationError as ve:
+            return make_response({'error': 'Bad request', 'message': process_validation_error(ve)}, 400)
+ 
+        type = inputs.baseline.type # Unused for now
+        cz = 'ASHRAE 169-2006-%s' % inputs.baseline.climate
+        vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
+        
         # Get utility rate info, just the one energy schedule for now
-        try:
-            energy_sch = data['energy']['schedule']['months'][0]['periods']
-        except (KeyError, TypeError, IndexError):
-            return make_response({'error': 'Bad request', 'message': 'Expected energy cost schedule was not found in input.'}, 400)
+        energy_sch = inputs.energy.schedule.months[0].periods
+        
         if len(energy_sch) != 24:
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
-        
-        # Type is still not sent, punt for now
-        tech = data.get('storage')
-        if tech is None:
-            return make_response({'error': 'Bad request', 'message': 'Expected input on storage technology not in input.'}, 400)
-        #tes_type = tech.get('type')
-        tes_type = 'icetank'
+
         needs_baseline = False
-        if tes_type == 'icetank':
+        if inputs.storage.type == 'ThermalTank-Ice':
             needs_baseline = True
             # Translate the utility rate parameters to charge/discharge start/end
-            capacity = tech.get('capacity')
-            if capacity is None:
-                return make_response({'error': 'Bad request', 'message': 'Expected "capacity" parameter for ice tank storage is not in input.'}, 400)
-            try:
-                capacity = float(capacity)
-            except ValueError:
-                return make_response({'error': 'Bad request', 'message': '"capacity" parameter "%s" value for ice tank storage in non-numeric.' % capacity}, 400)
             results = stor4build.process_energy_schedule(energy_sch)
             arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
-            arguments['peak_reduction'] = capacity
+            arguments['peak_reduction'] = inputs.storage.capacity
 
             technology_object_factory = stor4build.IceTank.size
 
@@ -161,13 +150,13 @@ def create_app(config=None):
                 
                 # Get the weather
                 epw = os.path.join(run_dir, 'weather.epw')
-                epw_file = resultsdb.get_weather(epw, climate_string)
+                epw_file = resultsdb.get_weather(epw, inputs.baseline.climate)
                 if epw_file is None:
                     return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
                 
                 # Get the baseline
                 osm = os.path.join(run_dir, 'baseline.osm')
-                building_id = resultsdb.get_prototype_model(osm, building_type='LargeOffice', climate_zone=climate_string, vintage=vintage_to_use)
+                building_id = resultsdb.get_prototype_model(osm, building_type='LargeOffice', climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
                 if building_id is None:
                     return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
 
