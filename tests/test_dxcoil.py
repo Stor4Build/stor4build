@@ -20,7 +20,7 @@ def test_dxcoil_init():
     assert len(osw['steps'][0]) == 3
     assert osw['steps'][1]['name'] == 'Add Packaged Ice Storage'
     assert osw['steps'][1]['measure_dir_name'] == 'add_packaged_ice_storage'
-    assert osw['steps'][1]['arguments'] == {}
+    assert osw['steps'][1]['arguments'] == {'hourly': False}
     assert len(osw['steps'][1]) == 3
 
 def test_dxcoil_size():
@@ -40,5 +40,5 @@ def test_dxcoil_size():
     assert len(osw['steps'][1]) == 3
     assert osw['steps'][2]['name'] == 'Add Packaged Ice Storage'
     assert osw['steps'][2]['measure_dir_name'] == 'add_packaged_ice_storage'
-    assert osw['steps'][2]['arguments'] == {}
+    assert osw['steps'][2]['arguments'] == {'hourly': False}
     assert len(osw['steps'][2]) == 3
