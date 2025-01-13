@@ -1,0 +1,187 @@
+{
+  "info": {
+    "description": "The TESSBeD web app for TES calculations",
+    "title": "TESSBeD",
+    "version": "0.2.0"
+  },
+  "paths": {},
+  "openapi": "3.0.2",
+  "components": {
+    "schemas": {
+      "BuildingData": {
+        "type": "object",
+        "properties": {
+          "climate": {
+            "type": "string",
+            "enum": [
+              "1A",
+              "2A",
+              "2B",
+              "3A",
+              "3B",
+              "3C",
+              "4A",
+              "4B",
+              "4C",
+              "5A",
+              "5B",
+              "5C",
+              "6A",
+              "6B",
+              "7A",
+              "7B",
+              "8A"
+            ]
+          },
+          "vintage": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SecondarySchool",
+              "PrimarySchool",
+              "SmallOffice",
+              "MediumOffice",
+              "LargeOffice",
+              "SmallHotel",
+              "LargeHotel",
+              "Warehouse",
+              "RetailStandalone",
+              "RetailStripmall",
+              "QuickServiceRestaurant",
+              "FullServiceRestaurant",
+              "MidriseApartment",
+              "HighriseApartment",
+              "Hospital",
+              "Outpatient",
+              "Laboratory",
+              "LargeDataCenterHighITE",
+              "LargeDataCenterLowITE",
+              "SmallDataCenterHighITE",
+              "SmallDataCenterLowITE",
+              "Courthouse",
+              "College"
+            ]
+          }
+        },
+        "required": [
+          "climate",
+          "type",
+          "vintage"
+        ]
+      },
+      "StorageData": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ThermalTank-Ice",
+              "ThermalTank-ChilledWater"
+            ]
+          },
+          "capacity": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "capacity",
+          "type"
+        ]
+      },
+      "UtilityRate": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "period": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "period",
+          "rate",
+          "unit"
+        ]
+      },
+      "MonthSchedule": {
+        "type": "object",
+        "properties": {
+          "unit": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": [
+          "month",
+          "periods",
+          "unit"
+        ]
+      },
+      "Schedule": {
+        "type": "object",
+        "properties": {
+          "months": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonthSchedule"
+            }
+          }
+        }
+      },
+      "UtilityData": {
+        "type": "object",
+        "properties": {
+          "costs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UtilityRate"
+            }
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/Schedule"
+          }
+        },
+        "required": [
+          "schedule"
+        ]
+      },
+      "InputData": {
+        "type": "object",
+        "properties": {
+          "baseline": {
+            "$ref": "#/components/schemas/BuildingData"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/StorageData"
+          },
+          "energy": {
+            "$ref": "#/components/schemas/UtilityData"
+          },
+          "demand": {
+            "$ref": "#/components/schemas/UtilityData"
+          }
+        },
+        "required": [
+          "baseline",
+          "demand",
+          "energy",
+          "storage"
+        ]
+      }
+    }
+  }
+}
