@@ -40,13 +40,13 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
     osw = case.osw(osm_path, measures_path, epw_path)
     stor4build.run_workflow(openstudio, os.path.join(run_path, case.tag()), osw, measures_only=measures_only)
 
-
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 @click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
               help='Time to start charging tank(s).')
@@ -62,9 +62,11 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
               default=stor4build.IceTank.default_num_tanks, help='Number of tanks.')
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
-@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline as well.')
-def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
-                charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline):
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
+@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
+                charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
+                cooling_season_only):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -85,21 +87,33 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
         "trim_temp" : trim_temp
     }
     
+    if output:
+        run_baseline = True
+        measures_only = False
+
+    post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    if cooling_season_only:
+        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+
+    # Run the ice tank
+    icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
+    osw = icetank.osw(osm, measures_dir, epw)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
+    
     # Run the baseline if requested
     if run_baseline:
-        # Measures to add for baseline
-        added = [{
-                    "measure_dir_name" : "add_output_variables",
-                    "name" : "Add Output Variables",
-                    "arguments" : {}
-                }]
-        baseline = stor4build.Simulation('baseline', added_steps=added)
+        baseline = stor4build.Simulation('baseline', post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
-        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
-    # Run the ice tank
-    icetank = stor4build.IceTank('icetank',**arguments)
-    osw = icetank.osw(osm, measures_dir, epw)
-    stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+
+    # Combine the CSVs
+    if output:
+        baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+        icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+        txt = stor4build.combine_csvs(baseline_csv, icetank_csv)
+        with open(output, 'w') as fp:
+            fp.write(txt)
+    
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -107,6 +121,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
 @click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
               help='Time to start charging tank(s).')
 @click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_end,
@@ -121,8 +136,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, measures_only,
               show_default=True, default=stor4build.IceTank.default_peak_reduction,
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
-def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
-                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing):
+@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
+                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
+                 cooling_season_only):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -142,13 +159,12 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
         "peak_reduction" : peak_reduction
     }
     
-    # Measures to add for baseline
-    added = [{
-                "measure_dir_name" : "add_output_variables",
-                "name" : "Add Output Variables",
-                "arguments" : {}
-            }]
-    baseline = stor4build.Simulation('baseline', added_steps=added)
+    post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    if cooling_season_only:
+        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+
+    # Run the baseline
+    baseline = stor4build.Simulation('baseline', post_steps=post)
     osw = baseline.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
     baseline_path = os.path.join(run_dir, 'baseline', 'run')
@@ -156,8 +172,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
     # Repair the output CSV
     stor4build.fix_csv(baseline_csv)
 
-    # Run the ice tank
-    icetank = stor4build.IceTank.size('sized_icetank', baseline_path, **arguments)
+    # Size and run the ice tank
+    icetank = stor4build.IceTank.size('sized_icetank', baseline_path, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
     if show_sizing:
@@ -168,6 +184,69 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir,
             else:
                 print(k+':', v)
 
+    # Combine the CSVs
+    if output:
+        icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+        txt = stor4build.combine_csvs(baseline_csv, icetank_csv)
+        with open(output, 'w') as fp:
+            fp.write(txt)
+
+@click.command()
+@click.argument('OSM', type=click.Path(exists=True))
+@click.argument('EPW', type=click.Path(exists=True))
+@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
+@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
+@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
+@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+@click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
+@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('--hourly', is_flag=True, show_default=True, default=False, help='Run hourly outputs.')
+def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
+               run_baseline, cooling_season_only, hourly):
+    """
+    Add an DX coil TES system to an OpenStudio model and run it.
+    """
+    # Make paths absolute
+    run_path = os.path.abspath(run_dir)
+    osm = os.path.abspath(osm)
+    epw = os.path.abspath(epw)
+    measures_dir = os.path.abspath(measures_dir)
+    if output:
+        run_baseline = True
+        measures_only = False
+
+    pre = []
+    post = []
+    if cooling_season_only:
+        pre.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+        
+    arguments = {}
+    freq = 'Timestep'
+    if hourly:
+        arguments = {'hourly': True}
+        freq = 'Hourly'
+
+    # Run the baseline if requested
+    if run_baseline:
+        post.append(stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments=arguments))
+        baseline = stor4build.Simulation('baseline', pre_steps=pre, post_steps=post)
+        osw = baseline.osw(osm, measures_dir, epw)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+
+    # Run the DX coil model
+    dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre, hourly=hourly)
+    osw = dxcoil.osw(osm, measures_dir, epw)
+    stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
+    
+    # Combine the CSVs
+    if output:
+        baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+        dxcoil_csv = os.path.join(run_path, dxcoil.tag(),'run', 'eplusout.csv')
+        txt = stor4build.combine_single_frequency_csvs(baseline_csv, dxcoil_csv, freq)
+        with open(output, 'w') as fp:
+            fp.write(txt)
+
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
 @click.version_option(version=__version__, prog_name='s4b-compute')
 @click.pass_context
@@ -177,3 +256,4 @@ def s4b_compute(ctx: click.Context):
 s4b_compute.add_command(run)
 s4b_compute.add_command(run_icetank)
 s4b_compute.add_command(size_icetank)
+s4b_compute.add_command(run_dxcoil)

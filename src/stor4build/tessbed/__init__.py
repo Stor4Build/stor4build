@@ -80,67 +80,6 @@ def create_app(config=None):
                                            verbose = True)
 
     # Route(s)
-    @app.route('/simple', methods=['POST'])
-    def simple_route():
-        """
-        Simulate a TES technology without sizing.
-        """
-        # Get the inputs
-        data = request.get_json()
-        type = data.get('prototype') # Unused for now
-        cz = 'ASHRAE 169-2006-%s' % data.get('cz') # Unused for now
-        vintage = data.get('vintage') # Unused for now
-        tech = data.get('technology')
-        tes_type = tech.get('type')
-        if tes_type == 'icetank':
-            charge_start = tech.get('charge_start', stor4build.IceTank.default_charge_start)
-            charge_end = tech.get('charge_end', stor4build.IceTank.default_charge_end)
-            discharge_start = tech.get('discharge_start', stor4build.IceTank.default_discharge_start)
-            discharge_end = tech.get('discharge_end', stor4build.IceTank.default_discharge_end)
-            charge_temp = tech.get('charge_temp', stor4build.IceTank.default_charge_temp)
-            num_tanks = tech.get('num_tanks', stor4build.IceTank.default_num_tanks)
-            trim_temp = tech.get('trim_temp', stor4build.IceTank.default_trim_temp)
-            arguments = {
-                "charge_start" : charge_start,
-                "charge_end" : charge_end,
-                "discharge_start" : discharge_start,
-                "discharge_end" : discharge_end,
-                "charge_temp" : charge_temp,
-                "num_tanks" : num_tanks,
-                "trim_temp" : trim_temp
-            }
-            technology_object = stor4build.IceTank('icetank',**arguments)
-            added = [{
-                        "measure_dir_name" : "add_output_variables",
-                        "name" : "Add Output Variables",
-                        "arguments" : {}
-                    }]
-        else:
-            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
-        
-        osm = os.path.abspath(os.path.join(weather_dir, 'LargeOffice.osm'))
-        epw = os.path.abspath(os.path.join(weather_dir, 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
-        
-        response_txt = ''
-        with tempfile.TemporaryDirectory() as run_dir:
-            run_path = os.path.abspath(run_dir)
-    
-            work = [stor4build.Simulation('baseline', added_steps=added), technology_object]
-            
-            for case in work:
-                osw = case.osw(osm, measures_dir, epw)
-                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
-            # Baseline results are in this directory
-            baseline_path = os.path.join(run_dir, 'baseline', 'run')
-            baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-            stor4build.fix_csv(baseline_csv)
-            with open(baseline_csv, 'r') as fp:
-                response_txt = fp.read()
-
-        response = make_response(response_txt)
-        response.headers["Content-Disposition"] = "attachment; filename=results.csv"
-        response.headers["Content-type"] = "text/csv"
-        return response
     @app.route('/simulate', methods=['POST'])
     def simulate_route():
         """
@@ -157,7 +96,7 @@ def create_app(config=None):
         # There's a better way to do all of this, no time now
         if baseline_data is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "baseline" data in input.'}, 400)
-        type = baseline_data.get('type') # Unused for now
+        type = baseline_data.get('building') # Unused for now
         if type is None:
             return make_response({'error': 'Bad request', 'message': 'Expected "building" parameter in "baseline" data input.'}, 400)
         climate_string = baseline_data.get('climate')
@@ -209,16 +148,8 @@ def create_app(config=None):
 
             technology_object_factory = stor4build.IceTank.size
 
-            added = [{
-                        "measure_dir_name" : "add_output_variables",
-                        "name" : "Add Output Variables",
-                        "arguments" : {}
-                    },
-                    {
-                        "measure_dir_name" : "run_cooling_season_only",
-                        "name" : "Run Cooling Season Only",
-                        "arguments" : {}
-                    }]
+            post = [stor4build.Step('Add Output Variables', 'add_output_variables'),
+                    stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
         else:
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
 
@@ -241,7 +172,7 @@ def create_app(config=None):
                     return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
 
                 # Run the baseline
-                baseline = stor4build.Simulation('baseline', added_steps=added)
+                baseline = stor4build.Simulation('baseline', post_steps=post)
                 osw = baseline.osw(osm, measures_dir, epw)
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
                 
@@ -251,7 +182,7 @@ def create_app(config=None):
                 stor4build.fix_csv(baseline_csv)
                 
                 # Run the technology
-                technology_object = technology_object_factory('sized_icetank', baseline_path, **arguments)
+                technology_object = technology_object_factory('sized_icetank', baseline_path, post_steps=post, **arguments)
                 osw = technology_object.osw(osm, measures_dir, epw)
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
                                         technology_object.tag()), osw, measures_only=False)

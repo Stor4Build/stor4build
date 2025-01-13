@@ -1,34 +1,40 @@
 # SPDX-FileCopyrightText: 2024-present TBD
 #
 # SPDX-License-Identifier: BSD-3-Clause
-import os
 
 class BadSizing(Exception):
     pass
 
 class Simulation:
-    def __init__(self, name, added_steps=None):
-    	self.name = name
-    	self.added_steps = None
-    	if added_steps is not None:
-    	    self.added_steps = added_steps
+    def __init__(self, name, pre_steps=None, post_steps=None):
+        self.name = name
+        self.steps = []
+        if pre_steps:
+            self.steps.extend(pre_steps)
+        self.steps.extend(self.required_steps())
+        if post_steps:
+            self.steps.extend(post_steps)
     def tag(self):
         return self.name
-    def osw(self, seed_file, measures_directory, epw_file, **kwargs):
-        steps = [
-                {
-                    "measure_dir_name" : "add_csv_output",
-                    "name" : "Add CSV Output",
-                    "arguments" : {}
-                }
-            ]
-        if self.added_steps is not None:
-            steps.extend(self.added_steps)
+    def required_steps(self):
+        return []
+    def osw(self, seed_file, measures_directory, epw_file):
+        first_step = {
+            "measure_dir_name" : "add_csv_output",
+            "name" : "Add CSV Output",
+            "arguments" : {}
+        }
+        output_steps = [first_step]
+        output_steps.extend([el.to_dict() for el in self.steps])
         osw = {
-            'measure_paths': [ measures_directory ],
+            'measure_paths': [measures_directory],
             'seed_file': seed_file,
-            'steps': steps,
-            'weather_file': epw_file
+            'steps': output_steps,
+            'weather_file': epw_file,
+            'run_options': {
+                'skip_expand_objects': True
+                #'skip_energyplus_preprocess': True
+            }
         }
         return osw
     def run(self, runner, seed_file, measures_directory, **kwargs):

@@ -2,13 +2,12 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
-import csv
-from .system import Simulation, BadSizing
-import numpy as np
+from .system import Simulation
 import pandas as pd
 import math
 import datetime
 from .util import convert_string_time_interval
+from .osmeasures import Step
 
 class IceTank(Simulation):
     default_charge_start = '21:00'
@@ -19,8 +18,8 @@ class IceTank(Simulation):
     default_num_tanks = 1
     default_trim_temp = 10.0
     default_peak_reduction = 15.0
-    def __init__(self, name, **kwargs):
-        super().__init__(name)
+    def __init__(self, name, pre_steps=None, post_steps=None, **kwargs):
+        # Get all the data first
         self.charge_start = kwargs.get('charge_start', self.default_charge_start)
         self.charge_end = kwargs.get('charge_end', self.default_charge_end)
         self.discharge_start = kwargs.get('discharge_start', self.default_discharge_start)
@@ -29,6 +28,18 @@ class IceTank(Simulation):
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
         self.sizing = kwargs.get('sizing', {})
+        super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
+    def required_steps(self):
+        return [Step('Add Python Tank', 'add_pytank',
+                     arguments={
+                         "chrg_start": self.charge_start,
+                         "chrg_end": self.charge_end,
+                         "dchrg_start": self.discharge_start,
+                         "dchrg_end": self.discharge_end,
+                         "chrg_temp": self.charge_temp,
+                         "num_tanks": self.num_tanks,
+                         "trim_temp": self.trim_temp
+                     })]
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
         joules_to_kwh = 1.0e-5/36.0
@@ -101,45 +112,8 @@ class IceTank(Simulation):
         kwargs.pop('num_tanks', None)
         kwargs.pop('trim_temp', None)
         return cls(name, num_tanks=actual_num_tanks, trim_temp=Ti, sizing=sizing, **kwargs)
-    def osw(self, seed_file, measures_directory, epw_file, **kwargs):
+    def osw(self, seed_file, measures_directory, epw_file):
         if self.num_tanks is None or self.trim_temp is None:
             return None
-        osw = {
-            'measure_paths': [ measures_directory ],
-            'seed_file': seed_file,
-            'steps': [
-                {
-                    "measure_dir_name" : "add_csv_output",
-                    "name" : "Add CSV Output",
-                    "arguments" : {}
-                },
-                {
-                    "measure_dir_name" : "run_cooling_season_only",
-                    "name" : "Run Cooling Season Only",
-                    "arguments" : {}
-                }
-            ],
-            'weather_file': epw_file
-        }
-        osw['steps'].append({
-            "measure_dir_name" : "add_pytank",
-            "name" : "Add Python Tank",
-            "description" : "This measure will add the Python tank model.",
-            "modeler_description" : "This measure will add the Python tank model.",
-            "arguments" : {
-                "chrg_start": self.charge_start,
-                "chrg_end": self.charge_end,
-                "dchrg_start": self.discharge_start,
-                "dchrg_end": self.discharge_end,
-                "chrg_temp": self.charge_temp,
-                "num_tanks": self.num_tanks,
-                "trim_temp": self.trim_temp
-            }
-        })
-        osw['steps'].append({
-                    "measure_dir_name" : "add_output_variables",
-                    "name" : "Add Output Variables",
-                    "arguments" : {}
-                })
-        return osw
+        return super().osw(seed_file, measures_directory, epw_file)
 

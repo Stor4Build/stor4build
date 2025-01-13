@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2024-present TBD
 #
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Dict, Union
+import dataclasses
 
 prototypes_list = ['SecondarySchool',
                    'PrimarySchool',
@@ -87,6 +89,15 @@ def map_to_vintage(vintage:int):
     last_key = vintage_keys[0]
     for key in vintage_keys[1:]:
         if vintage < key:
-            break;
+            break
         last_key = key
     return vintage_map[last_key]
+
+@dataclasses.dataclass
+class Step:
+    name: str
+    measure_dir_name: str
+    arguments: Dict[str, Union[str, float, int]] = dataclasses.field(default_factory=dict)
+    
+    def to_dict(self):
+        return dataclasses.asdict(self)
