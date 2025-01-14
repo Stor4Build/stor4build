@@ -52,6 +52,7 @@ class IceTank(Simulation):
         window_start = kwargs.get('discharge_start', cls.default_discharge_start)
         window_end = kwargs.get('discharge_end', cls.default_discharge_end)
         peak_reduction = kwargs.get('peak_reduction', cls.default_discharge_end)
+        store_ice = kwargs.get('store_ice', cls.default_store_ice)
         
         # Figure out the window we're looking at
         k0, k1 = convert_string_time_interval(window_start, window_end)
@@ -109,7 +110,8 @@ class IceTank(Simulation):
                   'interval_end': k1,
                   'requested_capacity': requested_capacity,
                   'actual_capacity': actual_capacity,
-                  'computed_trim_temperature': Ti
+                  'computed_trim_temperature': Ti,
+                  'storage_type': {True: 'ice', False:'chw'}[store_ice]
                   }
         # Remove any arguments that might intefere
         kwargs.pop('num_tanks', None)

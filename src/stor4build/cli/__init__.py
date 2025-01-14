@@ -64,9 +64,10 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
-                cooling_season_only):
+                cooling_season_only, chw):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -86,6 +87,9 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         "num_tanks" : ntanks,
         "trim_temp" : trim_temp
     }
+    
+    if chw:
+        arguments['store_ice'] = False
     
     if output:
         run_baseline = True
@@ -137,9 +141,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
-                 cooling_season_only):
+                 cooling_season_only, chw):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -158,6 +163,9 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "charge_temp" : charge_temp,
         "peak_reduction" : peak_reduction
     }
+    
+    if chw:
+        arguments['store_ice'] = False
     
     post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
     if cooling_season_only:
