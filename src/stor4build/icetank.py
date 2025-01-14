@@ -18,6 +18,7 @@ class IceTank(Simulation):
     default_num_tanks = 1
     default_trim_temp = 10.0
     default_peak_reduction = 15.0
+    default_store_ice = True
     def __init__(self, name, pre_steps=None, post_steps=None, **kwargs):
         # Get all the data first
         self.charge_start = kwargs.get('charge_start', self.default_charge_start)
@@ -27,6 +28,7 @@ class IceTank(Simulation):
         self.charge_temp = kwargs.get('charge_temp', self.default_charge_temp)
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
+        self.store_ice = kwargs.get('store_ice', self.default_store_ice)
         self.sizing = kwargs.get('sizing', {})
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
@@ -38,7 +40,8 @@ class IceTank(Simulation):
                          "dchrg_end": self.discharge_end,
                          "chrg_temp": self.charge_temp,
                          "num_tanks": self.num_tanks,
-                         "trim_temp": self.trim_temp
+                         "trim_temp": self.trim_temp,
+                         "strg_type": {True: "ice", False: "chw"}[self.store_ice]
                      })]
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
@@ -49,6 +52,7 @@ class IceTank(Simulation):
         window_start = kwargs.get('discharge_start', cls.default_discharge_start)
         window_end = kwargs.get('discharge_end', cls.default_discharge_end)
         peak_reduction = kwargs.get('peak_reduction', cls.default_discharge_end)
+        store_ice = kwargs.get('store_ice', cls.default_store_ice)
         
         # Figure out the window we're looking at
         k0, k1 = convert_string_time_interval(window_start, window_end)
@@ -106,7 +110,8 @@ class IceTank(Simulation):
                   'interval_end': k1,
                   'requested_capacity': requested_capacity,
                   'actual_capacity': actual_capacity,
-                  'computed_trim_temperature': Ti
+                  'computed_trim_temperature': Ti,
+                  'storage_type': {True: 'ice', False:'chw'}[store_ice]
                   }
         # Remove any arguments that might intefere
         kwargs.pop('num_tanks', None)

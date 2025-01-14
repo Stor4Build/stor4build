@@ -115,9 +115,13 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     args << trim_temp
 
     # create argument for storage type
-    strg_type = OpenStudio::Measure::OSArgument.makeStringArgument(
+    storage_chs = OpenStudio::StringVector.new
+    storage_chs << 'ice'
+    storage_chs << 'chw'
+    strg_type = OpenStudio::Measure::OSArgument.makeChoiceArgument(
       'strg_type',
-      false
+      storage_chs,
+      true
     )
     strg_type.setDefaultValue('ice')
     strg_type.setDescription('Options are ice or chw')
