@@ -19,6 +19,20 @@ def test_minimal_input_ice():
     assert data.storage.capacity == 100.0
     assert data.energy.schedule.months[0].month == 'All'
     assert data.demand.schedule.months[0].month == 'All'
+
+def test_intervals():
+    input_path = os.path.join(resources_dir, 'minimal-input-ice.json')
+    with open(input_path, 'r') as fp:
+        inputs = json.load(fp)
+    inputs['storage']['charge_interval'] = {'begin': '17:00', 'end': '07:00'}
+    data = s4b.InputData.load(inputs)
+    assert data.baseline.type == 'LargeOffice'
+    assert data.baseline.vintage == 2011
+    assert data.baseline.climate == '5A'
+    assert data.storage.type == 'ThermalTank-Ice'
+    assert data.storage.capacity == 100.0
+    assert data.energy.schedule.months[0].month == 'All'
+    assert data.demand.schedule.months[0].month == 'All'
     
 def test_larger_input_chw():
     input_path = os.path.join(resources_dir, 'larger-input-chw.json')
