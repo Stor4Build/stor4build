@@ -24,7 +24,8 @@ def test_intervals():
     input_path = os.path.join(resources_dir, 'minimal-input-ice.json')
     with open(input_path, 'r') as fp:
         inputs = json.load(fp)
-    inputs['storage']['charge_interval'] = {'begin': '17:00', 'end': '07:00'}
+    inputs['storage']['charge_interval'] = {'begin': {'hour': 17}, 'end': {'hour': 7}}
+    inputs['storage']['discharge_interval'] = {'begin': {'hour': 11}, 'end': {'hour': 16}}
     data = s4b.InputData.load(inputs)
     assert data.baseline.type == 'LargeOffice'
     assert data.baseline.vintage == 2011
@@ -33,6 +34,10 @@ def test_intervals():
     assert data.storage.capacity == 100.0
     assert data.energy.schedule.months[0].month == 'All'
     assert data.demand.schedule.months[0].month == 'All'
+    assert data.storage.charge_interval.begin.hour == 17
+    assert data.storage.charge_interval.end.hour == 7
+    assert data.storage.discharge_interval.begin.hour == 11
+    assert data.storage.discharge_interval.end.hour == 16
     
 def test_larger_input_chw():
     input_path = os.path.join(resources_dir, 'larger-input-chw.json')

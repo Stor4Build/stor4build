@@ -69,36 +69,25 @@ class BuildingDataSchema(BaseSchema):
     type = fields.Str(validate=validate.OneOf(prototypes_list), required=True)
     promote_to = BuildingData
 
-hm_grouper = re.compile(r"^([0-2][0-3]):([0-5][0-9])$")
-hm_matcher = re.compile(r"^[0-2][0-3]:[0-5][0-9]$")
-
 @dataclass
 class HourMinute:
     hour: int
     minute: int = 0
     
-class HourMinuteSchema(Schema):
-    hour_minute = fields.Str(validate=validate.Regexp(r"^[0-2][0-3]:[0-5][0-9]$"),
-                             required=True)
-    @post_load
-    def promote(self, data, **kwargs):
-        print(data)
-        return self.HourMinute(hour=0, minute=0)
+class HourMinuteSchema(BaseSchema):
+    hour = fields.Int(validate=validate.Range(min=0, max=23),
+                      required=True)
+    promote_to = HourMinute
 
 @dataclass
 class Interval:
     begin: HourMinute
     end: HourMinute
 
-# r"^[0-2][0-3]:[0-5][0-9]$"gm
-# r"^[0-2][0-3]:00$"gm
-class IntervalSchema(Schema):
-    begin = fields.Str(validate=validate.Regexp(hm_matcher), required=True)
-    end = fields.Str(validate=validate.Regexp(hm_matcher), required=True)
-    
-    @post_load
-    def promote(self, data, **kwargs):
-        return self.promote_to(**data)
+class IntervalSchema(BaseSchema):
+    begin = fields.Nested(lambda: HourMinuteSchema(), required=True)
+    end = fields.Nested(lambda: HourMinuteSchema(), required=True)
+    promote_to = Interval
 
 @dataclass
 class StorageData:
