@@ -133,6 +133,10 @@ def create_app(config=None):
             # Translate the utility rate parameters to charge/discharge start/end
             results = stor4build.process_energy_schedule(energy_sch)
             arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
+            if inputs.storage.charge_interval is not None:
+                # Override the charge interval if it's in the input
+                arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
+                arguments['charge_end'] = str(inputs.storage.charge_interval.end)
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
 

@@ -73,6 +73,8 @@ class BuildingDataSchema(BaseSchema):
 class HourMinute:
     hour: int
     minute: int = 0
+    def __str__(self):
+        return '%02d:%02d' % (self.hour, self.minute)
     
 class HourMinuteSchema(BaseSchema):
     hour = fields.Int(validate=validate.Range(min=0, max=23),

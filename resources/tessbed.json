@@ -71,6 +71,34 @@
           "vintage"
         ]
       },
+      "HourMinute": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 23
+          }
+        },
+        "required": [
+          "hour"
+        ]
+      },
+      "Interval": {
+        "type": "object",
+        "properties": {
+          "begin": {
+            "$ref": "#/components/schemas/HourMinute"
+          },
+          "end": {
+            "$ref": "#/components/schemas/HourMinute"
+          }
+        },
+        "required": [
+          "begin",
+          "end"
+        ]
+      },
       "StorageData": {
         "type": "object",
         "properties": {
@@ -83,6 +111,12 @@
           },
           "capacity": {
             "type": "number"
+          },
+          "charge_interval": {
+            "$ref": "#/components/schemas/Interval"
+          },
+          "discharge_interval": {
+            "$ref": "#/components/schemas/Interval"
           }
         },
         "required": [
