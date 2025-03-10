@@ -1,6 +1,6 @@
 {
-  "seed_file" : "SmallOffice-4A-2013.osm",
-  "weather_file": "USA_MD_Baltimore-Washington.Intl.AP.724060_TMY3.epw",
+  "seed_file" : "StandAloneRetail-5A-2004.osm",
+  "weather_file": "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw",
   "measure_paths": [
     "../measures/"
   ],
