@@ -1,6 +1,6 @@
 {
   "seed_file" : "SmallOffice-4A-2013.osm",
-  "weather_file": "USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw",
+  "weather_file": "USA_MD_Baltimore-Washington.Intl.AP.724060_TMY3.epw",
   "measure_paths": [
     "../measures/"
   ],
