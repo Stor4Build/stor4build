@@ -8,6 +8,10 @@ from typing import List
 import json
 import re
 
+actual_climate_zone_list = climate_zone_list[:]
+actual_climate_zone_list.remove('5C')
+actual_prototypes_list = ['LargeOffice']
+
 class BaseSchema(Schema):
     class Meta:
         unknown = EXCLUDE
@@ -64,9 +68,9 @@ class BuildingData:
     type: str
 
 class BuildingDataSchema(BaseSchema):
-    climate = fields.Str(validate=validate.OneOf(climate_zone_list), required=True)
+    climate = fields.Str(validate=validate.OneOf(actual_climate_zone_list), required=True)
     vintage = fields.Int(required=True)
-    type = fields.Str(validate=validate.OneOf(prototypes_list), required=True)
+    type = fields.Str(validate=validate.OneOf(actual_prototypes_list), required=True)
     promote_to = BuildingData
 
 @dataclass

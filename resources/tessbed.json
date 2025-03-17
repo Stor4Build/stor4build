@@ -25,7 +25,6 @@
               "4C",
               "5A",
               "5B",
-              "5C",
               "6A",
               "6B",
               "7A",
@@ -39,29 +38,7 @@
           "type": {
             "type": "string",
             "enum": [
-              "SecondarySchool",
-              "PrimarySchool",
-              "SmallOffice",
-              "MediumOffice",
-              "LargeOffice",
-              "SmallHotel",
-              "LargeHotel",
-              "Warehouse",
-              "RetailStandalone",
-              "RetailStripmall",
-              "QuickServiceRestaurant",
-              "FullServiceRestaurant",
-              "MidriseApartment",
-              "HighriseApartment",
-              "Hospital",
-              "Outpatient",
-              "Laboratory",
-              "LargeDataCenterHighITE",
-              "LargeDataCenterLowITE",
-              "SmallDataCenterHighITE",
-              "SmallDataCenterLowITE",
-              "Courthouse",
-              "College"
+              "LargeOffice"
             ]
           }
         },
