@@ -2,12 +2,17 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import stor4build as s4b
+from stor4build.schema import InputDataSchema
+from stor4build.__about__ import __version__ as stor4build_version
 import os
 import json
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 
 # Make some assumptions
 this_dir = os.path.abspath(os.path.dirname(__file__))
 resources_dir = os.path.join(this_dir, '..', 'resources')
+schema_path = os.path.join(this_dir, '..', 'schema', 'tessbed.json')
     
 def test_minimal_input_ice():
     input_path = os.path.join(resources_dir, 'minimal-input-ice.json')
@@ -56,3 +61,20 @@ def test_larger_input_chw():
     assert data.storage.discharge_interval is None
     assert data.storage.charge_interval is None
     
+
+import json
+
+def test_schema_changes():
+    spec = APISpec(
+        title="TESSBeD",
+        version=stor4build_version,
+        openapi_version="3.0.2",
+        info=dict(description="The TESSBeD web app for TES calculations"),
+        plugins=[MarshmallowPlugin()],
+    )
+
+    spec.components.schema("InputData", schema=InputDataSchema)
+    current = spec.to_dict()
+    with open(schema_path, 'r') as fp:
+        in_repo = json.load(fp)
+    assert current == in_repo
