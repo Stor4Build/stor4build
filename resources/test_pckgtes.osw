@@ -1,0 +1,32 @@
+{
+  "seed_file" : "StandAloneRetail-5A-2004.osm",
+  "weather_file": "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw",
+  "measure_paths": [
+    "../measures/"
+  ],
+  "file_paths": [
+    "./"
+  ],
+  "run_directory": "./run/",
+  "steps" : [
+    {
+      "measure_dir_name" : "add_packaged_ice_storage",
+      "name" : "Add Packaged Ice Storage",
+      "description" : "",
+      "modeler_description" : "",
+      "arguments" : {
+        "ice_cap" : "AutoSize",
+        "size_mult" : "1",
+        "ctl" : "ScheduledModes",
+        "sched" : "Simple User Sched",
+        "wknd" : false,
+        "season" : "06/01-09/30",
+        "charge_start" : "21:00",
+        "charge_end" : "07:00",
+        "discharge_start" : "12:00",
+        "discharge_end" : "18:00",
+        "hourly" : false
+      }
+    }
+  ]
+}
