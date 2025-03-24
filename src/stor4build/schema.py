@@ -6,6 +6,11 @@ from .osmeasures import climate_zone_list, vintage_list, prototypes_list
 from dataclasses import dataclass
 from typing import List
 import json
+import re
+
+actual_climate_zone_list = climate_zone_list[:]
+actual_climate_zone_list.remove('5C')
+actual_prototypes_list = ['LargeOffice']
 
 class BaseSchema(Schema):
     class Meta:
@@ -63,19 +68,45 @@ class BuildingData:
     type: str
 
 class BuildingDataSchema(BaseSchema):
-    climate = fields.Str(validate=validate.OneOf(climate_zone_list), required=True)
+    climate = fields.Str(validate=validate.OneOf(actual_climate_zone_list), required=True)
     vintage = fields.Int(required=True)
-    type = fields.Str(validate=validate.OneOf(prototypes_list), required=True)
+    type = fields.Str(validate=validate.OneOf(actual_prototypes_list), required=True)
     promote_to = BuildingData
+
+@dataclass
+class HourMinute:
+    hour: int
+    minute: int = 0
+    def __str__(self):
+        return '%02d:%02d' % (self.hour, self.minute)
+    
+class HourMinuteSchema(BaseSchema):
+    hour = fields.Int(validate=validate.Range(min=0, max=23),
+                      required=True)
+    promote_to = HourMinute
+
+@dataclass
+class Interval:
+    begin: HourMinute
+    end: HourMinute
+
+class IntervalSchema(BaseSchema):
+    begin = fields.Nested(lambda: HourMinuteSchema(), required=True)
+    end = fields.Nested(lambda: HourMinuteSchema(), required=True)
+    promote_to = Interval
 
 @dataclass
 class StorageData:
     type: str
     capacity: float
+    charge_interval: Interval = None
+    discharge_interval: Interval = None
 
 class StorageDataSchema(BaseSchema):
     type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater']), required=True)
     capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=True)
+    charge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
+    discharge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
     promote_to = StorageData
 
 @dataclass

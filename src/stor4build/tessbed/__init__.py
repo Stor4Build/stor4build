@@ -133,6 +133,16 @@ def create_app(config=None):
             # Translate the utility rate parameters to charge/discharge start/end
             results = stor4build.process_energy_schedule(energy_sch)
             arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
+            if inputs.storage.charge_interval is not None:
+                # Override the charge interval if it's in the input - implementation commented out
+                # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
+                # arguments['charge_end'] = str(inputs.storage.charge_interval.end)
+                if inputs.storage.discharge_interval is not None:
+                    return make_response({'error': 'Bad request', 'message': 'Charge and discharge intervals in input are no longer accepted.'}, 400)
+                else:
+                    return make_response({'error': 'Bad request', 'message': 'Charge interval in input is no longer accepted.'}, 400)
+            elif inputs.storage.discharge_interval is not None:
+                return make_response({'error': 'Bad request', 'message': 'Discharge interval in input is no longer accepted.'}, 400)
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
 
@@ -185,19 +195,10 @@ def create_app(config=None):
                 
         else:
             return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)
-            # Run things in a loop, this could be done in parallel
-            #with tempfile.TemporaryDirectory() as run_dir:
-            #    run_path = os.path.abspath(run_dir)
-            #    technology_object = technology_object_factory('sized_icetank', **tech)
-            #    for case in [stor4build.Simulation('baseline', added_steps=added), technology_object]:
-            #        osw = case.osw(osm, measures_dir, epw)
-            #        stor4build.run_workflow(openstudio_exe, os.path.join(run_path, case.tag()), osw, measures_only=False)
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"
         response.headers["Content-type"] = "text/csv"
-        #response = make_response(technology_object.sizing, 200)
-        #response.headers["Content-Type"] = "application/json" 
         return response
     return app
 

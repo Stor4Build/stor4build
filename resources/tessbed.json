@@ -25,7 +25,6 @@
               "4C",
               "5A",
               "5B",
-              "5C",
               "6A",
               "6B",
               "7A",
@@ -39,29 +38,7 @@
           "type": {
             "type": "string",
             "enum": [
-              "SecondarySchool",
-              "PrimarySchool",
-              "SmallOffice",
-              "MediumOffice",
-              "LargeOffice",
-              "SmallHotel",
-              "LargeHotel",
-              "Warehouse",
-              "RetailStandalone",
-              "RetailStripmall",
-              "QuickServiceRestaurant",
-              "FullServiceRestaurant",
-              "MidriseApartment",
-              "HighriseApartment",
-              "Hospital",
-              "Outpatient",
-              "Laboratory",
-              "LargeDataCenterHighITE",
-              "LargeDataCenterLowITE",
-              "SmallDataCenterHighITE",
-              "SmallDataCenterLowITE",
-              "Courthouse",
-              "College"
+              "LargeOffice"
             ]
           }
         },
@@ -69,6 +46,34 @@
           "climate",
           "type",
           "vintage"
+        ]
+      },
+      "HourMinute": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 23
+          }
+        },
+        "required": [
+          "hour"
+        ]
+      },
+      "Interval": {
+        "type": "object",
+        "properties": {
+          "begin": {
+            "$ref": "#/components/schemas/HourMinute"
+          },
+          "end": {
+            "$ref": "#/components/schemas/HourMinute"
+          }
+        },
+        "required": [
+          "begin",
+          "end"
         ]
       },
       "StorageData": {
@@ -83,6 +88,12 @@
           },
           "capacity": {
             "type": "number"
+          },
+          "charge_interval": {
+            "$ref": "#/components/schemas/Interval"
+          },
+          "discharge_interval": {
+            "$ref": "#/components/schemas/Interval"
           }
         },
         "required": [
