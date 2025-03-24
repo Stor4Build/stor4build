@@ -6,7 +6,6 @@ from .osmeasures import climate_zone_list, vintage_list, prototypes_list
 from dataclasses import dataclass
 from typing import List
 import json
-import re
 
 actual_climate_zone_list = climate_zone_list[:]
 actual_climate_zone_list.remove('5C')
