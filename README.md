@@ -9,7 +9,8 @@
 
 - [Installation](#installation)
 - [VS Code/Hatch Dev Environment](#vs_codehatch_dev_environment)
-- [Web API Demo](#web_api_demo)
+- [Web API](#web_api)
+- [Command Line Usage](#command_line_usage)
 - [License](#license)
 
 ## Installation
@@ -52,22 +53,35 @@ s4b-compute --help
 
 You should see the help output from the tool.
 
-## Web API Demo
+## Web API
 
-A very simple flask-based web api demo is included. To launch the demo back end (that does the calculation) run
+A simple flask-based web api is included. To run it, a PostgreSQL database storing the baseline models and weather is required. That setup is not described here yet. The following four environment variables need to be set:
+
+```
+FLASK_TIMESCALE_HOST
+FLASK_TIMESCALE_DB
+FLASK_TIMESCALE_USERNAME
+FLASK_TIMESCALE_PASSWORD
+```
+
+Standard password rules apply. To launch the back end (that does the calculation) run
 
 ```console
-s4b-api prototype --openstudio <openstudio/cli/path> -m <measures/path> --instance-path <path/to/run/in>
+flask --app stor4build.tessbed run
 ```
 
-This will start up the flask **development** server in **debug** mode, and debugging output will appear on the console. Next, navigate a browser to 
+This will start up the flask **development** server and output will appear on the console. The API accepts JSON inputs in the form described in the `schema` directory in the file `tessbed.json`. Example inputs and scripts to send them to the API are in the `scripts` directory.
 
-```
-http://127.0.0.1:5000/prototype
-```
+## Command Line Usage
 
-Make choices for the prototype, climate zone, and vintage, then click submit. Wait a few moments, and the page will change once the calculation is complete.
+The `s4b-compute` command includes three subcommands at this time:
+
+  * `run-icetank` - Runs the chiller-based ice tank Python plugin case with a specified capacity. Using `--chw` will use the chilled water version.
+  * `size-icetank` - Runs the chiller-based ice tank Python plugin case with a size based on the baseline model and discharge window parameters. Using `--chw` will use the chilled water version.
+  * `run-dxcoil` - Runs the native E+ DX coil TES system with autosizing.
+
+Further information is available with the `--help` option.
 
 ## License
 
-`s4b` is distributed under the terms of the [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) license.
+`stor4build` is distributed under the terms of the [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) license.
