@@ -136,6 +136,15 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     ctrl_type.setDescription('Options are sch or soc')
     args << ctrl_type
 
+    # create argument for chiller downsizing
+    size_frac = OpenStudio::Measure::OSArgument.makeDoubleArgument(
+      'size_frac',
+      false
+    )
+    size_frac.setDefaultValue(1)
+    size_frac.setDescription('Cooling sizing factor')
+    args << size_frac
+
     return args
   end
 
@@ -158,6 +167,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     trim_temp = runner.getDoubleArgumentValue('trim_temp', usr_args)
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
+    size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
 
     # add discharge start time schedule
     ot = 'Schedule_Constant'
@@ -556,6 +566,13 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     end
     ws.removeObjects(uv)
 
+    # set cooling sizing factor
+    ot = 'Sizing_Parameters'
+    ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+      o.setDouble(1, size_frac)
+    end
+
+    return true
   end
 
 end
