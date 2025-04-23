@@ -117,7 +117,7 @@ def create_app(config=None):
         except ValidationError as ve:
             return make_response({'error': 'Bad request', 'message': process_validation_error(ve)}, 400)
  
-        type = inputs.baseline.type # Unused for now
+        building_type = inputs.baseline.type
         cz = 'ASHRAE 169-2006-%s' % inputs.baseline.climate
         vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
         
@@ -128,21 +128,25 @@ def create_app(config=None):
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
 
         needs_baseline = False
+        # Translate the utility rate parameters to charge/discharge start/end
+        results = stor4build.process_energy_schedule(energy_sch)
+        arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
+        if inputs.storage.charge_interval is not None:
+            # Override the charge interval if it's in the input - implementation commented out
+            # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
+            # arguments['charge_end'] = str(inputs.storage.charge_interval.end)
+            if inputs.storage.discharge_interval is not None:
+                return make_response({'error': 'Bad request', 'message': 'Charge and discharge intervals in input are no longer accepted.'}, 400)
+            else:
+                return make_response({'error': 'Bad request', 'message': 'Charge interval in input is no longer accepted.'}, 400)
+        elif inputs.storage.discharge_interval is not None:
+            return make_response({'error': 'Bad request', 'message': 'Discharge interval in input is no longer accepted.'}, 400)
+
         if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
+            if building_type != 'LargeOffice':
+                return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
             needs_baseline = True
-            # Translate the utility rate parameters to charge/discharge start/end
-            results = stor4build.process_energy_schedule(energy_sch)
-            arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
-            if inputs.storage.charge_interval is not None:
-                # Override the charge interval if it's in the input - implementation commented out
-                # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
-                # arguments['charge_end'] = str(inputs.storage.charge_interval.end)
-                if inputs.storage.discharge_interval is not None:
-                    return make_response({'error': 'Bad request', 'message': 'Charge and discharge intervals in input are no longer accepted.'}, 400)
-                else:
-                    return make_response({'error': 'Bad request', 'message': 'Charge interval in input is no longer accepted.'}, 400)
-            elif inputs.storage.discharge_interval is not None:
-                return make_response({'error': 'Bad request', 'message': 'Discharge interval in input is no longer accepted.'}, 400)
+            
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
 
@@ -150,7 +154,11 @@ def create_app(config=None):
 
             post = [stor4build.Step('Add Output Variables', 'add_output_variables'),
                     stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+        elif inputs.storage.type == 'PackagedIceStorage':
+            if building_type is not in ['SmallOffice', 'RetailStandalone']:
+                return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
         else:
+            # Should never reach here because the input is validated, but leave it in as a safety
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
 
         response_txt = ''
@@ -167,7 +175,7 @@ def create_app(config=None):
                 
                 # Get the baseline
                 osm = os.path.join(run_dir, 'baseline.osm')
-                building_id = resultsdb.get_prototype_model(osm, building_type='LargeOffice', climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
+                building_id = resultsdb.get_prototype_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
                 if building_id is None:
                     return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
 

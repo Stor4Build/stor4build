@@ -271,7 +271,7 @@ inputs = {
 if len(sys.argv) > 1:
     if os.path.exists(sys.argv[1]):
         with open(sys.argv[1], 'r') as fp:
-            inputs =json.load(fp) #['request']['body']
+            inputs =json.load(fp)['request']['body']
     
 start = time.time()
 r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
