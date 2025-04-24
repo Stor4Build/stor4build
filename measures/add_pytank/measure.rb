@@ -338,6 +338,8 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     chiller_info = []
     ot = 'Chiller_Electric_EIR'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+      o.setDouble(11, size_frac)
+      o.setDouble(12, size_frac)
       o.setDouble(21, chrg_temp)
       chiller_info << [
         o.name.get,
