@@ -128,6 +128,8 @@ def create_app(config=None):
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
 
         needs_baseline = False
+        post = []
+        technology_object_factory = None
         # Translate the utility rate parameters to charge/discharge start/end
         results = stor4build.process_energy_schedule(energy_sch)
         arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
@@ -155,54 +157,55 @@ def create_app(config=None):
             post = [stor4build.Step('Add Output Variables', 'add_output_variables'),
                     stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
         elif inputs.storage.type == 'PackagedIceStorage':
-            if building_type is not in ['SmallOffice', 'RetailStandalone']:
+            if building_type not in ['SmallOffice', 'RetailStandalone']:
                 return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
+            technology_object_factory = stor4build.DxCoil.size
         else:
             # Should never reach here because the input is validated, but leave it in as a safety
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
 
         response_txt = ''
-        if needs_baseline:
-            # Run the baseline first, then the technology
-            with managed_directory(debug_run_dir) as run_dir:
-                run_path = os.path.abspath(run_dir)
-                
-                # Get the weather
-                epw = os.path.join(run_dir, 'weather.epw')
-                epw_file = resultsdb.get_weather(epw, inputs.baseline.climate)
-                if epw_file is None:
-                    return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
-                
-                # Get the baseline
-                osm = os.path.join(run_dir, 'baseline.osm')
-                building_id = resultsdb.get_prototype_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
-                if building_id is None:
-                    return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
+        #if needs_baseline:
+        # Run the baseline first, then the technology
+        with managed_directory(debug_run_dir) as run_dir:
+            run_path = os.path.abspath(run_dir)
+            
+            # Get the weather
+            epw = os.path.join(run_dir, 'weather.epw')
+            epw_file = resultsdb.get_weather(epw, inputs.baseline.climate)
+            if epw_file is None:
+                return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
+            
+            # Get the baseline
+            osm = os.path.join(run_dir, 'baseline.osm')
+            building_id = resultsdb.get_prototype_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
+            if building_id is None:
+                return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
 
-                # Run the baseline
-                baseline = stor4build.Simulation('baseline', post_steps=post)
-                osw = baseline.osw(osm, measures_dir, epw)
-                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
+            # Run the baseline
+            baseline = stor4build.Simulation('baseline', post_steps=post)
+            osw = baseline.osw(osm, measures_dir, epw)
+            stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
+            
+            # Baseline results are in this directory
+            baseline_path = os.path.join(run_dir, 'baseline', 'run')
+            baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
+            stor4build.fix_csv(baseline_csv)
+            
+            # Run the technology
+            technology_object = technology_object_factory('tes', baseline_path, post_steps=post, **arguments)
+            osw = technology_object.osw(osm, measures_dir, epw)
+            stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
+                                    technology_object.tag()), osw, measures_only=False)
+            if detailed_header:
+                for k,v in technology_object.sizing.items():
+                    response_txt += '%s,"%s"\n' % (k, str(v)) 
+            tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
+            stor4build.fix_csv(tech_csv)
+            response_txt += stor4build.combine_csvs(baseline_csv, tech_csv)
                 
-                # Baseline results are in this directory
-                baseline_path = os.path.join(run_dir, 'baseline', 'run')
-                baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-                stor4build.fix_csv(baseline_csv)
-                
-                # Run the technology
-                technology_object = technology_object_factory('sized_icetank', baseline_path, post_steps=post, **arguments)
-                osw = technology_object.osw(osm, measures_dir, epw)
-                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
-                                        technology_object.tag()), osw, measures_only=False)
-                if detailed_header:
-                    for k,v in technology_object.sizing.items():
-                        response_txt += '%s,"%s"\n' % (k, str(v)) 
-                tech_csv = os.path.join(run_dir, 'sized_icetank', 'run', 'eplusout.csv')
-                stor4build.fix_csv(tech_csv)
-                response_txt += stor4build.combine_csvs(baseline_csv, tech_csv)
-                
-        else:
-            return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)
+        #else:
+        #    return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"

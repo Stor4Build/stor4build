@@ -6,17 +6,17 @@ from .osmeasures import Step
 from dataclasses import dataclass, field
 from typing import List
 
-@dataclass
+
 class DxCoil(Simulation):
-    name: str
-    pre_steps: List[Step] = field(default_factory=list)
-    post_steps: List[Step] = field(default_factory=list)
-    sizing: dict = None
-    hourly: bool = False
-    charge_start: str = None
-    charge_end: str = None
-    discharge_start: str = None
-    discharge_end: str = None
+    def __init__(self, name, pre_steps=None, post_steps=None, hourly=False, **kwargs):
+        # Get all the data first
+        self.charge_start = kwargs.get('charge_start', None)
+        self.charge_end = kwargs.get('charge_end', None)
+        self.discharge_start = kwargs.get('discharge_start', None)
+        self.discharge_end = kwargs.get('discharge_end', None)
+        self.sizing = kwargs.get('sizing', {})
+        self.hourly = hourly
+        super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
 
     def required_steps(self):
         args = {'hourly': self.hourly,
@@ -24,7 +24,7 @@ class DxCoil(Simulation):
                 'size_mult': '1',
                 'ctl': 'ScheduledModes',
                 'sched': 'Simple User Sched',
-                'wknd': false,
+                'wknd': False,
                 'season': '06/01-09/30'}
         if self.charge_start is not None:
             args['charge_start'] = self.charge_start
