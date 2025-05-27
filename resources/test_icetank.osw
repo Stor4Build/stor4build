@@ -24,7 +24,7 @@
         "trim_temp" : 10,
         "strg_type" : "ice",
         "ctrl_type" : "soc",
-        "size_frac" : 0.95
+        "size_frac" : 0.8
       }
     }
   ]
