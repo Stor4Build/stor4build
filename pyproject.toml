@@ -28,7 +28,6 @@ dependencies = [
   "flask",
   "scipy",
   "SecondaryCoolantProps",
-  "httpx",
   "pandas",
   "psycopg2-binary",
   "marshmallow"
@@ -36,13 +35,12 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/unknown/stor4build#readme"
-Issues = "https://github.com/unknown/stor4build/issues"
-Source = "https://github.com/unknown/stor4build"
+Documentation = "https://github.com/stor4build/stor4build#readme"
+Issues = "https://github.com/stor4build/stor4build/issues"
+Source = "https://github.com/stor4build/stor4build"
 
 [project.scripts]
 s4b-compute = "stor4build.cli:s4b_compute"
-s4b-form = "stor4build.api:s4b_form"
 
 [tool.hatch.version]
 path = "src/stor4build/__about__.py"
@@ -51,6 +49,7 @@ path = "src/stor4build/__about__.py"
 dependencies = [
   "pytest",
   "pytest-cov",
+  "httpx",
   "apispec"
 ]
 [tool.hatch.envs.default.scripts]
