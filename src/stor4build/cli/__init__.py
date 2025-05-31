@@ -92,11 +92,11 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         arguments['store_ice'] = False
     
     if output:
-        run_baseline = True
+        #run_baseline = True
         measures_only = False
 
     # Run the ice tank
-    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables', {'add_hourly': True})]
+    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
@@ -114,9 +114,12 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 
     # Combine the CSVs
     if output:
-        baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
         icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
-        txt = stor4build.combine_csvs(baseline_csv, icetank_csv)
+        if run_baseline:
+            baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+            txt = stor4build.combine_single_frequency_csvs(baseline_csv, icetank_csv, 'Hourly')
+        else:
+            txt = stor4build.single_frequency_csv(icetank_csv, 'Hourly', verbose=False)
         with open(output, 'w') as fp:
             fp.write(txt)
     
@@ -169,11 +172,10 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     if chw:
         arguments['store_ice'] = False
     
-    post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    # Run the baseline
+    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables')]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
-
-    # Run the baseline
     baseline = stor4build.Simulation('baseline', post_steps=post)
     osw = baseline.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
@@ -183,6 +185,9 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     stor4build.fix_csv(baseline_csv)
 
     # Size and run the ice tank
+    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables', {'baseline': False})]
+    if cooling_season_only:
+        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     icetank = stor4build.IceTank.size('sized_icetank', baseline_path, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
@@ -197,7 +202,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     # Combine the CSVs
     if output:
         icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
-        txt = stor4build.combine_csvs(baseline_csv, icetank_csv)
+        txt = stor4build.combine_single_frequency_csvs(baseline_csv, icetank_csv, 'Hourly')
         with open(output, 'w') as fp:
             fp.write(txt)
 

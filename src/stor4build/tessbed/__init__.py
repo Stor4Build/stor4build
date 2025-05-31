@@ -157,8 +157,7 @@ def create_app(config=None):
 
             baseline_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables'),
                              stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
-            technology_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables',
-                                               {'add_hourly': True}),
+            technology_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables',{'baseline': False}),
                                stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
         elif inputs.storage.type == 'PackagedIceStorage':
             if building_type not in ['SmallOffice', 'RetailStandalone']:
@@ -206,7 +205,7 @@ def create_app(config=None):
                     response_txt += '%s,"%s"\n' % (k, str(v)) 
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)
-            response_txt += stor4build.combine_csvs(baseline_csv, tech_csv)
+            response_txt += stor4build.combine_single_frequency_csvs(baseline_csv, tech_csv, 'Hourly')
                 
         #else:
         #    return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)

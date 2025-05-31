@@ -96,7 +96,7 @@ def single_frequency_csv(eplusout_csv, freq, verbose=False):
     if verbose:
          print('Dropping columns: ' + ', '.join(drop_cols))
     df = df.drop(drop_cols, axis=1).dropna()
-    df.to_csv(eplusout_csv, index=False)
+    return df.to_csv(index=False, lineterminator='\n')
     
 def single_frequency_df(eplusout_csv, freq, verbose=False):
     df = pd.read_csv(eplusout_csv)
