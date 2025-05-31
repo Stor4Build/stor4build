@@ -7,9 +7,9 @@
 4. Verify installation with `openstudio --help`
 5. Install pip: `sudo apt install python3-pip`
 6. Install git: `sudo apt install git`
-7. Make a repo directory, `cd` in and clone the repo (using SSH here): `git clone git@github.com:NREL/s4b.git .`
+7. Make a repo directory, `cd` in and clone the repo (using SSH here): `git clone git@github.com:Stor4Build/stor4build.git .`
 8. Install the package: `sudo pip install .`
-9. Verify installation with `s4b-compute --help`
+9. Verify installation with `stor4build --help`
 
 If during the package install (step 8) this pops up:
 
