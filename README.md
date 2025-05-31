@@ -16,7 +16,7 @@
 ## Installation
 
 ```console
-pip install s4b
+pip install stor4build
 ```
 
 ## VS Code/Hatch Dev Environment
@@ -48,7 +48,7 @@ hatch shell
 to enter the environment that was created, and then execute
 
 ```console
-s4b-compute --help
+stor4build --help
 ```
 
 You should see the help output from the tool.
@@ -74,7 +74,7 @@ This will start up the flask **development** server and output will appear on th
 
 ## Command Line Usage
 
-The `s4b-compute` command includes three subcommands at this time:
+The `stor4build` command includes three subcommands at this time:
 
   * `run-icetank` - Runs the chiller-based ice tank Python plugin case with a specified capacity. Using `--chw` will use the chilled water version.
   * `size-icetank` - Runs the chiller-based ice tank Python plugin case with a size based on the baseline model and discharge window parameters. Using `--chw` will use the chilled water version.
