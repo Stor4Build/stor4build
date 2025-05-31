@@ -20,7 +20,7 @@ spdx_starters = [
 
 # Alt headers we know about
 alt_starters = ['''# *******************************************************************************
-# OpenStudio(R), Copyright (c) Alliance for Sustainable Energy, LLC.'''
+# OpenStudio(R), Copyright (c)'''
 ]
 
 # Check for a license header
