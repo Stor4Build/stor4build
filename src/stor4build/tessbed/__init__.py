@@ -185,8 +185,7 @@ def create_app(config=None):
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
 
         response_txt = ''
-        #if needs_baseline:
-        # Run the baseline first, then the technology
+        # Run/load the baseline first, then the technology
         with managed_directory(debug_run_dir) as run_dir:
             run_path = os.path.abspath(run_dir)
             

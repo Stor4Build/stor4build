@@ -293,12 +293,12 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
             fp.write(txt)
 
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
-@click.version_option(version=__version__, prog_name='s4b-compute')
+@click.version_option(version=__version__, prog_name='stor4build')
 @click.pass_context
-def s4b_compute(ctx: click.Context):
+def s4b(ctx: click.Context):
     pass
 
-s4b_compute.add_command(run)
-s4b_compute.add_command(run_icetank)
-s4b_compute.add_command(size_icetank)
-s4b_compute.add_command(run_dxcoil)
+s4b.add_command(run)
+s4b.add_command(run_icetank)
+s4b.add_command(size_icetank)
+s4b.add_command(run_dxcoil)
