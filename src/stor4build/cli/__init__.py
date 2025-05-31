@@ -95,17 +95,19 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         run_baseline = True
         measures_only = False
 
-    post = [stor4build.Step('Add Output Variables', 'add_output_variables')]
+    # Run the ice tank
+    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables', {'add_hourly': True})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
-
-    # Run the ice tank
     icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
     
     # Run the baseline if requested
     if run_baseline:
+        post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables')]
+        if cooling_season_only:
+            post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
         baseline = stor4build.Simulation('baseline', post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
         stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)

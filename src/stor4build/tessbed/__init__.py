@@ -128,7 +128,8 @@ def create_app(config=None):
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
 
         needs_baseline = False
-        post = []
+        baseline_post = []
+        technology_post = []
         technology_object_factory = None
         # Translate the utility rate parameters to charge/discharge start/end
         results = stor4build.process_energy_schedule(energy_sch)
@@ -154,8 +155,11 @@ def create_app(config=None):
 
             technology_object_factory = stor4build.IceTank.size
 
-            post = [stor4build.Step('Add Output Variables', 'add_output_variables'),
-                    stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+            baseline_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables'),
+                             stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+            technology_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables',
+                                               {'add_hourly': True}),
+                               stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
         elif inputs.storage.type == 'PackagedIceStorage':
             if building_type not in ['SmallOffice', 'RetailStandalone']:
                 return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
@@ -183,7 +187,7 @@ def create_app(config=None):
                 return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
 
             # Run the baseline
-            baseline = stor4build.Simulation('baseline', post_steps=post)
+            baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
             osw = baseline.osw(osm, measures_dir, epw)
             stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
             
@@ -193,7 +197,7 @@ def create_app(config=None):
             stor4build.fix_csv(baseline_csv)
             
             # Run the technology
-            technology_object = technology_object_factory('tes', baseline_path, post_steps=post, **arguments)
+            technology_object = technology_object_factory('tes', baseline_path, post_steps=technology_post, **arguments)
             osw = technology_object.osw(osm, measures_dir, epw)
             stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
                                     technology_object.tag()), osw, measures_only=False)
