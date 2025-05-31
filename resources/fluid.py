@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2023-2024 Alliance for Sustainable Energy, LLC
+#
+# SPDX-License-Identifier: BSD-3-Clause
 from enum import Enum, auto
 
 from scp.ethyl_alcohol import EthylAlcohol

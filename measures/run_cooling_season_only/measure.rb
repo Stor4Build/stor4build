@@ -1,7 +1,6 @@
-# insert your copyright here
-
-# see the URL below for information on how to write OpenStudio measures
-# http://nrel.github.io/OpenStudio-user-documentation/reference/measure_writing_guide/
+# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Sustainable Energy, LLC, and contributors
+#
+# SPDX-License-Identifier: BSD-3-Clause
 
 # start the measure
 class AddOutputVariables < OpenStudio::Measure::ModelMeasure
