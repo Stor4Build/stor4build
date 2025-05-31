@@ -11,6 +11,7 @@ license = "BSD-3-Clause"
 keywords = []
 authors = [
   { name = "Jason W. DeGraw", email = "jason.degraw@gmail.com" },
+  { name = "Eric Bonnema" }
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -20,6 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
@@ -40,7 +42,7 @@ Issues = "https://github.com/stor4build/stor4build/issues"
 Source = "https://github.com/stor4build/stor4build"
 
 [project.scripts]
-s4b-compute = "stor4build.cli:s4b_compute"
+stor4build = "stor4build.cli:s4b"
 
 [tool.hatch.version]
 path = "src/stor4build/__about__.py"
@@ -57,7 +59,7 @@ cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/st
 no-cov = "cov --no-cov {args}"
 
 [[tool.hatch.envs.test.matrix]]
-python = ["38", "39", "310", "311", "312"]
+python = ["38", "39", "310", "311", "312", "313"]
 
 [tool.coverage.run]
 branch = true
