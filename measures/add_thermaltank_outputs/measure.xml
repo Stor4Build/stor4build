@@ -6,8 +6,8 @@
   <version_id>3379bfc1-bfb5-4493-97db-7f588b138954</version_id>
   <version_modified>2025-05-31T05:10:38Z</version_modified>
   <xml_checksum>00000000</xml_checksum>
-  <class_name>AddThermalTankOutputVariables</class_name>
-  <display_name>Add ThermalTank Output Variables</display_name>
+  <class_name>AddThermalTankOutputs</class_name>
+  <display_name>Add ThermalTank Outputs</display_name>
   <description>DESCRIPTION_TEXT</description>
   <modeler_description>MODELER_DESCRIPTION_TEXT</modeler_description>
   <arguments>
@@ -45,12 +45,6 @@
       <checksum>CD7F5672</checksum>
     </file>
     <file>
-      <filename>.gitkeep</filename>
-      <filetype>gitkeep</filetype>
-      <usage_type>doc</usage_type>
-      <checksum>00000000</checksum>
-    </file>
-    <file>
       <version>
         <software_program>OpenStudio</software_program>
         <identifier>3.7.0</identifier>
@@ -59,18 +53,6 @@
       <filetype>py</filetype>
       <usage_type>script</usage_type>
       <checksum>EAE624E6</checksum>
-    </file>
-    <file>
-      <filename>example_model.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>53D14E69</checksum>
-    </file>
-    <file>
-      <filename>test_add_thermal_tank_output_variables.py</filename>
-      <filetype>py</filetype>
-      <usage_type>test</usage_type>
-      <checksum>A593C96D</checksum>
     </file>
   </files>
 </measure>
