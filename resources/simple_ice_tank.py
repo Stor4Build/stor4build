@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Alliance for Sustainable Energy, LLC
+# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from math import pi, exp

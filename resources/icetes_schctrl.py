@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC
+#
+# SPDX-License-Identifier: BSD-3-Clause
 from pyenergyplus.plugin import EnergyPlusPlugin
 
 from tank_bypass_branch import TankBypassBranch
