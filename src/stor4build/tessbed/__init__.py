@@ -80,6 +80,7 @@ def create_app(config=None):
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
         debug_run_dir = app.config['RUN_DIRECTORY']
+    debug_run_dir = '/home/jason/Desktop/s4b-run'
     
     # Connect to the database
     try:
@@ -133,7 +134,7 @@ def create_app(config=None):
         technology_object_factory = None
         # Translate the utility rate parameters to charge/discharge start/end
         results = stor4build.process_energy_schedule(energy_sch)
-        arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
+        arguments = {k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
         if inputs.storage.charge_interval is not None:
             # Override the charge interval if it's in the input - implementation commented out
             # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
@@ -163,6 +164,11 @@ def create_app(config=None):
             if building_type not in ['SmallOffice', 'RetailStandalone']:
                 return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
             technology_object_factory = stor4build.DxCoil.size
+            baseline_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs'),
+                             stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+            technology_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs',{'baseline': False}),
+                               stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'),
+                               stor4build.Step('Get DX Coil Sizes', 'get_dx_coil_sizes')]
         else:
             # Should never reach here because the input is validated, but leave it in as a safety
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
@@ -200,9 +206,19 @@ def create_app(config=None):
             osw = technology_object.osw(osm, measures_dir, epw)
             stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
                                     technology_object.tag()), osw, measures_only=False)
+
             if detailed_header:
+                # This isn't handled as generally as it should be
+                if inputs.storage.type == 'PackagedIceStorage':
+                    sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
+                    with open(sizing_report_path, 'r') as fp:
+                        names = next(fp).strip()
+                        values = next(fp).strip()
+                    response_txt += 'packaged_ice_object_names,' + names + '\n'
+                    response_txt += 'packaged_ice_capacities,' + values + '\n'
                 for k,v in technology_object.sizing.items():
-                    response_txt += '%s,"%s"\n' % (k, str(v)) 
+                    response_txt += '%s,"%s"\n' % (k, str(v))
+
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)
             response_txt += stor4build.combine_single_frequency_csvs(baseline_csv, tech_csv, 'Hourly')
