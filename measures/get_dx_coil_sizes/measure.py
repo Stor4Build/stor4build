@@ -1,8 +1,6 @@
-"""insert your copyright here.
-
-# see the URL below for information on how to write OpenStudio measures
-# http://nrel.github.io/OpenStudio-user-documentation/reference/measure_writing_guide/
-"""
+# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Sustainable Energy, LLC, and contributors
+#
+# SPDX-License-Identifier: BSD-3-Clause
 
 from pathlib import Path
 
@@ -83,9 +81,6 @@ class GetDXCoilSizes(openstudio.measure.ReportingMeasure):
         # use the built-in error checking (need model)
         if not runner.validateUserArguments(self.arguments(model), user_arguments):
             return False
-
-        # get measure arguments
-        #report_drybulb_temp = runner.getBoolArgumentValue("report_drybulb_temp", user_arguments)
 
         # load sql file
         sql_file = runner.lastEnergyPlusSqlFile()
