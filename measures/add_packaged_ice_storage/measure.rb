@@ -459,6 +459,10 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
     # end of new TES coil string
 
     # #Begin Coil Replacement
+    
+    out_path = './report.txt'
+    file = File.open(out_path, 'w')
+    
     # iterate through all CoilSystem:Cooling objects and replace existing coils with TES coils
     coil_selection.each do |sel_coil|
       # get workspace object for selected coil from name
@@ -487,6 +491,9 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
       # get old coil name and create new coil name
       old_coil_name = sel_coil.getString(0).to_s
       utss_name = "UTSS Coil #{replacement_count}"
+      file.puts(old_coil_name)
+      file.puts(utss_name)
+      #utss_name = name_cleaner("REPLACES_#{old_coil_name}")
 
       # grab inlet and outlet air nodes form selected coil
       inlet = sel_coil.getString(keys[2]).to_s
@@ -658,6 +665,14 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
                           "'#{utss.name}' with a capacity of #{ice_cap} GJ.\n")
       # end of coil replacement routine
     end
+    
+    # Not sure this is needed, but it was in the example reporting measure
+    begin
+      file.fsync
+    rescue StandardError
+      file.flush
+    end
+    file.close()
     
     # Mess with frequency of the outputs if requested
     if hourly

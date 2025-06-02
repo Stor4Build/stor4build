@@ -115,8 +115,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     # Combine the CSVs
     if output:
         icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+        stor4build.fix_csv(icetank_csv)
         if run_baseline:
             baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+            stor4build.fix_csv(baseline_csv)
             txt = stor4build.combine_single_frequency_csvs(baseline_csv, icetank_csv, 'Hourly')
         else:
             txt = stor4build.single_frequency_csv(icetank_csv, 'Hourly', verbose=False)
@@ -202,6 +204,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     # Combine the CSVs
     if output:
         icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+        stor4build.fix_csv(icetank_csv)
         txt = stor4build.combine_single_frequency_csvs(baseline_csv, icetank_csv, 'Hourly')
         with open(output, 'w') as fp:
             fp.write(txt)

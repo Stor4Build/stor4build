@@ -216,6 +216,15 @@ def create_app(config=None):
                         values = next(fp).strip()
                     response_txt += 'packaged_ice_object_names,' + names + '\n'
                     response_txt += 'packaged_ice_capacities,' + values + '\n'
+                    names = names.split(',')
+                    replacement_report_path = os.path.join(run_dir, 'tes', 'reports', 'add_packaged_ice_storage_report.txt')
+                    with open(replacement_report_path, 'r') as fp:
+                        lines = fp.read().splitlines()
+                    if len(lines) % 2 == 0:
+                        print('Hello, World!')
+                    else:
+                        # Something is wrong 
+                        response_txt += 'Unable to determine new-to-old object mapping'
                 for k,v in technology_object.sizing.items():
                     response_txt += '%s,"%s"\n' % (k, str(v))
 
