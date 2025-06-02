@@ -18,9 +18,4 @@ ERROR: flask 3.0.2 has requirement click>=8.1.3, but you'll have click 7.0 which
 ```
 
 Then `sudo pip install click==8.1.3` should "fix" the problem.
-
-## Command Line Interface ##
-
-TBD
-
-## Debug Web Interface ##
+ 
