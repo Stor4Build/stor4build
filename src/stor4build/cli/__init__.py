@@ -96,7 +96,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         measures_only = False
 
     # Run the ice tank
-    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables', {'baseline': False})]
+    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
@@ -105,7 +105,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     
     # Run the baseline if requested
     if run_baseline:
-        post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables')]
+        post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
         if cooling_season_only:
             post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
         baseline = stor4build.Simulation('baseline', post_steps=post)
@@ -173,7 +173,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         arguments['store_ice'] = False
     
     # Run the baseline
-    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables')]
+    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     baseline = stor4build.Simulation('baseline', post_steps=post)
@@ -185,7 +185,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     stor4build.fix_csv(baseline_csv)
 
     # Size and run the ice tank
-    post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables', {'baseline': False})]
+    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     icetank = stor4build.IceTank.size('sized_icetank', baseline_path, post_steps=post, **arguments)

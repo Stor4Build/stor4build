@@ -9,7 +9,7 @@ import typing
 import openstudio
 
 
-class AddThermalTankOutputVariables(openstudio.measure.ModelMeasure):
+class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
     """A ModelMeasure."""
 
     def name(self):
@@ -22,7 +22,7 @@ class AddThermalTankOutputVariables(openstudio.measure.ModelMeasure):
         As such, measure names should clearly describe the measure's function,
         while remaining general in nature
         """
-        return "Add ThermalTank Output Variables"
+        return "Add ThermalTank Outputs"
 
     def description(self):
         """Human readable description.
@@ -97,4 +97,4 @@ class AddThermalTankOutputVariables(openstudio.measure.ModelMeasure):
 
 
 # register the measure to be used by the application
-AddThermalTankOutputVariables().registerWithApplication()
+AddThermalTankOutputs().registerWithApplication()

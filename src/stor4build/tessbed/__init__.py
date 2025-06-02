@@ -156,9 +156,9 @@ def create_app(config=None):
 
             technology_object_factory = stor4build.IceTank.size
 
-            baseline_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables'),
+            baseline_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs'),
                              stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
-            technology_post = [stor4build.Step('Add ThermalTank Output Variables', 'add_thermaltank_output_variables',{'baseline': False}),
+            technology_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs',{'baseline': False}),
                                stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
         elif inputs.storage.type == 'PackagedIceStorage':
             if building_type not in ['SmallOffice', 'RetailStandalone']:
