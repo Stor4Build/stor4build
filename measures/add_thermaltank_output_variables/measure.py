@@ -73,21 +73,21 @@ class AddThermalTankOutputVariables(openstudio.measure.ModelMeasure):
 
         # add hourly output variables
         # these are always added
-        hourly_vars = ["Chiller Electricity Rate",
-                       "Chiller Electricity Energy",
-                       "Chiller Evaporator Inlet Temperature",
-                       "Chiller Evaporator Outlet Temperature",
-                       "Chiller Evaporator Mass Flow Rate",
-                       "Chiller Evaporator Cooling Energy"]
+        hourly_outputs = [('*', 'Chiller Electricity Rate'),
+                          ('*', 'Chiller Electricity Energy'),
+                          ('*', 'Chiller Evaporator Inlet Temperature'),
+                          ('*', 'Chiller Evaporator Outlet Temperature'),
+                          ('*', 'Chiller Evaporator Mass Flow Rate'),
+                          ('*', 'Chiller Evaporator Cooling Energy')]
         
-        # Add more variables if needed            
+        # add more variables to the list if needed            
         if not baseline:
-            hourly_vars.append('PythonPlugin:OutputVariable')
+            hourly_outputs.append(('*', 'PythonPlugin:OutputVariable'))
         
-        for var in hourly_vars:
+        for key, var in hourly_outputs:
             ov = openstudio.model.OutputVariable(var, model)
             ov.setReportingFrequency('Hourly')
-            ov.setKeyValue('*')
+            ov.setKeyValue(key)
             runner.registerInfo(f'Added {var} output variable.')
 
         # report final condition of model

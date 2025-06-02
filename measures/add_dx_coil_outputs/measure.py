@@ -54,25 +54,28 @@ class AddDXCoilOutputs(openstudio.measure.ModelMeasure):
         hourly_arg.setDescription("Setting this flag will request hourly outputs.")
         hourly_arg.setDefaultValue(False)
         args.append(hourly_arg)
+        
+        baseline = openstudio.measure.OSArgument.makeBoolArgument("baseline", False)
+        baseline.setDisplayName("Add variables for baseline simulation")
+        baseline.setDescription("Setting this to false will add hourly variables for simulations with the ThermalTank implementd.")
+        baseline.setDefaultValue(True)
+        args.append(baseline)
 
         return args
 
-    def run(
-        self,
-        model: openstudio.model.Model,
-        runner: openstudio.measure.OSRunner,
-        user_arguments: openstudio.measure.OSArgumentMap,
-    ):
-        """Defines what happens when the measure is run."""
+    def run(self, model: openstudio.model.Model, runner: openstudio.measure.OSRunner, user_arguments: openstudio.measure.OSArgumentMap):
         super().run(model, runner, user_arguments)  # Do **NOT** remove this line
         
         if not (runner.validateUserArguments(self.arguments(model), user_arguments)):
             return False
         
+        baseline = runner.getBoolArgumentValue("baseline", user_arguments)
+        
         freq_string = 'Timestep'
         if runner.getBoolArgumentValue('hourly', user_arguments):
             freq_string = 'Hourly'
 
+        # report initial condition of model
         runner.registerInitialCondition(f'The model started with {len(model.getOutputMeters())} output meters.')
 
         # Output:Meter,Electricity:Facility,Timestep;
@@ -81,17 +84,35 @@ class AddDXCoilOutputs(openstudio.measure.ModelMeasure):
         # Output:Meter,Cooling:Electricity,Timestep;
         # Output:Meter,Fans:Electricity,Timestep;
 
-        meter_names = ['Electricity:Facility', 'Electricity:Building', 'Electricity:HVAC', 'Cooling:Electricity']
+        #meter_names = ['Electricity:Facility', 'Electricity:Building', 'Electricity:HVAC', 'Cooling:Electricity']
+        meter_names = ['Cooling:Electricity']
 
         for name in meter_names:
             meter = openstudio.model.OutputMeter(model)
             meter.setName(name)
             meter.setMeterFileOnly(False)
-            meter.setReportingFrequency(freq_string)
+            meter.setReportingFrequency('Hourly')
             runner.registerInfo(f'Added "{name}" output meter.')
 
         # report final condition of model
         runner.registerFinalCondition(f"The building finished with {len(model.getOutputMeters())} output meters.")
+        
+        # report initial condition of model
+        runner.registerInitialCondition(f"The model started with {len(model.getOutputVariables())} output variables.")
+        
+        hourly_outputs = [('*', 'Cooling Coil Electricity Energy')]
+        
+        if not baseline:
+            hourly_outputs.append(('*', 'Cooling Coil Ice Thermal Storage End Fraction'))
+        
+        for key, var in hourly_outputs:
+            ov = openstudio.model.OutputVariable(var, model)
+            ov.setReportingFrequency('Hourly')
+            ov.setKeyValue(key)
+            runner.registerInfo(f'Added {var} output variable.')
+            
+        # report final condition of model
+        runner.registerFinalCondition(f"The model finished with {len(model.getOutputVariables())} output variables.")
 
         return True
 
