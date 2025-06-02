@@ -8,9 +8,9 @@
 **Table of Contents**
 
 - [Installation](#installation)
-- [VS Code/Hatch Dev Environment](#vs_codehatch_dev_environment)
-- [Web API](#web_api)
-- [Command Line Usage](#command_line_usage)
+- [VS Code/Hatch Dev Environment](#vs-codehatch-dev-environment)
+- [Web API](#web-api)
+- [Command Line Usage](#command-line-usage)
 - [License](#license)
 
 ## Installation
