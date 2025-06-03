@@ -216,12 +216,17 @@ def create_app(config=None):
                         values = next(fp).strip()
                     response_txt += 'packaged_ice_object_names,' + names + '\n'
                     response_txt += 'packaged_ice_capacities,' + values + '\n'
-                    names = names.split(',')
+                    names = [el.strip().upper() for el in names.split(',')]
                     replacement_report_path = os.path.join(run_dir, 'tes', 'reports', 'add_packaged_ice_storage_report.txt')
                     with open(replacement_report_path, 'r') as fp:
                         lines = fp.read().splitlines()
                     if len(lines) % 2 == 0:
-                        print('Hello, World!')
+                        lookup = {}
+                        itr = iter([line.strip() for line in lines])
+                        for original,new in zip(itr, itr):
+                            lookup[new.upper()] = original.upper()
+                        replaced = [lookup[el] for el in names]
+                        response_txt += 'replaced_object_names,' + ','.join(replaced) + '\n'
                     else:
                         # Something is wrong 
                         response_txt += 'Unable to determine new-to-old object mapping'
@@ -231,9 +236,6 @@ def create_app(config=None):
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)
             response_txt += stor4build.combine_single_frequency_csvs(baseline_csv, tech_csv, 'Hourly')
-                
-        #else:
-        #    return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"
