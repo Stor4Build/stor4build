@@ -1,0 +1,116 @@
+{
+    "demand": {
+        "costs": [
+            {
+                "rate": 0.2,
+                "unit": "$/kW",
+                "period": 3
+            },
+            {
+                "rate": 0.1,
+                "unit": "$/kW",
+                "period": 2
+            },
+            {
+                "rate": 0,
+                "unit": "$/kW",
+                "period": 1
+            }
+        ],
+        "schedule": {
+            "months": [
+                {
+                    "unit": "hour",
+                    "month": "All",
+                    "periods": [
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        2,
+                        2,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        }
+    },
+    "energy": {
+        "costs": [
+            {
+                "rate": 0.01,
+                "unit": "$/kWh",
+                "period": 1
+            },
+            {
+                "rate": 0.2,
+                "unit": "$/kWh",
+                "period": 3
+            },
+            {
+                "rate": 0.1,
+                "unit": "$/kWh",
+                "period": 2
+            }
+        ],
+        "schedule": {
+            "months": [
+                {
+                    "unit": "hour",
+                    "month": "All",
+                    "periods": [
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        2,
+                        2,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        3,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        }
+    },
+    "storage": {
+        "type": "PackagedIceStorage"
+    },
+    "baseline": {
+        "climate": "5A",
+        "vintage": 2011,
+        "type": "SmallOffice"
+    }
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>get_dx_coil_sizes</name>
+  <uid>84a884d1-d53d-4d37-98e9-091f39099312</uid>
+  <version_id>56f4b162-1a76-48a2-adc7-f9108839d796</version_id>
+  <version_modified>2025-06-02T05:43:25Z</version_modified>
+  <xml_checksum>00000000</xml_checksum>
+  <class_name>GetDXCoilSizes</class_name>
+  <display_name>Get DX Coil Sizes</display_name>
+  <description>DESCRIPTION_TEXT</description>
+  <modeler_description>MODELER_DESCRIPTION_TEXT</modeler_description>
+  <arguments />
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ReportingMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Python</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.7.0</identifier>
+      </version>
+      <filename>measure.py</filename>
+      <filetype>py</filetype>
+      <usage_type>script</usage_type>
+      <checksum>BB2ADCBC</checksum>
+    </file>
+    <file>
+      <filename>USA_CO_Golden-NREL.724666_TMY3.epw</filename>
+      <filetype>epw</filetype>
+      <usage_type>test</usage_type>
+      <checksum>BDF687C1</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>39B6E26C</checksum>
+    </file>
+    <file>
+      <filename>test_get_dx_coil_sizes.py</filename>
+      <filetype>py</filetype>
+      <usage_type>test</usage_type>
+      <checksum>9B8E0FC8</checksum>
+    </file>
+  </files>
+</measure>

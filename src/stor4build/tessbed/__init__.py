@@ -80,6 +80,7 @@ def create_app(config=None):
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
         debug_run_dir = app.config['RUN_DIRECTORY']
+    debug_run_dir = '/home/jason/Desktop/s4b-run'
     
     # Connect to the database
     try:
@@ -117,7 +118,7 @@ def create_app(config=None):
         except ValidationError as ve:
             return make_response({'error': 'Bad request', 'message': process_validation_error(ve)}, 400)
  
-        type = inputs.baseline.type # Unused for now
+        building_type = inputs.baseline.type
         cz = 'ASHRAE 169-2006-%s' % inputs.baseline.climate
         vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
         
@@ -128,73 +129,113 @@ def create_app(config=None):
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
 
         needs_baseline = False
+        baseline_post = []
+        technology_post = []
+        technology_object_factory = None
+        # Translate the utility rate parameters to charge/discharge start/end
+        results = stor4build.process_energy_schedule(energy_sch)
+        arguments = {k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
+        if inputs.storage.charge_interval is not None:
+            # Override the charge interval if it's in the input - implementation commented out
+            # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
+            # arguments['charge_end'] = str(inputs.storage.charge_interval.end)
+            if inputs.storage.discharge_interval is not None:
+                return make_response({'error': 'Bad request', 'message': 'Charge and discharge intervals in input are no longer accepted.'}, 400)
+            else:
+                return make_response({'error': 'Bad request', 'message': 'Charge interval in input is no longer accepted.'}, 400)
+        elif inputs.storage.discharge_interval is not None:
+            return make_response({'error': 'Bad request', 'message': 'Discharge interval in input is no longer accepted.'}, 400)
+
         if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
+            if building_type != 'LargeOffice':
+                return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
             needs_baseline = True
-            # Translate the utility rate parameters to charge/discharge start/end
-            results = stor4build.process_energy_schedule(energy_sch)
-            arguments = { k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
-            if inputs.storage.charge_interval is not None:
-                # Override the charge interval if it's in the input - implementation commented out
-                # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
-                # arguments['charge_end'] = str(inputs.storage.charge_interval.end)
-                if inputs.storage.discharge_interval is not None:
-                    return make_response({'error': 'Bad request', 'message': 'Charge and discharge intervals in input are no longer accepted.'}, 400)
-                else:
-                    return make_response({'error': 'Bad request', 'message': 'Charge interval in input is no longer accepted.'}, 400)
-            elif inputs.storage.discharge_interval is not None:
-                return make_response({'error': 'Bad request', 'message': 'Discharge interval in input is no longer accepted.'}, 400)
+            
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
 
             technology_object_factory = stor4build.IceTank.size
 
-            post = [stor4build.Step('Add Output Variables', 'add_output_variables'),
-                    stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+            baseline_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs'),
+                             stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+            technology_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs',{'baseline': False}),
+                               stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+        elif inputs.storage.type == 'PackagedIceStorage':
+            if building_type not in ['SmallOffice', 'RetailStandalone']:
+                return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
+            technology_object_factory = stor4build.DxCoil.size
+            baseline_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs'),
+                             stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+            technology_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs',{'baseline': False}),
+                               stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'),
+                               stor4build.Step('Get DX Coil Sizes', 'get_dx_coil_sizes')]
         else:
+            # Should never reach here because the input is validated, but leave it in as a safety
             return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
 
         response_txt = ''
-        if needs_baseline:
-            # Run the baseline first, then the technology
-            with managed_directory(debug_run_dir) as run_dir:
-                run_path = os.path.abspath(run_dir)
-                
-                # Get the weather
-                epw = os.path.join(run_dir, 'weather.epw')
-                epw_file = resultsdb.get_weather(epw, inputs.baseline.climate)
-                if epw_file is None:
-                    return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
-                
-                # Get the baseline
-                osm = os.path.join(run_dir, 'baseline.osm')
-                building_id = resultsdb.get_prototype_model(osm, building_type='LargeOffice', climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
-                if building_id is None:
-                    return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
+        #if needs_baseline:
+        # Run the baseline first, then the technology
+        with managed_directory(debug_run_dir) as run_dir:
+            run_path = os.path.abspath(run_dir)
+            
+            # Get the weather
+            epw = os.path.join(run_dir, 'weather.epw')
+            epw_file = resultsdb.get_weather(epw, inputs.baseline.climate)
+            if epw_file is None:
+                return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
+            
+            # Get the baseline
+            osm = os.path.join(run_dir, 'baseline.osm')
+            building_id = resultsdb.get_prototype_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
+            if building_id is None:
+                return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
 
-                # Run the baseline
-                baseline = stor4build.Simulation('baseline', post_steps=post)
-                osw = baseline.osw(osm, measures_dir, epw)
-                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
-                
-                # Baseline results are in this directory
-                baseline_path = os.path.join(run_dir, 'baseline', 'run')
-                baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-                stor4build.fix_csv(baseline_csv)
-                
-                # Run the technology
-                technology_object = technology_object_factory('sized_icetank', baseline_path, post_steps=post, **arguments)
-                osw = technology_object.osw(osm, measures_dir, epw)
-                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
-                                        technology_object.tag()), osw, measures_only=False)
-                if detailed_header:
-                    for k,v in technology_object.sizing.items():
-                        response_txt += '%s,"%s"\n' % (k, str(v)) 
-                tech_csv = os.path.join(run_dir, 'sized_icetank', 'run', 'eplusout.csv')
-                stor4build.fix_csv(tech_csv)
-                response_txt += stor4build.combine_csvs(baseline_csv, tech_csv)
-                
-        else:
-            return make_response({'error': 'Not implemented', 'message': 'Parallel tech/baseline not implemented.'}, 500)
+            # Run the baseline
+            baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
+            osw = baseline.osw(osm, measures_dir, epw)
+            stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
+            
+            # Baseline results are in this directory
+            baseline_path = os.path.join(run_dir, 'baseline', 'run')
+            baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
+            stor4build.fix_csv(baseline_csv)
+            
+            # Run the technology
+            technology_object = technology_object_factory('tes', baseline_path, post_steps=technology_post, **arguments)
+            osw = technology_object.osw(osm, measures_dir, epw)
+            stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
+                                    technology_object.tag()), osw, measures_only=False)
+
+            if detailed_header:
+                # This isn't handled as generally as it should be
+                if inputs.storage.type == 'PackagedIceStorage':
+                    sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
+                    with open(sizing_report_path, 'r') as fp:
+                        names = next(fp).strip()
+                        values = next(fp).strip()
+                    response_txt += 'packaged_ice_object_names,' + names + '\n'
+                    response_txt += 'packaged_ice_capacities,' + values + '\n'
+                    names = [el.strip().upper() for el in names.split(',')]
+                    replacement_report_path = os.path.join(run_dir, 'tes', 'reports', 'add_packaged_ice_storage_report.txt')
+                    with open(replacement_report_path, 'r') as fp:
+                        lines = fp.read().splitlines()
+                    if len(lines) % 2 == 0:
+                        lookup = {}
+                        itr = iter([line.strip() for line in lines])
+                        for original,new in zip(itr, itr):
+                            lookup[new.upper()] = original.upper()
+                        replaced = [lookup[el] for el in names]
+                        response_txt += 'replaced_object_names,' + ','.join(replaced) + '\n'
+                    else:
+                        # Something is wrong 
+                        response_txt += 'Unable to determine new-to-old object mapping'
+                for k,v in technology_object.sizing.items():
+                    response_txt += '%s,"%s"\n' % (k, str(v))
+
+            tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
+            stor4build.fix_csv(tech_csv)
+            response_txt += stor4build.combine_single_frequency_csvs(baseline_csv, tech_csv, 'Hourly')
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"

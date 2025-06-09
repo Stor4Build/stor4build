@@ -9,7 +9,7 @@ import json
 
 actual_climate_zone_list = climate_zone_list[:]
 actual_climate_zone_list.remove('5C')
-actual_prototypes_list = ['LargeOffice']
+actual_prototypes_list = ['LargeOffice', 'SmallOffice', 'RetailStandalone']
 
 class BaseSchema(Schema):
     class Meta:
@@ -97,13 +97,13 @@ class IntervalSchema(BaseSchema):
 @dataclass
 class StorageData:
     type: str
-    capacity: float
+    capacity: float = 100.0
     charge_interval: Interval = None
     discharge_interval: Interval = None
 
 class StorageDataSchema(BaseSchema):
-    type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater']), required=True)
-    capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=True)
+    type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater', 'PackagedIceStorage']), required=True)
+    capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=False)
     charge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
     discharge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
     promote_to = StorageData
@@ -113,7 +113,7 @@ class InputData:
     baseline: BuildingData
     storage: StorageData
     energy: UtilityData
-    demand: UtilityData
+    demand: UtilityData = None
     
     @classmethod
     def load(cls, data):
@@ -130,5 +130,5 @@ class InputDataSchema(BaseSchema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
     storage = fields.Nested(lambda: StorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)
-    demand = fields.Nested(lambda: UtilityDataSchema(), required=True)
+    demand = fields.Nested(lambda: UtilityDataSchema(), required=False)
     promote_to = InputData
