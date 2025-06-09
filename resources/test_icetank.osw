@@ -23,7 +23,8 @@
         "num_tanks" : 5,
         "trim_temp" : 10,
         "strg_type" : "ice",
-        "ctrl_type" : "soc"
+        "ctrl_type" : "soc",
+        "size_frac" : 0.8
       }
     }
   ]

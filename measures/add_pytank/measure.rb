@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2024, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2025, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -136,6 +136,15 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     ctrl_type.setDescription('Options are sch or soc')
     args << ctrl_type
 
+    # create argument for chiller downsizing
+    size_frac = OpenStudio::Measure::OSArgument.makeDoubleArgument(
+      'size_frac',
+      false
+    )
+    size_frac.setDefaultValue(1)
+    size_frac.setDescription('Chiller sizing factor')
+    args << size_frac
+
     return args
   end
 
@@ -158,6 +167,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     trim_temp = runner.getDoubleArgumentValue('trim_temp', usr_args)
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
+    size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
 
     # add discharge start time schedule
     ot = 'Schedule_Constant'
@@ -328,12 +338,40 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     chiller_info = []
     ot = 'Chiller_Electric_EIR'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+      o.setDouble(11, size_frac)
+      o.setDouble(12, size_frac)
       o.setDouble(21, chrg_temp)
       chiller_info << [
         o.name.get,
+        o.getString(9, false).get,
         o.getString(14, false).get,
         o.getString(15, false).get
       ]
+    end
+
+    # adjust chiller plr curve
+    if size_frac != 1
+      ot = 'Curve_Quadratic'
+      ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+        if o.name.get == 'ChlrWtrCentPathAAllEIRRatio_fQRatio'
+          if size_frac == 0.9
+            o.setDouble(2, 0.5591)
+            o.setDouble(3, 0.3172)
+          elsif size_frac == 0.8
+            o.setDouble(2, 0.6289)
+            o.setDouble(3, 0.4014)
+          elsif size_frac == 0.7
+            o.setDouble(2, 0.7188)
+            o.setDouble(3, 0.5243)
+          elsif size_frac == 0.6
+            o.setDouble(2, 0.8386)
+            o.setDouble(3, 0.7136)
+          elsif size_frac == 0.5
+            o.setDouble(2, 1.0063)
+            o.setDouble(3, 1.0276)
+          end
+        end
+      end
     end
 
     # remove supply outlet pipe
@@ -389,7 +427,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       no.setString(0, "#{a[0]} Setpoint Manager")
       no.setString(1, 'Temperature')
       no.setString(2, 'Chiller Temp Sch')
-      no.setString(3, a[2])
+      no.setString(3, a[3])
       ws.addObject(no)
     end
 
@@ -427,8 +465,8 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     chiller_info.each do |a|
       no.setString(i, 'Chiller:Electric:EIR'); i+=1
       no.setString(i, a[0]); i+=1
-      no.setString(i, a[1]); i+=1
       no.setString(i, a[2]); i+=1
+      no.setString(i, a[3]); i+=1
       no.setString(i, 'Autosize'); i+=1
       no.setString(i, 'Cooling'); i+=1
     end
@@ -556,6 +594,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     end
     ws.removeObjects(uv)
 
+    return true
   end
 
 end
