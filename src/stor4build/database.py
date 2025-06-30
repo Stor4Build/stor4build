@@ -17,16 +17,9 @@ class ResultsDatabase:
                                            port = port)
         self.cursor = self.connection.cursor()
         self.cases_table = kwargs.get('cases_table', 'cases')
-        #self.prototype_chillers_table = kwargs.get('prototype_chillers_table', 'prototype_chillers')
-        #self.prototype_chiller_results_table = kwargs.get('prototype_chiller_results_table', 'prototype_chiller_results')
         self.weather_table = kwargs.get('weather_table', 'weather')
         self.results_table = kwargs.get('results_table', 'results')
         self.verbose = kwargs.get('verbose', False)
-        # Get the columns
-        #self.columns = []
-        #self.cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = %s", (self.prototype_chiller_results_table,))
-        #for result in self.cursor.fetchall():
-        #    self.columns.append(result[0])
     def __del__(self):
         if self.connection:
             self.connection.close()
@@ -58,7 +51,7 @@ class ResultsDatabase:
         if self.verbose:
             print('Failed to find "%s" building in climate zone "%s" from %s!' % (building_type, climate_zone, vintage))
         return None
-    def get_results(self, building_id, output_path=None, filename='eplusout.csv'):
+    def get_results(self, building_id, output_path=None, filename='eplusout.csv', oldest_acceptable=None):
         self.cursor.execute(sql.SQL("SELECT created_at,results FROM {} WHERE building_id=%s").format(sql.Identifier(self.results_table)),
                                                                                                       (building_id,))
         result = self.cursor.fetchone()
@@ -66,6 +59,13 @@ class ResultsDatabase:
             created_at, results_txt = result
             if self.verbose:
                 print('Found results for id %d, created at %s' % (building_id, str(created_at)))
+            if oldest_acceptable is not None:
+                if created_at < oldest_acceptable:
+                    if self.verbose:
+                        print('Results for id %d are older than %s, rejecting!' % (building_id, str(oldest_acceptable)))
+                    return False
+                elif self.verbose:
+                    print('Results for id %d are newer than %s' % (building_id, str(oldest_acceptable)))
             os.makedirs(output_path, exist_ok=True)
             filepath = os.path.join(output_path, filename)
             with open(filepath, 'w') as fp:
@@ -77,7 +77,9 @@ class ResultsDatabase:
     def set_results(self, building_id, filepath):
         with open(filepath, 'r') as fp:
             results_txt = fp.read()
-        self.cursor.execute(sql.SQL("insert into {} (building_id,results) values (%s,%s)").format(sql.Identifier(self.results_table)), (building_id, results_txt))
+        self.cursor.execute(sql.SQL("""insert into {} (building_id,results) values (%s,%s)
+on conflict (building_id) do update
+set created_at = NOW(), results = EXCLUDED.results""").format(sql.Identifier(self.results_table)), (building_id, results_txt))
         self.connection.commit()
         if self.verbose:
             print('Inserted results for id %d' % building_id)

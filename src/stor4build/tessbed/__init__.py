@@ -7,6 +7,7 @@ import tempfile
 import io
 import contextlib
 import stor4build
+import datetime
 from flask import Flask, request, make_response
 from marshmallow import ValidationError
 
@@ -66,7 +67,8 @@ def create_app(config=None):
         WEATHER_DIR=default_weather_dir,
         TIMESCALE_HOST='timescale',
         TIMESCALE_PORT='5432',
-        UPLOAD_MISSING_RESULTS=True
+        UPLOAD_MISSING_RESULTS=True,
+        OLDEST_ACCEPTABLE=None #'2025-06-30 18:10:37.885565-04:00'
     )
 
     if config is None:
@@ -78,6 +80,10 @@ def create_app(config=None):
     measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
     weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
     upload_missing_results = app.config['UPLOAD_MISSING_RESULTS']
+    if app.config['OLDEST_ACCEPTABLE'] is None:
+        oldest_acceptable = None
+    else:
+        oldest_acceptable = datetime.datetime.strptime(app.config['OLDEST_ACCEPTABLE'], '%Y-%m-%d %H:%M:%S.%f%z')
     
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
@@ -195,7 +201,7 @@ def create_app(config=None):
             # Get the baseline results
             baseline_path = os.path.join(run_dir, 'baseline', 'run')
             baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-            found_results = resultsdb.get_results(building_id, output_path=baseline_path, filename='eplusout.csv')
+            found_results = resultsdb.get_results(building_id, output_path=baseline_path, filename='eplusout.csv', oldest_acceptable=oldest_acceptable)
             if not found_results:
                 # Run the baseline
                 baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
