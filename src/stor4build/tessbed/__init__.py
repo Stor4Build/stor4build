@@ -67,6 +67,7 @@ def create_app(config=None):
         WEATHER_DIR=default_weather_dir,
         TIMESCALE_HOST='timescale',
         TIMESCALE_PORT='5432',
+        CACHE_BASELINE=False,
         UPLOAD_MISSING_RESULTS=True,
         OLDEST_ACCEPTABLE=None #'2025-06-30 18:10:37.885565-04:00'
     )
@@ -79,6 +80,7 @@ def create_app(config=None):
     openstudio_exe = app.config['OPENSTUDIO']
     measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
     weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
+    cache_baseline = app.config['CACHE_BASELINE']
     upload_missing_results = app.config['UPLOAD_MISSING_RESULTS']
     if app.config['OLDEST_ACCEPTABLE'] is None:
         oldest_acceptable = None
@@ -201,14 +203,16 @@ def create_app(config=None):
             # Get the baseline results
             baseline_path = os.path.join(run_dir, 'baseline', 'run')
             baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-            found_results = resultsdb.get_results(building_id, output_path=baseline_path, filename='eplusout.csv', oldest_acceptable=oldest_acceptable)
+            found_results = False
+            if cache_baseline:
+                found_results = resultsdb.get_results(building_id, output_path=baseline_path, filename='eplusout.csv', oldest_acceptable=oldest_acceptable)
             if not found_results:
                 # Run the baseline
                 baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
                 osw = baseline.osw(osm, measures_dir, epw)
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
                 stor4build.fix_csv(baseline_csv)
-                if upload_missing_results:
+                if cache_baseline and upload_missing_results:
                     resultsdb.set_results(building_id, baseline_csv)
             
             # Run the technology
