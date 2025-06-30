@@ -65,7 +65,8 @@ def create_app(config=None):
         MEASURES_DIR=default_measures_dir,
         WEATHER_DIR=default_weather_dir,
         TIMESCALE_HOST='timescale',
-        TIMESCALE_PORT='5432'
+        TIMESCALE_PORT='5432',
+        UPLOAD_MISSING_RESULTS=True
     )
 
     if config is None:
@@ -76,11 +77,11 @@ def create_app(config=None):
     openstudio_exe = app.config['OPENSTUDIO']
     measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
     weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
+    upload_missing_results = app.config['UPLOAD_MISSING_RESULTS']
     
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
         debug_run_dir = app.config['RUN_DIRECTORY']
-    debug_run_dir = '/home/jason/Desktop/s4b-run'
     
     # Connect to the database
     try:
@@ -96,7 +97,8 @@ def create_app(config=None):
                                            password = password,
                                            host = app.config['TIMESCALE_HOST'],
                                            port = app.config['TIMESCALE_PORT'],
-                                           prototype_cases_table = 'baseline_cases',
+                                           cases_table = 'baseline_cases',
+                                           results_table = 'baseline_results',
                                            weather_table = 'weather',
                                            verbose = True)
 
@@ -185,21 +187,23 @@ def create_app(config=None):
             if epw_file is None:
                 return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
             
-            # Get the baseline
+            # Get the baseline model
             osm = os.path.join(run_dir, 'baseline.osm')
-            building_id = resultsdb.get_prototype_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
+            building_id = resultsdb.get_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
             if building_id is None:
                 return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
-
-            # Run the baseline
-            baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
-            osw = baseline.osw(osm, measures_dir, epw)
-            stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
-            
-            # Baseline results are in this directory
+            # Get the baseline results
             baseline_path = os.path.join(run_dir, 'baseline', 'run')
             baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-            stor4build.fix_csv(baseline_csv)
+            found_results = resultsdb.get_results(building_id, output_path=baseline_path, filename='eplusout.csv')
+            if not found_results:
+                # Run the baseline
+                baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
+                osw = baseline.osw(osm, measures_dir, epw)
+                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
+                stor4build.fix_csv(baseline_csv)
+                if upload_missing_results:
+                    resultsdb.set_results(building_id, baseline_csv)
             
             # Run the technology
             technology_object = technology_object_factory('tes', baseline_path, post_steps=technology_post, **arguments)
