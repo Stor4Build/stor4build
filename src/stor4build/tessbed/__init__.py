@@ -68,8 +68,8 @@ def create_app(config=None):
         TIMESCALE_HOST='timescale',
         TIMESCALE_PORT='5432',
         CACHE_BASELINE=False,
-        UPLOAD_MISSING_RESULTS=True,
-        OLDEST_ACCEPTABLE=None #'2025-06-30 18:10:37.885565-04:00'
+        STORE_MISSING_RESULTS=True,
+        OLDEST_ACCEPTABLE=None #'2025-06-30T20:20:37.885565-04:00'
     )
 
     if config is None:
@@ -81,11 +81,11 @@ def create_app(config=None):
     measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
     weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
     cache_baseline = app.config['CACHE_BASELINE']
-    upload_missing_results = app.config['UPLOAD_MISSING_RESULTS']
+    store_missing_results = app.config['STORE_MISSING_RESULTS']
     if app.config['OLDEST_ACCEPTABLE'] is None:
         oldest_acceptable = None
     else:
-        oldest_acceptable = datetime.datetime.strptime(app.config['OLDEST_ACCEPTABLE'], '%Y-%m-%d %H:%M:%S.%f%z')
+        oldest_acceptable = datetime.datetime.fromisoformat(app.config['OLDEST_ACCEPTABLE'])
     
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
@@ -212,7 +212,7 @@ def create_app(config=None):
                 osw = baseline.osw(osm, measures_dir, epw)
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
                 stor4build.fix_csv(baseline_csv)
-                if cache_baseline and upload_missing_results:
+                if cache_baseline and store_missing_results:
                     resultsdb.set_results(building_id, baseline_csv)
             
             # Run the technology
