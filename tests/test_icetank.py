@@ -11,6 +11,8 @@ epw = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'USA_TN_Knoxvill
 
 def test_100pct_sizing():
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=100.0, csv='full-year-baseline.csv')
+    assert icetank.store_ice
+    assert icetank.charge_temp == s4b.IceTank.default_ice_charge_temp
     assert icetank.sizing['peak_reduction'] == 100.0
     assert icetank.sizing['actual_num_tanks'] == 18
     assert icetank.sizing['maximum_date'] == '2006-08-09'
@@ -25,6 +27,7 @@ def test_100pct_sizing():
     assert icetank.sizing['actual_capacity'] == pt.approx(43286399999.99999, abs=1.0e-8)
     assert icetank.sizing['computed_trim_temperature'] == pt.approx(10.558881075128763, abs=1.0e-8)
     osw = icetank.osw(large_office, measures_dir, epw)
+    assert osw is not None
     assert 'seed_file' in osw
     assert osw['seed_file'] == large_office
     assert 'weather_file' in osw
@@ -46,7 +49,7 @@ def test_100pct_sizing():
     assert 'dchrg_end' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
     assert 'chrg_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_temp'] == s4b.IceTank.default_charge_temp
+    assert osw['steps'][1]['arguments']['chrg_temp'] == s4b.IceTank.default_ice_charge_temp
     assert 'num_tanks' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['num_tanks'] == 18
     assert 'trim_temp' in osw['steps'][1]['arguments']
@@ -71,6 +74,7 @@ def test_100pct_sizing_cooling():
     assert icetank.sizing['actual_capacity'] == pt.approx(43286399999.99999, abs=1.0e-8)
     assert icetank.sizing['computed_trim_temperature'] == pt.approx(10.558881075128763, abs=1.0e-8)
     osw = icetank.osw(large_office, measures_dir, epw)
+    assert osw is not None
     assert 'seed_file' in osw
     assert osw['seed_file'] == large_office
     assert 'weather_file' in osw
@@ -92,7 +96,7 @@ def test_100pct_sizing_cooling():
     assert 'dchrg_end' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
     assert 'chrg_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_temp'] == s4b.IceTank.default_charge_temp
+    assert osw['steps'][1]['arguments']['chrg_temp'] == s4b.IceTank.default_ice_charge_temp
     assert 'num_tanks' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['num_tanks'] == 18
     assert 'trim_temp' in osw['steps'][1]['arguments']
@@ -118,6 +122,7 @@ def test_50pct_sizing():
     assert icetank.sizing['actual_capacity'] == pt.approx(21643199999.999996, abs=1.0e-8)
     assert icetank.sizing['computed_trim_temperature'] == pt.approx(8.629440537564381, abs=1.0e-8)
     osw = icetank.osw(large_office, measures_dir, epw)
+    assert osw is not None
     assert 'seed_file' in osw
     assert osw['seed_file'] == large_office
     assert 'weather_file' in osw
@@ -139,7 +144,7 @@ def test_50pct_sizing():
     assert 'dchrg_end' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
     assert 'chrg_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_temp'] == s4b.IceTank.default_charge_temp
+    assert osw['steps'][1]['arguments']['chrg_temp'] == s4b.IceTank.default_ice_charge_temp
     assert 'num_tanks' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['num_tanks'] == 9
     assert 'trim_temp' in osw['steps'][1]['arguments']

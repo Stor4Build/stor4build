@@ -14,7 +14,8 @@ class IceTank(Simulation):
     default_charge_end = '07:00'
     default_discharge_start = '12:00'
     default_discharge_end = '18:00'
-    default_charge_temp = -3.8
+    default_ice_charge_temp = -3.8
+    default_chw_charge_temp = 1.1
     default_num_tanks = 1
     default_trim_temp = 10.0
     default_peak_reduction = 15.0
@@ -25,10 +26,13 @@ class IceTank(Simulation):
         self.charge_end = kwargs.get('charge_end', self.default_charge_end)
         self.discharge_start = kwargs.get('discharge_start', self.default_discharge_start)
         self.discharge_end = kwargs.get('discharge_end', self.default_discharge_end)
-        self.charge_temp = kwargs.get('charge_temp', self.default_charge_temp)
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
         self.store_ice = kwargs.get('store_ice', self.default_store_ice)
+        if 'charge_temp' in kwargs:
+            self.charge_temp = kwargs['charge_temp']
+        else:
+            self.charge_temp = {True: self.default_ice_charge_temp, False: self.default_chw_charge_temp}[self.store_ice]
         self.sizing = kwargs.get('sizing', {})
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
@@ -38,7 +42,7 @@ class IceTank(Simulation):
                          "chrg_end": self.charge_end,
                          "dchrg_start": self.discharge_start,
                          "dchrg_end": self.discharge_end,
-                         "chrg_temp": self.charge_temp,
+                         "chrg_temp": {True: self.default_ice_charge_temp, False: self.default_chw_charge_temp}[self.store_ice],
                          "num_tanks": self.num_tanks,
                          "trim_temp": self.trim_temp,
                          "strg_type": {True: "ice", False: "chw"}[self.store_ice]
