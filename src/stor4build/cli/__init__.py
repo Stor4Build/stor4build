@@ -56,8 +56,8 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
               help='Time to start discharging tank(s).')
 @click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_end,
               help='Time to end discharging tank(s).')
-@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True,
-              default=stor4build.IceTank.default_charge_temp, help='Tank charging temperature.')
+@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=False,
+              default=None, help='Tank charging temperature.')
 @click.option('-n', '--ntanks', type=click.IntRange(min=1), metavar='N', show_default=True,
               default=stor4build.IceTank.default_num_tanks, help='Number of tanks.')
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
@@ -90,6 +90,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     
     if chw:
         arguments['store_ice'] = False
+        if charge_temp is None:
+            arguments['charge_temp'] = stor4build.IceTank.default_chw_charge_temp
+    elif charge_temp is None:
+        arguments['charge_temp'] = stor4build.IceTank.default_ice_charge_temp
     
     if output:
         #run_baseline = True
@@ -141,8 +145,8 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               help='Time to start discharging tank(s), beginning of sizing window.')
 @click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_end,
               help='Time to end discharging tank(s), end of sizing window.')
-@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=True,
-              default=stor4build.IceTank.default_charge_temp, help='Tank charging temperature.')
+@click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=False,
+              default=None, help='Tank charging temperature.')
 @click.option('--peak-reduction', type=click.FloatRange(min=0.0, min_open=True, max=100.0), metavar='PCT',
               show_default=True, default=stor4build.IceTank.default_peak_reduction,
               help='Target percentage to reduce the peak load.')
@@ -173,6 +177,10 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     
     if chw:
         arguments['store_ice'] = False
+        if charge_temp is None:
+            arguments['charge_temp'] = stor4build.IceTank.default_chw_charge_temp
+    elif charge_temp is None:
+        arguments['charge_temp'] = stor4build.IceTank.default_ice_charge_temp
     
     # Run the baseline
     post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
