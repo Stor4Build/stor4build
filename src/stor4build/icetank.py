@@ -18,6 +18,7 @@ class IceTank(Simulation):
     default_num_tanks = 1
     default_trim_temp = 10.0
     default_peak_reduction = 15.0
+    default_size_fraction = 1.0
     default_store_ice = True
     def __init__(self, name, pre_steps=None, post_steps=None, **kwargs):
         # Get all the data first
@@ -28,6 +29,7 @@ class IceTank(Simulation):
         self.charge_temp = kwargs.get('charge_temp', self.default_charge_temp)
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
+        self.size_fraction = kwargs.get('store_ice', self.default_size_fraction)
         self.store_ice = kwargs.get('store_ice', self.default_store_ice)
         self.sizing = kwargs.get('sizing', {})
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
@@ -41,6 +43,7 @@ class IceTank(Simulation):
                          "chrg_temp": self.charge_temp,
                          "num_tanks": self.num_tanks,
                          "trim_temp": self.trim_temp,
+                         "size_frac": self.size_fraction,
                          "strg_type": {True: "ice", False: "chw"}[self.store_ice]
                      })]
     @classmethod

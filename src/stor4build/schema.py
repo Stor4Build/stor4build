@@ -100,12 +100,15 @@ class StorageData:
     capacity: float = 100.0
     charge_interval: Interval = None
     discharge_interval: Interval = None
+    size_fraction: float = 1.0
+
 
 class StorageDataSchema(BaseSchema):
     type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater', 'PackagedIceStorage']), required=True)
     capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=False)
     charge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
     discharge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
+    size_fraction = fields.Float(validate=validate.OneOf([1.0, 0.9, 0.8, 0.7, 0.6, 0.5]), required=False)
     promote_to = StorageData
 
 @dataclass
