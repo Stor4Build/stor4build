@@ -38,7 +38,9 @@
           "type": {
             "type": "string",
             "enum": [
-              "LargeOffice"
+              "LargeOffice",
+              "SmallOffice",
+              "RetailStandalone"
             ]
           }
         },
@@ -83,7 +85,8 @@
             "type": "string",
             "enum": [
               "ThermalTank-Ice",
-              "ThermalTank-ChilledWater"
+              "ThermalTank-ChilledWater",
+              "PackagedIceStorage"
             ]
           },
           "capacity": {
@@ -97,7 +100,6 @@
           }
         },
         "required": [
-          "capacity",
           "type"
         ]
       },
@@ -188,7 +190,6 @@
         },
         "required": [
           "baseline",
-          "demand",
           "energy",
           "storage"
         ]
