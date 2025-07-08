@@ -29,7 +29,7 @@ class IceTank(Simulation):
         self.discharge_end = kwargs.get('discharge_end', self.default_discharge_end)
         self.num_tanks = kwargs.get('num_tanks', self.default_num_tanks)
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
-        self.size_fraction = kwargs.get('store_ice', self.default_size_fraction)
+        self.size_fraction = kwargs.get('size_fraction', self.default_size_fraction)
         self.store_ice = kwargs.get('store_ice', self.default_store_ice)
         if 'charge_temp' in kwargs:
             self.charge_temp = kwargs['charge_temp']

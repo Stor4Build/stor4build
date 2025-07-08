@@ -88,7 +88,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         "charge_temp" : charge_temp,
         "num_tanks" : ntanks,
         "trim_temp" : trim_temp,
-        "size_frac": float(size_fraction)
+        "size_fraction": float(size_fraction)
     }
     
     if chw:
@@ -178,7 +178,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "discharge_end" : discharge_end,
         "charge_temp" : charge_temp,
         "peak_reduction" : peak_reduction,
-        "size_frac": float(size_fraction)
+        "size_fraction": float(size_fraction)
     }
     
     if chw:

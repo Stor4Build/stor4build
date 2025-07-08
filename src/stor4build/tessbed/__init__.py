@@ -90,6 +90,7 @@ def create_app(config=None):
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
         debug_run_dir = app.config['RUN_DIRECTORY']
+    debug_run_dir = '/home/jason/Desktop/s4b-run'
     
     # Connect to the database
     try:
@@ -163,6 +164,7 @@ def create_app(config=None):
             
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
+            arguments['size_fraction'] = inputs.storage.size_fraction
 
             technology_object_factory = stor4build.IceTank.size
 
