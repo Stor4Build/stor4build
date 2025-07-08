@@ -90,7 +90,6 @@ def create_app(config=None):
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
         debug_run_dir = app.config['RUN_DIRECTORY']
-    debug_run_dir = '/home/jason/Desktop/s4b-run'
     
     # Connect to the database
     try:
