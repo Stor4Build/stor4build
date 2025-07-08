@@ -11,6 +11,7 @@ epw = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'USA_TN_Knoxvill
 
 def test_100pct_sizing():
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=100.0, csv='full-year-baseline.csv')
+    assert icetank.size_fraction == 1
     assert icetank.store_ice
     assert icetank.charge_temp == s4b.IceTank.default_ice_charge_temp
     assert icetank.sizing['peak_reduction'] == 100.0
@@ -39,7 +40,7 @@ def test_100pct_sizing():
     assert len(osw['steps'][0]) == 3
     assert osw['steps'][1]['name'] == 'Add Python Tank'
     assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 8
+    assert len(osw['steps'][1]['arguments']) == 9
     assert 'chrg_start' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
     assert 'chrg_end' in osw['steps'][1]['arguments']
@@ -60,6 +61,7 @@ def test_100pct_sizing():
     
 def test_100pct_sizing_cooling():
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=100.0, csv='cooling-baseline.csv')
+    assert icetank.size_fraction == 1
     assert icetank.sizing['peak_reduction'] == 100.0
     assert icetank.sizing['actual_num_tanks'] == 18
     assert icetank.sizing['maximum_date'] == '2006-08-09'
@@ -86,7 +88,7 @@ def test_100pct_sizing_cooling():
     assert len(osw['steps'][0]) == 3
     assert osw['steps'][1]['name'] == 'Add Python Tank'
     assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 8
+    assert len(osw['steps'][1]['arguments']) == 9
     assert 'chrg_start' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
     assert 'chrg_end' in osw['steps'][1]['arguments']
@@ -108,6 +110,7 @@ def test_100pct_sizing_cooling():
 def test_50pct_sizing():
     post = [s4b.Step('Run Cooling Season Only', 'run_cooling_season_only')]
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=50.0, post_steps=post, csv='full-year-baseline.csv')
+    assert icetank.size_fraction == 1
     assert icetank.sizing['peak_reduction'] == 50.0
     assert icetank.sizing['actual_num_tanks'] == 9
     assert icetank.sizing['maximum_date'] == '2006-08-09'
@@ -134,7 +137,7 @@ def test_50pct_sizing():
     assert len(osw['steps'][0]) == 3
     assert osw['steps'][1]['name'] == 'Add Python Tank'
     assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 8
+    assert len(osw['steps'][1]['arguments']) == 9
     assert 'chrg_start' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
     assert 'chrg_end' in osw['steps'][1]['arguments']

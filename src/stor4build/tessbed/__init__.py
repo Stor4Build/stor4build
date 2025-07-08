@@ -163,6 +163,7 @@ def create_app(config=None):
             
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
+            arguments['size_fraction'] = inputs.storage.size_fraction
 
             technology_object_factory = stor4build.IceTank.size
 

@@ -65,9 +65,11 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
+@click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
+              default='1', help='Fraction to use to downsize the chiller.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
-                cooling_season_only, chw):
+                cooling_season_only, chw, size_fraction):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -85,7 +87,8 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         "discharge_end" : discharge_end,
         "charge_temp" : charge_temp,
         "num_tanks" : ntanks,
-        "trim_temp" : trim_temp
+        "trim_temp" : trim_temp,
+        "size_fraction": float(size_fraction)
     }
     
     if chw:
@@ -153,9 +156,11 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
+@click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
+              default='1', help='Fraction to use to downsize the chiller.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
-                 cooling_season_only, chw):
+                 cooling_season_only, chw, size_fraction):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -172,7 +177,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "discharge_start" : discharge_start,
         "discharge_end" : discharge_end,
         "charge_temp" : charge_temp,
-        "peak_reduction" : peak_reduction
+        "peak_reduction" : peak_reduction,
+        "size_fraction": float(size_fraction)
     }
     
     if chw:
