@@ -83,6 +83,7 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
         # add more variables to the list if needed            
         if not baseline:
             hourly_outputs.append(('*', 'PythonPlugin:OutputVariable'))
+            hourly_outputs.append(('Charge Sch', 'Schedule Value'))
         
         for key, var in hourly_outputs:
             ov = openstudio.model.OutputVariable(var, model)
