@@ -223,6 +223,7 @@ def create_app(config=None):
                                     technology_object.tag()), osw, measures_only=False)
 
             if detailed_header:
+                response_txt += f'version,{__version__}\n'
                 # This isn't handled as generally as it should be
                 if inputs.storage.type == 'PackagedIceStorage':
                     sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
