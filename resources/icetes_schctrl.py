@@ -357,6 +357,13 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         if self.need_to_get_timestep_handles:
             self.get_timestep_handles(state)
 
+        #get outdoor air
+        self.OAT_sensor_handle = self.api.exchange.get_variable_handle(state,
+                                        "Site Outdoor Air Drybulb Temperature", "Environment")
+        OAT = self.api.exchange.get_variable_value(state, self.OAT_sensor_handle)
+        
+        tank_out=self.api.exchange.get_variable_value(state, self.t_tank_out_hndl)
+
         # set current date/time
         datetime = self.api.exchange.day_of_year(state) * 24 + self.api.exchange.current_time(state)
         timestep = self.api.exchange.zone_time_step(state) * 60 * 60
@@ -382,8 +389,12 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         # chiller setpoints
         if chrg_sch == 1:
             t_set_chiller = t_chrg
-        elif chrg_sch == -1:
+        #elif chrg_sch == -1:
+            #t_set_chiller = t_trim
+        elif chrg_sch == -1 and OAT>30 :
             t_set_chiller = t_trim
+        elif chrg_sch == -1 and OAT<=30 :
+            t_set_chiller = 6.7
         elif chrg_sch == 0:
             t_set_chiller = 6.7
         elif chrg_sch < 0 and chrg_sch > -1:
