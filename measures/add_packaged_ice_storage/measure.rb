@@ -128,7 +128,7 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
     discharge_end.setDescription('Use 24 hour format')
     discharge_end.setDefaultValue('18:00')
     args << discharge_end
-    
+
     hourly = OpenStudio::Measure::OSArgument.makeBoolArgument('hourly', false)
     hourly.setDisplayName('Report at hourly frequency')
     hourly.setDescription('Setting this flag will request hourly frequency for important outputs.')
@@ -320,6 +320,14 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
       end
     end
 
+    # add output variable of schedule
+    obj_typ = 'Output_Variable'
+    new_obj = OpenStudio::IdfObject.new(obj_typ.to_IddObjectType)
+    new_obj.setString(0, 'Simple User Sched')
+    new_obj.setString(1, 'Schedule Value')
+    new_obj.setString(2, 'Hourly')
+    workspace.addObject(new_obj)
+
     # find objects of interest in the model (used to identify container objects, air loops, and thermal zones)
     cooling_coil_systems = workspace.getObjectsByType('CoilSystem:Cooling:DX'.to_IddObjectType)
     air_loops = workspace.getObjectsByType('AirLoopHVAC'.to_IddObjectType)
@@ -459,10 +467,10 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
     # end of new TES coil string
 
     # #Begin Coil Replacement
-    
+
     out_path = './report.txt'
     file = File.open(out_path, 'w')
-    
+
     # iterate through all CoilSystem:Cooling objects and replace existing coils with TES coils
     coil_selection.each do |sel_coil|
       # get workspace object for selected coil from name
@@ -665,7 +673,7 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
                           "'#{utss.name}' with a capacity of #{ice_cap} GJ.\n")
       # end of coil replacement routine
     end
-    
+
     # Not sure this is needed, but it was in the example reporting measure
     begin
       file.fsync
@@ -673,7 +681,7 @@ class AddPackagedIceStorage < OpenStudio::Measure::EnergyPlusMeasure
       file.flush
     end
     file.close()
-    
+
     # Mess with frequency of the outputs if requested
     if hourly
       workspace.getObjectsByType('Output:Meter'.to_IddObjectType).each do |output_meter|
