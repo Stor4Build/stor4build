@@ -200,8 +200,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             "coeff_c0_ua_discharging": 1.848e+03,
             "coeff_c1_ua_discharging": 7.429e+04,
             "coeff_c2_ua_discharging": -1.419e+05,
-            "coeff_c3_ua_discharging": 9.366e+04,
-            "storage_medium": "RT2HC"
+            "coeff_c3_ua_discharging": 9.366e+04
         }
 
         # other inits
