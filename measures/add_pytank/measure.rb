@@ -144,6 +144,12 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     size_frac.setDefaultValue(1)
     size_frac.setDescription('Chiller sizing factor')
     args << size_frac
+    
+    # create argument for chiller downsizing
+    smarter_discharge = OpenStudio::Measure::OSArgument::makeBoolArgument('smarter_discharge', false)
+    smarter_discharge.setDefaultValue(false)
+    smarter_discharge.setDescription('Apply smarter discharge')
+    args << smarter_discharge
 
     return args
   end
@@ -168,6 +174,12 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
+    smarter_discharge = runner.getBooleanArgumentValue('smarter_discharge', usr_args)
+    
+    control_options = ''
+    if smarter_discharge
+      control_options = '_sd'
+    end
 
     # add discharge start time schedule
     ot = 'Schedule_Constant'
@@ -308,7 +320,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
       no.setString(0, "Ice Tank #{s} Prgm")
       no.setString(1, 'No')
-      no.setString(2, "#{strg_type}tes_#{ctrl_type}ctrl")
+      no.setString(2, "#{strg_type}tes_#{ctrl_type}ctrl#{control_options}")
       no.setString(3, "UsrDefPlntCmp#{s}")
       ws.addObject(no)
     end

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC
+# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC, Oak Ridge National Laboratory, managed by UT-Battelle, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from pyenergyplus.plugin import EnergyPlusPlugin
@@ -200,8 +200,7 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             "coeff_c0_ua_discharging": 1.848e+03,
             "coeff_c1_ua_discharging": 7.429e+04,
             "coeff_c2_ua_discharging": -1.419e+05,
-            "coeff_c3_ua_discharging": 9.366e+04,
-            "storage_medium": "RT2HC"
+            "coeff_c3_ua_discharging": 9.366e+04
         }
 
         # other inits
@@ -358,6 +357,13 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         if self.need_to_get_timestep_handles:
             self.get_timestep_handles(state)
 
+        #get outdoor air
+        self.OAT_sensor_handle = self.api.exchange.get_variable_handle(state,
+                                        "Site Outdoor Air Drybulb Temperature", "Environment")
+        OAT = self.api.exchange.get_variable_value(state, self.OAT_sensor_handle)
+        
+        tank_out=self.api.exchange.get_variable_value(state, self.t_tank_out_hndl)
+
         # set current date/time
         datetime = self.api.exchange.day_of_year(state) * 24 + self.api.exchange.current_time(state)
         timestep = self.api.exchange.zone_time_step(state) * 60 * 60
@@ -383,8 +389,12 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
         # chiller setpoints
         if chrg_sch == 1:
             t_set_chiller = t_chrg
-        elif chrg_sch == -1:
+        #elif chrg_sch == -1:
+            #t_set_chiller = t_trim
+        elif chrg_sch == -1 and OAT>30 :
             t_set_chiller = t_trim
+        elif chrg_sch == -1 and OAT<=30 :
+            t_set_chiller = 6.7
         elif chrg_sch == 0:
             t_set_chiller = 6.7
         elif chrg_sch < 0 and chrg_sch > -1:
