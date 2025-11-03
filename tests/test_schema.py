@@ -22,8 +22,10 @@ def test_minimal_input_ice():
     assert data.baseline.climate == '5A'
     assert data.storage.type == 'ThermalTank-Ice'
     assert data.storage.capacity == 100.0
-    assert data.energy.schedule.months[0].month == 'All'
-    assert data.demand.schedule.months[0].month == 'All'
+    assert data.energy.schedule.months['All'].month == 'All'
+    assert len(data.energy.schedule.months) == 1
+    assert data.demand.schedule.months['All'].month == 'All'
+    assert len(data.demand.schedule.months) == 1
     assert data.storage.discharge_interval is None
     assert data.storage.charge_interval is None
 
@@ -39,8 +41,10 @@ def test_intervals():
     assert data.baseline.climate == '5A'
     assert data.storage.type == 'ThermalTank-Ice'
     assert data.storage.capacity == 100.0
-    assert data.energy.schedule.months[0].month == 'All'
-    assert data.demand.schedule.months[0].month == 'All'
+    assert data.energy.schedule.months['All'].month == 'All'
+    assert len(data.energy.schedule.months) == 1
+    assert data.demand.schedule.months['All'].month == 'All'
+    assert len(data.demand.schedule.months) == 1
     assert data.storage.charge_interval.begin.hour == 17
     assert ('%s' % data.storage.charge_interval.begin) == '17:00'
     assert str(data.storage.charge_interval.end) == '07:00'
@@ -56,13 +60,12 @@ def test_larger_input_chw():
     assert data.baseline.climate == '4A'
     assert data.storage.type == 'ThermalTank-ChilledWater'
     assert data.storage.capacity == 100.0
-    assert data.energy.schedule.months[0].month == 'All'
-    assert data.demand.schedule.months[0].month == 'All'
+    assert data.energy.schedule.months['All'].month == 'All'
+    assert len(data.energy.schedule.months) == 1
+    assert data.demand.schedule.months['All'].month == 'All'
+    assert len(data.demand.schedule.months) == 1
     assert data.storage.discharge_interval is None
     assert data.storage.charge_interval is None
-    
-
-import json
 
 def test_schema_changes():
     spec = APISpec(
