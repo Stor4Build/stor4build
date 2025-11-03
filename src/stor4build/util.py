@@ -37,6 +37,15 @@ def process_energy_schedule(sch, peak=3):
             '%02d:00' % charge_end_hour,
             '%02d:00' % discharge_start_hour,
             '%02d:00' % discharge_end_hour)
+            
+def rate_array(sch, rates):
+    result = []
+    for v in sch:
+        if v in rates:
+            result.append(rates[v])
+        else:
+            return None
+    return result
     
 def convert_string_time_interval(start, end):
     hour, minute = start.split(':')

@@ -1,0 +1,10 @@
+{
+    "storage": {
+        "type": "ThermalTank-Ice"
+    },
+    "baseline": {
+        "climate": "5A",
+        "vintage": 2011,
+        "type": "LargeOffice"
+    }
+}

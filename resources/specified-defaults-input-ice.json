@@ -1,0 +1,15 @@
+{
+    "storage": {
+        "type": "ThermalTank-Ice",
+        "capacity": 100,
+        "discharge_start": "12:00",
+        "discharge_end": "18:00",
+        "charge_start": "21:00",
+        "charge_end": "07:00"
+    },
+    "baseline": {
+        "climate": "5A",
+        "vintage": 2011,
+        "type": "LargeOffice"
+    }
+}

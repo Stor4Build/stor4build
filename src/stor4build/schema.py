@@ -35,6 +35,12 @@ class MonthSchedule:
     unit: str
     month: str
     periods: List[int]
+    
+    def find_peak_window(self, peak:int) -> (int,int):
+        reverse_sch = list(reversed(self.periods)) # This is probably bad, just do it for now
+        start_hour = sch.index(peak) + 1
+        end_hour = len(sch) - reverse_sch.index(peak)
+        return start_hour, end_hour
 
 class MonthScheduleSchema(BaseSchema):
     unit = fields.Str(required=True)
@@ -42,18 +48,21 @@ class MonthScheduleSchema(BaseSchema):
     periods = fields.List(fields.Int(), required=True)
     promote_to = MonthSchedule
 
-@dataclass
 class Schedule:
-    months: List[MonthSchedule]
+    def __init__(self, months: List[MonthSchedule]):
+        self.months = {}
+        # Duplicates will get overridden here
+        for month in months:
+            self.months[month.month] = month
 
 class ScheduleSchema(BaseSchema):
     months = fields.List(fields.Nested(lambda: MonthScheduleSchema()))
     promote_to = Schedule
 
-@dataclass
 class UtilityData:
-    costs: List[UtilityRate]
-    schedule: Schedule
+    def __init__(self, costs: List[UtilityRate], schedule: Schedule):
+        self.costs = costs
+        self.schedule = schedule
 
 class UtilityDataSchema(BaseSchema):
     costs = fields.List(fields.Nested(lambda: UtilityRateSchema()))
@@ -102,7 +111,6 @@ class StorageData:
     discharge_interval: Interval = None
     size_fraction: float = 1.0
 
-
 class StorageDataSchema(BaseSchema):
     type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater', 'PackagedIceStorage']), required=True)
     capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=False)
@@ -115,12 +123,17 @@ class StorageDataSchema(BaseSchema):
 class InputData:
     baseline: BuildingData
     storage: StorageData
-    energy: UtilityData
+    energy: UtilityData = None
     demand: UtilityData = None
     
     @classmethod
-    def load(cls, data):
+    def load(cls, data, ):
         schema = InputDataSchema()
+        return schema.load(data)
+        
+    @classmethod
+    def load_tessbed_v1(cls, data, ):
+        schema = TESSBeDv1Schema()
         return schema.load(data)
         
     @classmethod
@@ -128,8 +141,15 @@ class InputData:
         with open(input_path, 'r') as fp:
             data = json.load(fp)
         return cls.load(data)
-
+    
 class InputDataSchema(BaseSchema):
+    baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
+    storage = fields.Nested(lambda: StorageDataSchema(), required=True)
+    energy = fields.Nested(lambda: UtilityDataSchema(), required=False)
+    demand = fields.Nested(lambda: UtilityDataSchema(), required=False)
+    promote_to = InputData
+    
+class TESSBeDv1Schema(BaseSchema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
     storage = fields.Nested(lambda: StorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)
