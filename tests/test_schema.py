@@ -29,8 +29,9 @@ def test_minimal_input_ice():
     assert data.storage.discharge_interval is None
     assert data.storage.charge_interval is None
     assert len(data.energy.costs) == 3
-
+    assert data.energy.costs[3].rate > data.energy.costs[2].rate > data.energy.costs[1].rate
     assert len(data.demand.costs) == 3
+    assert data.demand.costs[3].rate > data.demand.costs[2].rate > data.demand.costs[1].rate
 
 def test_intervals():
     input_path = os.path.join(resources_dir, 'minimal-input-ice.json')
