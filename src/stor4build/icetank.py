@@ -106,8 +106,8 @@ class IceTank(Simulation):
         
         # Package up the sizing info
         sizing = {'peak_reduction': peak_reduction,
-                  'window_start': window_start,
-                  'window_end': window_end,
+                  'peak_window_start': window_start,
+                  'peak_window_end': window_end,
                   'maximum_load': energy_max,
                   'mass_flow': mass_flow,
                   'maximum_date': str(date),

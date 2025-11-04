@@ -13,10 +13,8 @@
         "storage": {
             "type": "ThermalTank-Ice",
             "capacity": 100,
-            "discharge_start": "12:00",
-            "discharge_end": "18:00",
-            "charge_start": "21:00",
-            "charge_end": "07:00"
+            "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 18}},
+            "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 7}}
         },
         "baseline": {
             "climate": "5A",
@@ -28,10 +26,8 @@
         "storage": {
             "type": "ThermalTank-Ice",
             "capacity": 100,
-            "discharge_start": "12:00",
-            "discharge_end": "18:00",
-            "charge_start": "21:00",
-            "charge_end": "07:00"
+            "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 18}},
+            "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 7}}
         },
         "baseline": {
             "climate": "4A",

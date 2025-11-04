@@ -38,8 +38,14 @@ class MonthSchedule:
     
     def find_peak_window(self, peak:int) -> (int,int):
         reverse_sch = list(reversed(self.periods)) # This is probably bad, just do it for now
-        start_hour = self.periods.index(peak) + 1
+        start_index = self.periods.index(peak)
+        start_hour = start_index + 1
         end_hour = len(self.periods) - reverse_sch.index(peak)
+        v = set(self.periods[start_index:end_hour])
+        if len(v) > 1:
+            return None
+        if v.pop() != peak:
+            return None
         return start_hour, end_hour
 
 class MonthScheduleSchema(BaseSchema):

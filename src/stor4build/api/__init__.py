@@ -154,12 +154,12 @@ def create_app(config=None):
         # Handle inputs of the charge/discharge interval
         if inputs.storage.charge_interval is not None:
             # Override the charge interval if it's in the input
-            arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
-            arguments['charge_end'] = str(inputs.storage.charge_interval.end)
+            arguments['charge_start'] = '%02d:00' % inputs.storage.charge_interval.begin.hour
+            arguments['charge_end'] = '%02d:00' % inputs.storage.charge_interval.end.hour
         if inputs.storage.discharge_interval is not None:
             # Override the discharge interval if it's in the input
-            arguments['discharge_start'] = str(inputs.storage.charge_interval.begin)
-            arguments['discharge_end'] = str(inputs.storage.charge_interval.end)
+            arguments['discharge_start'] = '%02d:00' % inputs.storage.discharge_interval.begin.hour
+            arguments['discharge_end'] = '%02d:00' % inputs.storage.discharge_interval.end.hour
 
         if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
             if building_type != 'LargeOffice':
@@ -238,7 +238,7 @@ def create_app(config=None):
                 response_txt += f'building_type,"{building_type}"\n'
                 response_txt += f'climate_zone,"{cz}"\n'
                 response_txt += f'vintage,"{vintage_to_use}"\n'
-                response_txt += f'storage_type,"{inputs.storage.type}"\n'
+                response_txt += f'storage,"{inputs.storage.type}"\n'
                 # This isn't handled as generally as it should be
                 if inputs.storage.type == 'PackagedIceStorage':
                     sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
