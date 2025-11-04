@@ -9,3 +9,4 @@ from .system import Simulation
 from .icetank import IceTank
 from .dxcoil import DxCoil
 from .schema import InputData
+from .__about__ import __version__

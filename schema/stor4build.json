@@ -1,8 +1,8 @@
 {
   "info": {
-    "description": "The TESSBeD web app for TES calculations",
-    "title": "TESSBeD",
-    "version": "0.2.0"
+    "description": "The stor4build API for TES calculations",
+    "title": "stor4build",
+    "version": "0.2.3"
   },
   "paths": {},
   "openapi": "3.0.2",
@@ -201,7 +201,6 @@
         },
         "required": [
           "baseline",
-          "energy",
           "storage"
         ]
       }

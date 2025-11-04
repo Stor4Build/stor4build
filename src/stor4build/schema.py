@@ -61,7 +61,9 @@ class ScheduleSchema(BaseSchema):
 
 class UtilityData:
     def __init__(self, costs: List[UtilityRate], schedule: Schedule):
-        self.costs = costs
+        self.costs = {}
+        for cost in costs:
+            self.costs[cost.period] = cost
         self.schedule = schedule
 
 class UtilityDataSchema(BaseSchema):
