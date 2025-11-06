@@ -135,7 +135,7 @@ def create_app(config=None):
         argument_keys = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end']
         # Get utility rate info, just the one energy schedule for now
         if inputs.energy is not None:
-            energy_sch = inputs.energy.schedule.months[0].periods
+            energy_sch = inputs.energy.schedule.months['All'].periods
             if len(energy_sch) != 24:
                 return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
             # Translate the utility rate parameters to charge/discharge start/end
@@ -226,13 +226,6 @@ def create_app(config=None):
             stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
                                     technology_object.tag()), osw, measures_only=False)
 
-            # Run economic analysis
-            if inputs.energy is not None:
-                energy_rates = {}
-                for cost in inputs.energy.costs:
-                    energy_rates[cost.period] = cost.rate
-                rate_array = stor4build.rate_array(energy_sch, energy_rates)
-
             if detailed_header:
                 response_txt += f'version,{__version__}\n'
                 response_txt += f'building_type,"{building_type}"\n'
@@ -265,6 +258,12 @@ def create_app(config=None):
                     response_txt += '%s,"%s"\n' % (k, str(v))
                 for k,v in arguments.items():
                     response_txt += 'argument: %s,"%s"\n' % (k, str(v))
+
+            # Handle economics
+            if inputs.energy is not None:
+                energy_rates = {}
+                for label, month in inputs.energy.schedule.items():
+                    energy_rates[label] = month.rate_array(inputs.energy.costs)
 
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)

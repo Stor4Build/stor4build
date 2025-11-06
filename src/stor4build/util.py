@@ -6,6 +6,7 @@ import pandas as pd
 import tempfile
 import dataclasses
 import json
+import datetime
 
 def seed_model(openstudio_exe, path, filename):
     cur_dir = os.getcwd()
@@ -90,13 +91,21 @@ def combine_csvs(baseline_csv, tech_csv):
     result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
     return result.to_csv(index=False, lineterminator='\n')
     
-def combine_single_frequency_csvs(baseline_csv, tech_csv, freq):
+def combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=None):
     baseline = single_frequency_df(baseline_csv, freq)
     baseline.rename(prefix_with_baseline, axis='columns', inplace=True)
     tech = single_frequency_df(tech_csv, freq)
     result = pd.concat([baseline, tech], axis=1)
     result.drop(['Date/Time'], axis=1, inplace=True)
     result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
+    if energy_data is not None:
+        first_day = get_first_day(result)
+        last_day = get_last_day(result)
+        result['energy rate'] = energy_data.rate_schedule(first_day, last_day)
+    return result
+    
+def combine_single_frequency_csv(baseline_csv, tech_csv, freq, energy_data=None):
+    result = combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=energy_data)
     return result.to_csv(index=False, lineterminator='\n')
 
 def single_frequency_csv(eplusout_csv, freq, verbose=False):
@@ -115,7 +124,14 @@ def single_frequency_df(eplusout_csv, freq, verbose=False):
     return df.drop(drop_cols, axis=1).dropna()
 
 class DataclassJSONEncoder(json.JSONEncoder):
-        def default(self, o):
-            if dataclasses.is_dataclass(o) and not isinstance(o, type):
-                return dataclasses.asdict(o)
-            return super().default(o)
+    def default(self, o):
+        if dataclasses.is_dataclass(o) and not isinstance(o, type):
+            return dataclasses.asdict(o)
+        return super().default(o)
+        
+def get_first_day(eplusout_df):
+    return datetime.datetime.fromisoformat(eplusout_df['Date/Time'][0].strip()).date()
+
+def get_last_day(eplusout_df):
+    return datetime.datetime.fromisoformat(eplusout_df.tail()['Date/Time'].iloc[-1].strip()).date()
+

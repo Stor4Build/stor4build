@@ -6,6 +6,7 @@ from .osmeasures import climate_zone_list, vintage_list, prototypes_list
 from dataclasses import dataclass
 from typing import List
 import json
+import datetime
 
 actual_climate_zone_list = climate_zone_list[:]
 actual_climate_zone_list.remove('5C')
@@ -47,6 +48,14 @@ class MonthSchedule:
         if v.pop() != peak:
             return None
         return start_hour, end_hour
+    def rate_array(self, costs):
+        result = []
+        for v in self.periods:
+            if v in costs:
+                result.append(costs[v].rate)
+            else:
+                return None
+        return result
 
 class MonthScheduleSchema(BaseSchema):
     unit = fields.Str(required=True)
@@ -71,6 +80,11 @@ class UtilityData:
         for cost in costs:
             self.costs[cost.period] = cost
         self.schedule = schedule
+        
+    def rate_schedule(self, start: datetime.date, end: datetime.date):
+        # For now, assume only "All" is present
+        ndays = (end-start).days + 1
+        return self.schedule.months['All'].rate_array(self.costs) * ndays
 
 class UtilityDataSchema(BaseSchema):
     costs = fields.List(fields.Nested(lambda: UtilityRateSchema()))

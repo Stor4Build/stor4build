@@ -20,8 +20,8 @@ def test_100pct_sizing():
     assert icetank.sizing['peak_reduction'] == 100.0
     assert icetank.sizing['actual_num_tanks'] == 18
     assert icetank.sizing['maximum_date'] == '2006-08-09'
-    assert icetank.sizing['window_start'] == '12:00'
-    assert icetank.sizing['window_end'] == '18:00'
+    assert icetank.sizing['peak_window_start'] == '12:00'
+    assert icetank.sizing['peak_window_end'] == '18:00'
     assert icetank.sizing['maximum_load'] == pt.approx(43054516220.4075, abs=1.0e-8)
     assert icetank.sizing['mass_flow'] == pt.approx(124.23959898908693, abs=1.0e-8)
     assert icetank.sizing['requested_num_tanks'] == pt.approx(17.903574609284558, abs=1.0e-8)
@@ -68,8 +68,8 @@ def test_100pct_sizing_cooling():
     assert icetank.sizing['peak_reduction'] == 100.0
     assert icetank.sizing['actual_num_tanks'] == 18
     assert icetank.sizing['maximum_date'] == '2006-08-09'
-    assert icetank.sizing['window_start'] == '12:00'
-    assert icetank.sizing['window_end'] == '18:00'
+    assert icetank.sizing['peak_window_start'] == '12:00'
+    assert icetank.sizing['peak_window_end'] == '18:00'
     assert icetank.sizing['maximum_load'] == pt.approx(42615337308.797195, abs=1.0e-8)
     assert icetank.sizing['mass_flow'] == pt.approx(124.239598989087, abs=1.0e-8)
     assert icetank.sizing['requested_num_tanks'] == pt.approx(17.720948648036092, abs=1.0e-8)
@@ -117,8 +117,8 @@ def test_50pct_sizing():
     assert icetank.sizing['peak_reduction'] == 50.0
     assert icetank.sizing['actual_num_tanks'] == 9
     assert icetank.sizing['maximum_date'] == '2006-08-09'
-    assert icetank.sizing['window_start'] == '12:00'
-    assert icetank.sizing['window_end'] == '18:00'
+    assert icetank.sizing['peak_window_start'] == '12:00'
+    assert icetank.sizing['peak_window_end'] == '18:00'
     assert icetank.sizing['maximum_load'] == pt.approx(43054516220.4075, abs=1.0e-8)
     assert icetank.sizing['mass_flow'] == pt.approx(124.23959898908693, abs=1.0e-8)
     assert icetank.sizing['requested_num_tanks'] == pt.approx(8.951787304642279, abs=1.0e-8)

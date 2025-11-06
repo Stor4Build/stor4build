@@ -92,17 +92,17 @@ def test_utility_schedule_proc():
     "costs": [
         {
             "rate": 0.2,
-            "unit": "$/kW",
+            "unit": "$/kWh",
             "period": 3
         },
         {
             "rate": 0.1,
-            "unit": "$/kW",
+            "unit": "$/kWh",
             "period": 2
         },
         {
-            "rate": 0,
-            "unit": "$/kW",
+            "rate": 0.01,
+            "unit": "$/kWh",
             "period": 1
         }
     ],
@@ -126,3 +126,7 @@ def test_utility_schedule_proc():
     start,end = utility_data.schedule.months['All'].find_peak_window(3)
     assert start == 12
     assert end == 17
+    rate_array = utility_data.schedule.months['All'].rate_array(utility_data.costs)
+    assert len(rate_array) == 24
+    assert rate_array == [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.01, 0.01, 0.01, 0.01, 0.01]
+    
