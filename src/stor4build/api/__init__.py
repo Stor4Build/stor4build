@@ -260,14 +260,20 @@ def create_app(config=None):
                     response_txt += 'argument: %s,"%s"\n' % (k, str(v))
 
             # Handle economics
-            if inputs.energy is not None:
-                energy_rates = {}
-                for label, month in inputs.energy.schedule.items():
-                    energy_rates[label] = month.rate_array(inputs.energy.costs)
+            #energy_rates = None
+            #if inputs.energy is not None:
+            #    energy_rates = {}
+            #    for label, month in inputs.energy.schedule.months.items():
+            #        energy_rates[label] = month.rate_array(inputs.energy.costs)
 
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)
-            response_txt += stor4build.combine_single_frequency_csvs(baseline_csv, tech_csv, 'Hourly')
+            if inputs.demand is not None:
+                rates = [cost.rate for cost in inputs.demand.costs.values()]
+                rates.sort()
+                response_txt += 'demand rates,' + ','.join([str(el) for el in rates]) + '\n'
+            response_txt += stor4build.combine_single_frequency_csv(baseline_csv, tech_csv, 'Hourly',
+                                                                    energy_data=inputs.energy, demand_data=inputs.demand)
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"

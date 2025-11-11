@@ -125,8 +125,13 @@ def test_combine_hourly_dfs():
     combined_df = s4b.combine_single_frequency_df(baseline_path, icetank_path, 'Hourly', energy_data=energy_data)
     assert len(combined_df) == 4392
     assert len(combined_df.columns) == len(baseline_df.columns) + len(icetank_df.columns)
-    assert (combined_df['energy rate'].iloc[:24] == [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.01, 0.01, 0.01, 0.01, 0.01]).all()
-    assert (combined_df['energy rate'].iloc[24:48] == [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.01, 0.01, 0.01, 0.01, 0.01]).all()
+    assert (combined_df['energy rate [$/kWh]'].iloc[:24] == [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.01, 0.01, 0.01, 0.01, 0.01]).all()
+    assert (combined_df['energy rate [$/kWh]'].iloc[24:48] == [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.01, 0.01, 0.01, 0.01, 0.01]).all()
+    
+    # Pretend that the data is demand, doesn't really matter
+    periods = energy_data.demand_schedule(baseline_d1, baseline_d1) # + datetime.timedelta(days=1))
+    assert len(periods) == 24
+    assert periods == [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0]
 
 def test_combine_hourly_csvs():
     baseline_path = os.path.join(this_dir, 'baseline_ice_4A_2011.csv')

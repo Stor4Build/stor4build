@@ -32,6 +32,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -51,13 +79,13 @@
                 }
             ],
             "schedule": {
-            "months": [
-                {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
-                }
-            ]
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     },
@@ -71,6 +99,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -90,13 +146,13 @@
                 }
             ],
             "schedule": {
-            "months": [
-                {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
-                }
-            ]
+                "months": [
+                    {
+                       "unit": "hour",
+                       "month": "All",
+                       "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     },
@@ -110,6 +166,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -129,13 +213,13 @@
                 }
             ],
             "schedule": {
-            "months": [
-                {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
-                }
-            ]
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     },
@@ -149,6 +233,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -168,13 +280,13 @@
                 }
             ],
             "schedule": {
-            "months": [
-                {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
-                }
-            ]
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     },
@@ -188,6 +300,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -207,13 +347,13 @@
                 }
             ],
             "schedule": {
-            "months": [
-                {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
-                }
-            ]
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     },
@@ -227,6 +367,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -246,13 +414,13 @@
                 }
             ],
             "schedule": {
-            "months": [
-                {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
-                }
-            ]
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     },
@@ -266,6 +434,34 @@
             "vintage": 2011,
             "type": "LargeOffice"
         },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
         "energy": {
             "costs": [
                 {
@@ -285,13 +481,147 @@
                 }
             ],
             "schedule": {
-            "months": [
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_5A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "4A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
                 {
-                    "unit": "hour",
-                    "month": "All",
-                    "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
                 }
-            ]
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_5B_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "4B",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
             }
         }
     }

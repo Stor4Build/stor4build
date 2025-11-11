@@ -48,11 +48,21 @@ class MonthSchedule:
         if v.pop() != peak:
             return None
         return start_hour, end_hour
+
     def rate_array(self, costs):
         result = []
         for v in self.periods:
             if v in costs:
                 result.append(costs[v].rate)
+            else:
+                return None
+        return result
+        
+    def period_array(self, costs):
+        result = []
+        for v in self.periods:
+            if v in costs:
+                result.append(costs[v].period)
             else:
                 return None
         return result
@@ -85,6 +95,16 @@ class UtilityData:
         # For now, assume only "All" is present
         ndays = (end-start).days + 1
         return self.schedule.months['All'].rate_array(self.costs) * ndays
+        
+    def demand_schedule(self, start: datetime.date, end: datetime.date):
+        # For now, assume only "All" is present
+        ndays = (end-start).days + 1
+        # Force the array to contain 0..len(costs)-1
+        thelist = list(self.costs.values())
+        thelist.sort(key=lambda x: x.rate)
+        for i,c in enumerate(thelist):
+            c.period = i
+        return self.schedule.months['All'].period_array(self.costs) * ndays
 
 class UtilityDataSchema(BaseSchema):
     costs = fields.List(fields.Nested(lambda: UtilityRateSchema()))
