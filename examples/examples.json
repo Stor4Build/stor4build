@@ -1,0 +1,628 @@
+{
+    "default_ice_5A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice"
+        },
+        "baseline": {
+            "climate": "5A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        }
+    },
+    "specified_defaults_ice_5A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100,
+            "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 18}},
+            "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 7}}
+        },
+        "baseline": {
+            "climate": "5A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        }
+    },
+    "utility_ice_1A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "1A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_2A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "2A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                       "unit": "hour",
+                       "month": "All",
+                       "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_2B_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "2B",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_3A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "3A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_3B_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "3B",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_4A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "4A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_4B_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "4B",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_5A_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "4A",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    },
+    "utility_ice_5B_2011": {
+        "storage": {
+            "type": "ThermalTank-Ice",
+            "capacity": 100
+        },
+        "baseline": {
+            "climate": "4B",
+            "vintage": 2011,
+            "type": "LargeOffice"
+        },
+        "demand": {
+            "costs": [
+                {
+                    "rate": 0.2,
+                    "unit": "$/kW",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kW",
+                    "period": 2
+                },
+                {
+                    "rate": 0,
+                    "unit": "$/kW",
+                    "period": 1
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        },
+        "energy": {
+            "costs": [
+                {
+                    "rate": 0.01,
+                    "unit": "$/kWh",
+                    "period": 1
+                },
+                {
+                    "rate": 0.2,
+                    "unit": "$/kWh",
+                    "period": 3
+                },
+                {
+                    "rate": 0.1,
+                    "unit": "$/kWh",
+                    "period": 2
+                }
+            ],
+            "schedule": {
+                "months": [
+                    {
+                        "unit": "hour",
+                        "month": "All",
+                        "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -124,7 +124,7 @@ def create_app(config=None):
             if data['header_style'] == 'simple':
                 detailed_header = False
         try:
-            inputs = stor4build.InputData.load_tessbed_v1(data)
+            inputs = stor4build.InputData.load(data)
         except ValidationError as ve:
             return make_response({'error': 'Bad request', 'message': process_validation_error(ve)}, 400)
  
@@ -132,29 +132,34 @@ def create_app(config=None):
         cz = 'ASHRAE 169-2006-%s' % inputs.baseline.climate
         vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
         
+        argument_keys = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end']
         # Get utility rate info, just the one energy schedule for now
-        energy_sch = inputs.energy.schedule.months['All'].periods
-        
-        if len(energy_sch) != 24:
-            return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
+        if inputs.energy is not None:
+            energy_sch = inputs.energy.schedule.months['All'].periods
+            if len(energy_sch) != 24:
+                return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
+            # Translate the utility rate parameters to charge/discharge start/end
+            results = stor4build.process_energy_schedule(energy_sch)
+            arguments = {k:v for k,v in zip(argument_keys, results)}
+
+        else:
+            energy_sch = None
+            arguments = {}
 
         needs_baseline = False
         baseline_post = []
         technology_post = []
         technology_object_factory = None
-        # Translate the utility rate parameters to charge/discharge start/end
-        results = stor4build.process_energy_schedule(energy_sch)
-        arguments = {k:v for k,v in zip(['charge_start', 'charge_end', 'discharge_start', 'discharge_end'], results)}
+        
+        # Handle inputs of the charge/discharge interval
         if inputs.storage.charge_interval is not None:
-            # Override the charge interval if it's in the input - implementation commented out
-            # arguments['charge_start'] = str(inputs.storage.charge_interval.begin)
-            # arguments['charge_end'] = str(inputs.storage.charge_interval.end)
-            if inputs.storage.discharge_interval is not None:
-                return make_response({'error': 'Bad request', 'message': 'Charge and discharge intervals in input are no longer accepted.'}, 400)
-            else:
-                return make_response({'error': 'Bad request', 'message': 'Charge interval in input is no longer accepted.'}, 400)
-        elif inputs.storage.discharge_interval is not None:
-            return make_response({'error': 'Bad request', 'message': 'Discharge interval in input is no longer accepted.'}, 400)
+            # Override the charge interval if it's in the input
+            arguments['charge_start'] = '%02d:00' % inputs.storage.charge_interval.begin.hour
+            arguments['charge_end'] = '%02d:00' % inputs.storage.charge_interval.end.hour
+        if inputs.storage.discharge_interval is not None:
+            # Override the discharge interval if it's in the input
+            arguments['discharge_start'] = '%02d:00' % inputs.storage.discharge_interval.begin.hour
+            arguments['discharge_end'] = '%02d:00' % inputs.storage.discharge_interval.end.hour
 
         if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
             if building_type != 'LargeOffice':
@@ -223,6 +228,10 @@ def create_app(config=None):
 
             if detailed_header:
                 response_txt += f'version,{__version__}\n'
+                response_txt += f'building_type,"{building_type}"\n'
+                response_txt += f'climate_zone,"{cz}"\n'
+                response_txt += f'vintage,"{vintage_to_use}"\n'
+                response_txt += f'storage,"{inputs.storage.type}"\n'
                 # This isn't handled as generally as it should be
                 if inputs.storage.type == 'PackagedIceStorage':
                     sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
@@ -247,10 +256,24 @@ def create_app(config=None):
                         response_txt += 'Unable to determine new-to-old object mapping'
                 for k,v in technology_object.sizing.items():
                     response_txt += '%s,"%s"\n' % (k, str(v))
+                for k,v in arguments.items():
+                    response_txt += 'argument: %s,"%s"\n' % (k, str(v))
+
+            # Handle economics
+            #energy_rates = None
+            #if inputs.energy is not None:
+            #    energy_rates = {}
+            #    for label, month in inputs.energy.schedule.months.items():
+            #        energy_rates[label] = month.rate_array(inputs.energy.costs)
 
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)
-            response_txt += stor4build.combine_single_frequency_csv(baseline_csv, tech_csv, 'Hourly')
+            if inputs.demand is not None:
+                rates = [cost.rate for cost in inputs.demand.costs.values()]
+                rates.sort()
+                response_txt += 'demand rates,' + ','.join([str(el) for el in rates]) + '\n'
+            response_txt += stor4build.combine_single_frequency_csv(baseline_csv, tech_csv, 'Hourly',
+                                                                    energy_data=inputs.energy, demand_data=inputs.demand)
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"

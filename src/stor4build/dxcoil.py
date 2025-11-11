@@ -24,8 +24,7 @@ class DxCoil(Simulation):
                 'size_mult': '1',
                 'ctl': 'ScheduledModes',
                 'sched': 'Simple User Sched',
-                'wknd': False,
-                'season': '06/01-09/30'}
+                'wknd': False}
         if self.charge_start is not None:
             args['charge_start'] = self.charge_start
         if self.charge_end is not None:

@@ -5,12 +5,13 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 import json
 from stor4build.schema import InputDataSchema
+from stor4build import __version__ as s4b_version
 
 spec = APISpec(
-    title="TESSBeD",
-    version="0.2.0",
+    title="stor4build",
+    version=s4b_version,
     openapi_version="3.0.2",
-    info=dict(description="The TESSBeD web app for TES calculations"),
+    info=dict(description="The stor4build API for TES calculations"),
     plugins=[MarshmallowPlugin()],
 )
 

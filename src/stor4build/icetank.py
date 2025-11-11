@@ -18,7 +18,7 @@ class IceTank(Simulation):
     default_chw_charge_temp = 1.1
     default_num_tanks = 1
     default_trim_temp = 10.0
-    default_peak_reduction = 15.0
+    default_peak_reduction = 100.0
     default_size_fraction = 1.0
     default_store_ice = True
     def __init__(self, name, pre_steps=None, post_steps=None, **kwargs):
@@ -58,7 +58,7 @@ class IceTank(Simulation):
         # Get the utility rate inputs
         window_start = kwargs.get('discharge_start', cls.default_discharge_start)
         window_end = kwargs.get('discharge_end', cls.default_discharge_end)
-        peak_reduction = kwargs.get('peak_reduction', cls.default_discharge_end)
+        peak_reduction = kwargs.get('peak_reduction', cls.default_peak_reduction)
         store_ice = kwargs.get('store_ice', cls.default_store_ice)
         
         # Figure out the window we're looking at
@@ -106,8 +106,8 @@ class IceTank(Simulation):
         
         # Package up the sizing info
         sizing = {'peak_reduction': peak_reduction,
-                  'window_start': window_start,
-                  'window_end': window_end,
+                  'peak_window_start': window_start,
+                  'peak_window_end': window_end,
                   'maximum_load': energy_max,
                   'mass_flow': mass_flow,
                   'maximum_date': str(date),

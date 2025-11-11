@@ -1,16 +1,16 @@
 # Stor4Build Modeling Tool
 
-[![PyPI - Version](https://img.shields.io/pypi/v/s4b.svg)](https://pypi.org/project/s4b)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/s4b.svg)](https://pypi.org/project/s4b)
+[![PyPI - Version](https://img.shields.io/pypi/v/stor4build.svg)](https://pypi.org/project/stor4build)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/stor4build.svg)](https://pypi.org/project/stor4build)
 
 -----
 
 **Table of Contents**
 
 - [Installation](#installation)
+- [Command Line Usage](#command-line-usage)
 - [VS Code/Hatch Dev Environment](#vs-codehatch-dev-environment)
 - [Web API](#web-api)
-- [Command Line Usage](#command-line-usage)
 - [License](#license)
 
 ## Installation
@@ -18,6 +18,16 @@
 ```console
 pip install stor4build
 ```
+
+## Command Line Usage
+
+The `stor4build` command includes three subcommands at this time:
+
+  * `run-icetank` - Runs the chiller-based ice tank Python plugin case with a specified capacity. Using `--chw` will use the chilled water version.
+  * `size-icetank` - Runs the chiller-based ice tank Python plugin case with a size based on the baseline model and discharge window parameters. Using `--chw` will use the chilled water version.
+  * `run-dxcoil` - Runs the native E+ DX coil TES system with autosizing.
+
+Further information is available with the `--help` option.
 
 ## VS Code/Hatch Dev Environment
 
@@ -67,20 +77,10 @@ FLASK_TIMESCALE_PASSWORD
 Standard password rules apply. To launch the back end (that does the calculation) run
 
 ```console
-flask --app stor4build.tessbed run
+flask --app stor4build.api run
 ```
 
-This will start up the flask **development** server and output will appear on the console. The API accepts JSON inputs in the form described in the `schema` directory in the file `tessbed.json`. Example inputs and scripts to send them to the API are in the `scripts` directory.
-
-## Command Line Usage
-
-The `stor4build` command includes three subcommands at this time:
-
-  * `run-icetank` - Runs the chiller-based ice tank Python plugin case with a specified capacity. Using `--chw` will use the chilled water version.
-  * `size-icetank` - Runs the chiller-based ice tank Python plugin case with a size based on the baseline model and discharge window parameters. Using `--chw` will use the chilled water version.
-  * `run-dxcoil` - Runs the native E+ DX coil TES system with autosizing.
-
-Further information is available with the `--help` option.
+This will start up the flask **development** server and output will appear on the console. The API accepts JSON inputs in the form described in the `schema` directory in the file `stor4build.json`. Example inputs and scripts to send them to the API are in the `resources` and `scripts` directories.
 
 ## License
 

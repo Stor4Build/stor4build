@@ -6,6 +6,7 @@ from .osmeasures import climate_zone_list, vintage_list, prototypes_list
 from dataclasses import dataclass
 from typing import List
 import json
+import datetime
 
 actual_climate_zone_list = climate_zone_list[:]
 actual_climate_zone_list.remove('5C')
@@ -35,6 +36,36 @@ class MonthSchedule:
     unit: str
     month: str
     periods: List[int]
+    
+    def find_peak_window(self, peak:int) -> (int,int):
+        reverse_sch = list(reversed(self.periods)) # This is probably bad, just do it for now
+        start_index = self.periods.index(peak)
+        start_hour = start_index + 1
+        end_hour = len(self.periods) - reverse_sch.index(peak)
+        v = set(self.periods[start_index:end_hour])
+        if len(v) > 1:
+            return None
+        if v.pop() != peak:
+            return None
+        return start_hour, end_hour
+
+    def rate_array(self, costs):
+        result = []
+        for v in self.periods:
+            if v in costs:
+                result.append(costs[v].rate)
+            else:
+                return None
+        return result
+        
+    def period_array(self, costs):
+        result = []
+        for v in self.periods:
+            if v in costs:
+                result.append(costs[v].period)
+            else:
+                return None
+        return result
 
 class MonthScheduleSchema(BaseSchema):
     unit = fields.Str(required=True)
@@ -42,18 +73,38 @@ class MonthScheduleSchema(BaseSchema):
     periods = fields.List(fields.Int(), required=True)
     promote_to = MonthSchedule
 
-@dataclass
 class Schedule:
-    months: List[MonthSchedule]
+    def __init__(self, months: List[MonthSchedule]):
+        self.months = {}
+        # Duplicates will get overridden here
+        for month in months:
+            self.months[month.month] = month
 
 class ScheduleSchema(BaseSchema):
     months = fields.List(fields.Nested(lambda: MonthScheduleSchema()))
     promote_to = Schedule
 
-@dataclass
 class UtilityData:
-    costs: List[UtilityRate]
-    schedule: Schedule
+    def __init__(self, costs: List[UtilityRate], schedule: Schedule):
+        self.costs = {}
+        for cost in costs:
+            self.costs[cost.period] = cost
+        self.schedule = schedule
+        
+    def rate_schedule(self, start: datetime.date, end: datetime.date):
+        # For now, assume only "All" is present
+        ndays = (end-start).days + 1
+        return self.schedule.months['All'].rate_array(self.costs) * ndays
+        
+    def demand_schedule(self, start: datetime.date, end: datetime.date):
+        # For now, assume only "All" is present
+        ndays = (end-start).days + 1
+        # Force the array to contain 0..len(costs)-1
+        thelist = list(self.costs.values())
+        thelist.sort(key=lambda x: x.rate)
+        for i,c in enumerate(thelist):
+            c.period = i
+        return self.schedule.months['All'].period_array(self.costs) * ndays
 
 class UtilityDataSchema(BaseSchema):
     costs = fields.List(fields.Nested(lambda: UtilityRateSchema()))
@@ -102,7 +153,6 @@ class StorageData:
     discharge_interval: Interval = None
     size_fraction: float = 1.0
 
-
 class StorageDataSchema(BaseSchema):
     type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater', 'PackagedIceStorage']), required=True)
     capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=False)
@@ -115,12 +165,17 @@ class StorageDataSchema(BaseSchema):
 class InputData:
     baseline: BuildingData
     storage: StorageData
-    energy: UtilityData
+    energy: UtilityData = None
     demand: UtilityData = None
     
     @classmethod
-    def load(cls, data):
+    def load(cls, data, ):
         schema = InputDataSchema()
+        return schema.load(data)
+        
+    @classmethod
+    def load_tessbed_v1(cls, data, ):
+        schema = TESSBeDv1Schema()
         return schema.load(data)
         
     @classmethod
@@ -128,8 +183,15 @@ class InputData:
         with open(input_path, 'r') as fp:
             data = json.load(fp)
         return cls.load(data)
-
+    
 class InputDataSchema(BaseSchema):
+    baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
+    storage = fields.Nested(lambda: StorageDataSchema(), required=True)
+    energy = fields.Nested(lambda: UtilityDataSchema(), required=False)
+    demand = fields.Nested(lambda: UtilityDataSchema(), required=False)
+    promote_to = InputData
+    
+class TESSBeDv1Schema(BaseSchema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
     storage = fields.Nested(lambda: StorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)

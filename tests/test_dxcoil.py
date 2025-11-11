@@ -24,7 +24,6 @@ def test_dxcoil_init():
                                             'hourly': False,
                                             'ice_cap': 'AutoSize',
                                             'sched': 'Simple User Sched',
-                                            'season': '06/01-09/30',
                                             'size_mult': '1',
                                             'wknd': False}
     assert len(osw['steps'][1]) == 3
@@ -50,7 +49,6 @@ def test_dxcoil_size():
                                             'hourly': False,
                                             'ice_cap': 'AutoSize',
                                             'sched': 'Simple User Sched',
-                                            'season': '06/01-09/30',
                                             'size_mult': '1',
                                             'wknd': False}
     assert len(osw['steps'][2]) == 3
