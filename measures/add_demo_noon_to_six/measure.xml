@@ -2,10 +2,10 @@
 <measure>
   <schema_version>3.1</schema_version>
   <name>add_demo_noon_to_six</name>
-  <uid>0829f299-2596-4e80-b857-c0da88057a86</uid>
-  <version_id>73c4abc8-6e38-4c28-8304-e087568db093</version_id>
-  <version_modified>2025-11-07T19:21:32Z</version_modified>
-  <xml_checksum>7C8FCF45</xml_checksum>
+  <uid>1c92ca7f-c919-466f-8708-7000efa786dc</uid>
+  <version_id>6bd6ef89-cb55-4060-9167-d5bfe171cdb7</version_id>
+  <version_modified>2025-11-13T18:17:05Z</version_modified>
+  <xml_checksum>5790C37F</xml_checksum>
   <class_name>AddDemoNoonToSix</class_name>
   <display_name>Add Demo Noon to Six</display_name>
   <description>Add the demo Python plugin that runs a TES system (via a schedule) from noon until 6PM.</description>
@@ -35,9 +35,9 @@
       </choices>
     </argument>
     <argument>
-      <name>output_directory</name>
-      <display_name>Python plugin output directory</display_name>
-      <description>The directory to place the case-specific Python plugin file.</description>
+      <name>plugin_directory</name>
+      <display_name>Python plugin directory</display_name>
+      <description>A directory that is safe to write files to and is in the Python plugin search path list.</description>
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
@@ -52,17 +52,12 @@
   <attributes>
     <attribute>
       <name>Measure Type</name>
-      <value>ModelMeasure</value>
+      <value>EnergyPlusMeasure</value>
       <datatype>string</datatype>
     </attribute>
     <attribute>
       <name>Measure Language</name>
       <value>Python</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Software Tool</name>
-      <value>Apply Measure Now</value>
       <datatype>string</datatype>
     </attribute>
     <attribute>
@@ -98,19 +93,13 @@
       <filename>measure.py</filename>
       <filetype>py</filetype>
       <usage_type>script</usage_type>
-      <checksum>EDEA7DD3</checksum>
-    </file>
-    <file>
-      <filename>example_model.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>53D14E69</checksum>
+      <checksum>323AADB4</checksum>
     </file>
     <file>
       <filename>test_add_demo_noon_to_six.py</filename>
       <filetype>py</filetype>
       <usage_type>test</usage_type>
-      <checksum>D629D235</checksum>
+      <checksum>D8CED1F5</checksum>
     </file>
   </files>
 </measure>
