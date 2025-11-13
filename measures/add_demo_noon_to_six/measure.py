@@ -15,7 +15,7 @@ class Mode(Enum):
     DISCHARGE = -1
 
 MODE_SCHEDULE_TYPE = 'Schedule:Compact'
-MODE_SCHEDULE_NAME = 'Something'
+MODE_SCHEDULE_NAME = 'Charge Sch'
 '''
 
 
@@ -66,8 +66,8 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
         arg.setDefaultValue('ThermalTank-Ice')
         args.append(arg)
 
-        arg = openstudio.measure.OSArgument.makeStringArgument("output_directory", True)
-        arg.setDisplayName("Python plugin output directory")
+        arg = openstudio.measure.OSArgument.makeStringArgument("plugin_directory", True)
+        arg.setDisplayName("Python plugin directory")
         arg.setDescription("The directory to place the case-specific Python plugin file.")
         arg.setDefaultValue('.')
         args.append(arg)
@@ -87,12 +87,12 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
             return False
 
         # assign the user inputs to variables
-        tes_type = runner.getChoiceArgumentValue("tes_type", user_arguments)
-        output_directory = runner.getStringArgumentValue("output_directory", user_arguments)
+        tes_type = runner.getStringArgumentValue("tes_type", user_arguments)
+        plugin_directory = runner.getStringArgumentValue("plugin_directory", user_arguments)
 
         # check the args for reasonableness
-        if not os.path.exists(output_directory):
-            runner.registerError(f'Output directory "{output_directory}" does not exist.')
+        if not os.path.exists(plugin_directory):
+            runner.registerError(f'Output directory "{plugin_directory}" does not exist.')
             return False
 
         # report initial condition of model
@@ -104,7 +104,7 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
         else:
             pass
 
-        with open('case_details.py', 'w') as fp:
+        with open(os.path.join(plugin_directory, 'case_details.py'), 'w') as fp:
             fp.write(txt)
 
         # Add Python plugin stuff here
