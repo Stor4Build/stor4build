@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>add_path_to_plugin_paths</name>
+  <uid>0b169078-e040-42ee-bb56-aae8c8bc3c2d</uid>
+  <version_id>4065d39d-b571-429e-9879-499896b0f97c</version_id>
+  <version_modified>2025-11-13T17:27:55Z</version_modified>
+  <xml_checksum>719CC56B</xml_checksum>
+  <class_name>AddPathToPluginPaths</class_name>
+  <display_name>Add Path To Plugin Paths</display_name>
+  <description>Add the specified path to the PythonPlugin:SearchPaths object.</description>
+  <modeler_description>Add the specified path to the PythonPlugin:SearchPaths object.</modeler_description>
+  <arguments>
+    <argument>
+      <name>path</name>
+      <display_name>Path</display_name>
+      <description>Path to add to the Python search path.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Python</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.7.0</identifier>
+        <min_compatible>3.7.0</min_compatible>
+      </version>
+      <filename>measure.py</filename>
+      <filetype>py</filetype>
+      <usage_type>script</usage_type>
+      <checksum>21A9382C</checksum>
+    </file>
+    <file>
+      <filename>test_add_path_to_plugin_paths.py</filename>
+      <filetype>py</filetype>
+      <usage_type>test</usage_type>
+      <checksum>DA22A772</checksum>
+    </file>
+  </files>
+</measure>
