@@ -1,9 +1,7 @@
 # SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Sustainable Energy, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
-import typing
 import os
-
 import openstudio
 
 thermaltank_custom_module = '''# This file is generated code, modify at your own risk.
@@ -18,9 +16,8 @@ MODE_SCHEDULE_TYPE = 'Schedule:Compact'
 MODE_SCHEDULE_NAME = 'Charge Sch'
 '''
 
-
-class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
-    """A ModelMeasure."""
+class AddDemoNoonToSix(openstudio.measure.EnergyPlusMeasure):
+    """An EnergyPlusMeasure."""
 
     def name(self):
         """Returns the human readable name.
@@ -52,7 +49,7 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
         """
         return "Add the demo Python plugin that runs a TES system (via a schedule) from noon until 6PM."
 
-    def arguments(self, model: typing.Optional[openstudio.model.Model] = None):
+    def arguments(self, workspace: openstudio.Workspace):
         """Prepares user arguments for the measure.
 
         Measure arguments define which -- if any -- input parameters the user may set before running the measure.
@@ -68,7 +65,7 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
 
         arg = openstudio.measure.OSArgument.makeStringArgument("plugin_directory", True)
         arg.setDisplayName("Python plugin directory")
-        arg.setDescription("The directory to place the case-specific Python plugin file.")
+        arg.setDescription("A directory that is safe to write files to and is in the Python plugin search path list.")
         arg.setDefaultValue('.')
         args.append(arg)
 
@@ -76,14 +73,14 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
 
     def run(
         self,
-        model: openstudio.model.Model,
+        workspace: openstudio.Workspace,
         runner: openstudio.measure.OSRunner,
         user_arguments: openstudio.measure.OSArgumentMap,
     ):
         """Defines what happens when the measure is run."""
-        super().run(model, runner, user_arguments)  # Do **NOT** remove this line
+        super().run(workspace, runner, user_arguments)  # Do **NOT** remove this line
 
-        if not (runner.validateUserArguments(self.arguments(model), user_arguments)):
+        if not (runner.validateUserArguments(self.arguments(workspace), user_arguments)):
             return False
 
         # assign the user inputs to variables
@@ -108,6 +105,12 @@ class AddDemoNoonToSix(openstudio.measure.ModelMeasure):
             fp.write(txt)
 
         # Add Python plugin stuff here
+        obj = openstudio.IdfObject.new('PythonPlugin_Instance')
+        obj.setString(0, "Demo Charge Control Program")
+        obj.setString(1, 'No')
+        obj.setString(2, "demo_noon_to_six")
+        obj.setString(3, "NoonToSix")
+        workspace.addObject(obj)
 
         # report final condition of model
         runner.registerFinalCondition(f'Control schedule for "{tes_type}" applied.')
