@@ -133,7 +133,7 @@ def create_app(config=None):
         vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
         
         # Get utility rate info, just the one energy schedule for now
-        energy_sch = inputs.energy.schedule.months[0].periods
+        energy_sch = inputs.energy.schedule.months['All'].periods
         
         if len(energy_sch) != 24:
             return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
@@ -250,7 +250,7 @@ def create_app(config=None):
 
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
             stor4build.fix_csv(tech_csv)
-            response_txt += stor4build.combine_single_frequency_csvs(baseline_csv, tech_csv, 'Hourly')
+            response_txt += stor4build.combine_single_frequency_csv(baseline_csv, tech_csv, 'Hourly')
 
         response = make_response(response_txt)
         response.headers["Content-Disposition"] = "attachment; filename=results.csv"

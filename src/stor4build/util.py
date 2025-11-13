@@ -91,7 +91,7 @@ def combine_csvs(baseline_csv, tech_csv):
     result.rename(columns={'Baseline Date/Time': 'Date/Time'}, inplace=True)
     return result.to_csv(index=False, lineterminator='\n')
     
-def combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=None):
+def combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=None, demand_data=None):
     baseline = single_frequency_df(baseline_csv, freq)
     baseline.rename(prefix_with_baseline, axis='columns', inplace=True)
     tech = single_frequency_df(tech_csv, freq)
@@ -101,11 +101,13 @@ def combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=None):
     if energy_data is not None:
         first_day = get_first_day(result)
         last_day = get_last_day(result)
-        result['energy rate'] = energy_data.rate_schedule(first_day, last_day)
+        result['energy rate [$/kWh]'] = energy_data.rate_schedule(first_day, last_day)
+        if demand_data is not None:
+            result['demand period []'] = demand_data.demand_schedule(first_day, last_day)
     return result
     
-def combine_single_frequency_csv(baseline_csv, tech_csv, freq, energy_data=None):
-    result = combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=energy_data)
+def combine_single_frequency_csv(baseline_csv, tech_csv, freq, energy_data=None, demand_data=None):
+    result = combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=energy_data, demand_data=demand_data)
     return result.to_csv(index=False, lineterminator='\n')
 
 def single_frequency_csv(eplusout_csv, freq, verbose=False):
