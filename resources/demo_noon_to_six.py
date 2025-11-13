@@ -21,9 +21,9 @@ class NoonToSix(EnergyPlusPlugin):
 
         hour = self.api.exchange.hour(state)
         if hour < 12:
-            self.actuate(state, Mode.CHARGE)
+            self.actuate(state, Mode.CHARGE.value)
         elif 12 <= hour < 18:
-            self.actuate(state, Mode.DISCHARGE)
+            self.actuate(state, Mode.DISCHARGE.value)
         else:
-            self.actuate(state, Mode.CHARGE)
+            self.actuate(state, Mode.CHARGE.value)
         return 0

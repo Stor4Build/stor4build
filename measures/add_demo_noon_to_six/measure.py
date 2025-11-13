@@ -105,7 +105,7 @@ class AddDemoNoonToSix(openstudio.measure.EnergyPlusMeasure):
             fp.write(txt)
 
         # Add Python plugin stuff here
-        obj = openstudio.IdfObject.new('PythonPlugin_Instance')
+        obj = openstudio.IdfObject(openstudio.IddObjectType('PythonPlugin_Instance'))
         obj.setString(0, "Demo Charge Control Program")
         obj.setString(1, 'No')
         obj.setString(2, "demo_noon_to_six")
