@@ -124,6 +124,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
             # Found it!
             post.append(stor4build.Step(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
                                                                                                'plugin_directory': os.path.join(run_dir, 'icetank')}))
+            post.append(stor4build.Step('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
         else:
             warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
         

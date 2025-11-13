@@ -77,7 +77,7 @@ class AddPathToPluginPaths(openstudio.measure.EnergyPlusMeasure):
         if objs:
             runner.registerInitialCondition(f"The model started with a PythonPlugin:SearchPaths object.")
             i = objs[0].numFields()
-            objs[0].setString(i+1, path_name)
+            objs[0].setString(i, path_name)
         else:
             runner.registerInitialCondition("The model started without a PythonPlugin:SearchPaths object.")
             new_object_string = f'''
