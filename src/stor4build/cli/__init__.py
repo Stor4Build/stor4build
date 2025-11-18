@@ -4,6 +4,7 @@
 import click
 import os
 import stor4build
+import warnings
 
 from ..__about__ import __version__
 
@@ -63,13 +64,15 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 @click.option('--trim-temp', metavar='T', type=click.FloatRange(min=0.0, max=20.0), show_default=True,
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
-@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('-c', '--cooling-season-only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
+@click.option('--control', metavar='NAME', show_default=True,
+              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure that implements the scheme.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
-                cooling_season_only, chw, size_fraction):
+                cooling_season_only, chw, size_fraction, control):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -91,7 +94,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         "size_fraction": float(size_fraction)
     }
     
+    tes_type = 'ThermalTank-Ice'
+    
     if chw:
+        tes_type = 'ThermalTank-ChilledWater'
         arguments['store_ice'] = False
         if charge_temp is None:
             arguments['charge_temp'] = stor4build.IceTank.default_chw_charge_temp
@@ -106,6 +112,22 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+    if control == 'default':
+        pass
+    else:
+        measure_name = control
+        if control == 'demo12to6':
+            measure_name = 'add_demo_noon_to_six'
+        # For this to work, the measure will need to be in the measures directory
+        control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
+        if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
+            # Found it!
+            post.append(stor4build.Step(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
+                                                                                               'plugin_directory': os.path.join(run_dir, 'icetank')}))
+            post.append(stor4build.Step('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
+        else:
+            warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
+        
     icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
@@ -154,7 +176,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               show_default=True, default=stor4build.IceTank.default_peak_reduction,
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
-@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('-c', '--cooling-season-only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')

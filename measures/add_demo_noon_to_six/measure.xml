@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>add_demo_noon_to_six</name>
+  <uid>1c92ca7f-c919-466f-8708-7000efa786dc</uid>
+  <version_id>6bd6ef89-cb55-4060-9167-d5bfe171cdb7</version_id>
+  <version_modified>2025-11-13T18:17:05Z</version_modified>
+  <xml_checksum>5790C37F</xml_checksum>
+  <class_name>AddDemoNoonToSix</class_name>
+  <display_name>Add Demo Noon to Six</display_name>
+  <description>Add the demo Python plugin that runs a TES system (via a schedule) from noon until 6PM.</description>
+  <modeler_description>Add the demo Python plugin that runs a TES system (via a schedule) from noon until 6PM.</modeler_description>
+  <arguments>
+    <argument>
+      <name>tes_type</name>
+      <display_name>TES type</display_name>
+      <description>The TES system that is to be simulated.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>ThermalTank-Ice</default_value>
+      <choices>
+        <choice>
+          <value>ThermalTank-Ice</value>
+          <display_name>ThermalTank-Ice</display_name>
+        </choice>
+        <choice>
+          <value>ThermalTank-ChilledWater</value>
+          <display_name>ThermalTank-ChilledWater</display_name>
+        </choice>
+        <choice>
+          <value>PackagedIceStorage</value>
+          <display_name>PackagedIceStorage</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>plugin_directory</name>
+      <display_name>Python plugin directory</display_name>
+      <description>A directory that is safe to write files to and is in the Python plugin search path list.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>.</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Controls</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Python</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.7.0</identifier>
+        <min_compatible>3.7.0</min_compatible>
+      </version>
+      <filename>measure.py</filename>
+      <filetype>py</filetype>
+      <usage_type>script</usage_type>
+      <checksum>323AADB4</checksum>
+    </file>
+    <file>
+      <filename>test_add_demo_noon_to_six.py</filename>
+      <filetype>py</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D8CED1F5</checksum>
+    </file>
+  </files>
+</measure>
