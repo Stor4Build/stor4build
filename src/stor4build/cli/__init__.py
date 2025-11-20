@@ -69,7 +69,7 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
 @click.option('--control', metavar='NAME', show_default=True,
-              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure that implements the scheme.')
+              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure (in the measures path) that implements the scheme.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
                 cooling_season_only, chw, size_fraction, control):
@@ -180,9 +180,11 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
+@click.option('--control', metavar='NAME', show_default=True,
+              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure (in the measures path) that implements the scheme.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
-                 cooling_season_only, chw, size_fraction):
+                 cooling_season_only, chw, size_fraction, control):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -191,6 +193,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     osm = os.path.abspath(osm)
     epw = os.path.abspath(epw)
     measures_dir = os.path.abspath(measures_dir)
+    
+    tes_type = 'ThermalTank-Ice'
     
     # Organize the arguments
     arguments = {
@@ -204,6 +208,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     }
     
     if chw:
+        tes_type = 'ThermalTank-ChilledWater'
         arguments['store_ice'] = False
         if charge_temp is None:
             arguments['charge_temp'] = stor4build.IceTank.default_chw_charge_temp
@@ -226,6 +231,21 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+    if control == 'default':
+        pass
+    else:
+        measure_name = control
+        if control == 'demo12to6':
+            measure_name = 'add_demo_noon_to_six'
+        # For this to work, the measure will need to be in the measures directory
+        control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
+        if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
+            # Found it!
+            post.append(stor4build.Step(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
+                                                                                               'plugin_directory': os.path.join(run_dir, 'sized_icetank')}))
+            post.append(stor4build.Step('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'sized_icetank')}))
+        else:
+            warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
     icetank = stor4build.IceTank.size('sized_icetank', baseline_path, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
@@ -254,11 +274,13 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
 @click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
-@click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
+@click.option('-c', '--cooling-season-only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
+@click.option('--control', metavar='NAME', show_default=True,
+              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure (in the measures path) that implements the scheme.')
 #@click.option('--hourly', is_flag=True, show_default=True, default=False, help='Run hourly outputs.')
 def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
-               run_baseline, cooling_season_only, show_sizing):
+               run_baseline, cooling_season_only, show_sizing, control):
     """
     Add an DX coil TES system to an OpenStudio model and run it.
     """
