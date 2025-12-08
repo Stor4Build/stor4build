@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC
+# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC, Oak Ridge National Laboratory, managed by UT-Battelle, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from math import pi, exp
@@ -43,7 +43,22 @@ class IceTank(object):
 
     def __init__(self, data: dict):
         # fluid strings
-        self.fluid = get_fluid(FluidType.Water)
+        if 'storage_medium' in data:
+            self.fluid_type = data['storage_medium']
+            self.fluid = None
+            try:
+                self.fluid = get_fluid(self.fluid_type)
+            except ValueError:
+                try:
+                    self.fluid_type = FluidType[self.fluid_type]
+                    self.fluid = get_fluid(self.fluid_type)
+                except KeyError:
+                    pass
+            if self.fluid is None:
+                self.fluid_type = FluidType(self.fluid_type)
+                self.fluid = get_fluid(self.fluid_type)
+        else:
+            self.fluid = get_fluid(FluidType.Water)
         self.brine = get_fluid(FluidType.PropyleneGlycol, 0.3)  # Propylene Glycol - 30% by mass
 
         # geometry
@@ -136,11 +151,11 @@ class IceTank(object):
         # set state based on latent state of charge
         if latent_state_of_charge is not None:
             # set tank temperature
-            self.tank_temp = 0
+            self.tank_temp = self.fluid.freeze_point()
             self.tank_temp_prev = self.tank_temp
 
             # init outlet fluid temp
-            self.outlet_fluid_temp = 0
+            self.outlet_fluid_temp = self.fluid.freeze_point()
 
             # bound latent charge state
             latent_state_of_charge = float(max(0, min(1, latent_state_of_charge)))
@@ -163,7 +178,7 @@ class IceTank(object):
             self.outlet_fluid_temp = tank_init_temp
 
             # set state of charge based on temperature
-            if tank_init_temp >= 0:
+            if tank_init_temp >= self.fluid.freeze_point():
                 self.ice_mass = 0
                 self.ice_mass_prev = self.ice_mass
             else:
@@ -304,7 +319,7 @@ class IceTank(object):
         # piece-wise computation of charging state
 
         # sensible fluid charging
-        if self.tank_temp > 0:
+        if self.tank_temp > self.fluid.freeze_point():
             # compute liquid sensible capacity available
             cp_sens_liq = self.fluid.specific_heat(self.tank_temp)
             q_sens_avail = self.liquid_mass * cp_sens_liq * self.tank_temp
@@ -323,13 +338,12 @@ class IceTank(object):
                 # need to decrement the dq so we know how much remains in the next section
                 # don't return early, we need to fallthrough to compute latent charging
                 dq -= q_sens_avail
-                self.tank_temp = 0
+                self.tank_temp = self.fluid.freeze_point()
 
         # latent ice charging
         if dq > 0 and self.ice_mass < self.total_fluid_mass:
             # latent heat of fusion, water
-            # TODO: support something besides water in the tank
-            h_if = 334000  # J/kg
+            h_if = self.fluid.enthalpy_of_fusion()  # J/kg
 
             # compute latent charging capacity available
             q_lat_avail = h_if * self.liquid_mass
@@ -341,7 +355,7 @@ class IceTank(object):
                 self.ice_mass += delta_ice_mass
 
                 # if we've made it this far, we should be OK to return
-                self.tank_temp = 0
+                self.tank_temp = self.fluid.freeze_point()
                 return
 
             # no, we have a latent portion then have to meet the load with some sensible charging, i.e. ice temp < 0
@@ -351,7 +365,7 @@ class IceTank(object):
 
         # sensible subcooled ice charging
         if dq > 0:
-            cp_ice = 2030  # J/kg-K
+            cp_ice = self.fluid.solid_specific_heat()  # J/kg-K
             self.tank_temp += -dq / (self.total_fluid_mass * cp_ice)
 
     def compute_discharging(self, dq: float):
@@ -367,10 +381,9 @@ class IceTank(object):
         # discharging has to occur in the reverse direction from charging
 
         # sensible ice discharging
-        if self.tank_temp < 0:
+        if self.tank_temp < self.fluid.freeze_point():
             # compute solid ice sensible capacity available
-            # TODO: support other fluids
-            cp_sens = 2030
+            cp_sens = self.fluid.solid_specific_heat()
             q_sens_avail = abs(self.ice_mass * cp_sens * self.tank_temp)
 
             # can the load be fully met with sensible-only discharging?
@@ -386,13 +399,12 @@ class IceTank(object):
                 # need to decrement the dq so we know how much remains in the next section
                 # don't return early, we need to fallthrough to compute latent discharging
                 dq -= q_sens_avail
-                self.tank_temp = 0
+                self.tank_temp = self.fluid.freeze_point()
 
         # latent ice discharging
         if dq > 0 and self.ice_mass > 0:
             # latent heat of fusion, water
-            # TODO: support something besides water in the tank
-            h_if = 334000  # J/kg
+            h_if = self.fluid.enthalpy_of_fusion()  # J/kg
 
             # compute latent charging capacity available
             q_lat_avail = h_if * self.ice_mass
@@ -404,7 +416,7 @@ class IceTank(object):
                 self.ice_mass -= delta_ice_mass
 
                 # if we've made it this far, we should be OK to return
-                self.tank_temp = 0
+                self.tank_temp = self.fluid.freeze_point()
                 return
 
             # no, we have a latent portion then have to meet the load with some sensible discharging

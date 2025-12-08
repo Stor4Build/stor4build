@@ -177,12 +177,14 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
 @click.option('-c', '--cooling-season-only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
-@click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
+@click.option('--medium', type=click.Choice(['water', 'simplewater', 'pcm2x2a']), default='water', show_default=True,
+              help='Set the storage medium to use.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
+@click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
-                 cooling_season_only, chw, size_fraction):
+                 cooling_season_only, medium, size_fraction, sensible_only):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -200,15 +202,24 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "discharge_end" : discharge_end,
         "charge_temp" : charge_temp,
         "peak_reduction" : peak_reduction,
-        "size_fraction": float(size_fraction)
+        "size_fraction": float(size_fraction),
+        "storage_medium" : medium
     }
     
-    if chw:
+    # Charge temps
+    sensible_and_latent_charge_temp = {'water': -3.8,
+                                       'simplewater': -3.8,
+                                       'pcm2x2a': -3.8}
+    sensible_only_charge_temp = {'water': 1.1}
+    
+    if sensible_only:
         arguments['store_ice'] = False
         if charge_temp is None:
-            arguments['charge_temp'] = stor4build.IceTank.default_chw_charge_temp
-    elif charge_temp is None:
-        arguments['charge_temp'] = stor4build.IceTank.default_ice_charge_temp
+            arguments['charge_temp'] = sensible_only_charge_temp[medium]
+    else:
+        arguments['store_ice'] = True
+        if charge_temp is None:
+            arguments['charge_temp'] = sensible_and_latent_charge_temp[medium]
     
     # Run the baseline
     post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
