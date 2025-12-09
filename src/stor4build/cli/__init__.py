@@ -20,6 +20,12 @@ units = {'maximum_load': '(J)',
          'mass_flow': '(kg/s)',
          'computed_trim_temperature': '(C)'}
 
+# Charge temps
+sensible_and_latent_charge_temp = {'water': -3.8,
+                                   'simplewater': -3.8,
+                                   'pcm2x2a': -3.8}
+sensible_only_charge_temp = {'water': 1.1}
+
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
@@ -65,14 +71,16 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
               default=stor4build.IceTank.default_trim_temp, help='Trim temperature.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling-season-only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
-@click.option('--chw', is_flag=True, show_default=True, default=False, help='Use chilled water as the storage medium.')
+@click.option('--medium', type=click.Choice(['water', 'simplewater', 'pcm2x2a']), default='water', show_default=True,
+              help='Set the storage medium to use.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
 @click.option('--control', metavar='NAME', show_default=True,
               default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure that implements the scheme.')
+@click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
-                cooling_season_only, chw, size_fraction, control):
+                cooling_season_only, medium, size_fraction, control, sensible_only):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
@@ -91,19 +99,22 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         "charge_temp" : charge_temp,
         "num_tanks" : ntanks,
         "trim_temp" : trim_temp,
-        "size_fraction": float(size_fraction)
+        "size_fraction": float(size_fraction),
+        "storage_medium" : medium
     }
-    
+
+    # Handle storage details
     tes_type = 'ThermalTank-Ice'
-    
-    if chw:
+    if sensible_only:
         tes_type = 'ThermalTank-ChilledWater'
         arguments['store_ice'] = False
         if charge_temp is None:
-            arguments['charge_temp'] = stor4build.IceTank.default_chw_charge_temp
-    elif charge_temp is None:
-        arguments['charge_temp'] = stor4build.IceTank.default_ice_charge_temp
-    
+            arguments['charge_temp'] = sensible_only_charge_temp[medium]
+    else:
+        arguments['store_ice'] = True
+        if charge_temp is None:
+            arguments['charge_temp'] = sensible_and_latent_charge_temp[medium]
+
     if output:
         #run_baseline = True
         measures_only = False
@@ -148,7 +159,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         if run_baseline:
             baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
             stor4build.fix_csv(baseline_csv)
-            txt = stor4build.combine_single_frequency_csvs(baseline_csv, icetank_csv, 'Hourly')
+            txt = stor4build.combine_single_frequency_csv(baseline_csv, icetank_csv, 'Hourly')
         else:
             txt = stor4build.single_frequency_csv(icetank_csv, 'Hourly', verbose=False)
         with open(output, 'w') as fp:
@@ -205,13 +216,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "size_fraction": float(size_fraction),
         "storage_medium" : medium
     }
-    
-    # Charge temps
-    sensible_and_latent_charge_temp = {'water': -3.8,
-                                       'simplewater': -3.8,
-                                       'pcm2x2a': -3.8}
-    sensible_only_charge_temp = {'water': 1.1}
-    
+
+    # Handle storage details
     if sensible_only:
         arguments['store_ice'] = False
         if charge_temp is None:
@@ -252,7 +258,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     if output:
         icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
         stor4build.fix_csv(icetank_csv)
-        txt = stor4build.combine_single_frequency_csvs(baseline_csv, icetank_csv, 'Hourly')
+        txt = stor4build.combine_single_frequency_csv(baseline_csv, icetank_csv, 'Hourly')
         with open(output, 'w') as fp:
             fp.write(txt)
 
@@ -267,7 +273,6 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
-#@click.option('--hourly', is_flag=True, show_default=True, default=False, help='Run hourly outputs.')
 def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                run_baseline, cooling_season_only, show_sizing):
     """
@@ -288,10 +293,6 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
         pre.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
         
     arguments = {}
-    #freq = 'Timestep'
-    #if hourly:
-    #    arguments = {'hourly': True}
-    #    freq = 'Hourly'
 
     # Run the baseline if requested
     if run_baseline:

@@ -51,7 +51,7 @@ class IceTank(Simulation):
                          "trim_temp": self.trim_temp,
                          "size_frac": self.size_fraction,
                          "strg_type": {True: "ice", False: "chw"}[self.store_ice],
-                         "strg_medm": self.storage_medium
+                         "strg_medium": self.storage_medium
                      })]
     @classmethod
     def size(cls, name, baseline_results, **kwargs):

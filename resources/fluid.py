@@ -7,7 +7,7 @@ from scp.ethyl_alcohol import EthylAlcohol
 from scp.ethylene_glycol import EthyleneGlycol
 from scp.methyl_alcohol import MethylAlcohol
 from scp.propylene_glycol import PropyleneGlycol
-from scp.water import ScpWater
+from scp.water import Water as ScpWater
 
 
 class FluidType(Enum):

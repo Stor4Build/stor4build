@@ -155,6 +155,9 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       media_chs,
       true
     )
+    strg_medium.setDefaultValue('water')
+    strg_medium.setDescription('Set storage medium to use')
+    args << strg_medium
 
     return args
   end
