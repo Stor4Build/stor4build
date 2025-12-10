@@ -5,6 +5,8 @@ import click
 import os
 import stor4build
 import warnings
+from matplotlib import pyplot as plt
+import pandas as pd
 
 from ..__about__ import __version__
 
@@ -46,6 +48,54 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
     case = stor4build.Simulation('simulation')
     osw = case.osw(osm_path, measures_path, epw_path)
     stor4build.run_workflow(openstudio, os.path.join(run_path, case.tag()), osw, measures_only=measures_only)
+    
+@click.command()
+@click.argument('csvfile',metavar='CSV', type=click.Path(exists=True))
+# Need to fix this so it doesn't need a year
+@click.option('--date', type=click.DateTime(formats=["%Y-%m-%d"]), default='2006-07-07')
+#@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
+#@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+#@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+#@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
+def process(csvfile, date): #osm, epw, openstudio, measures_dir, measures_only, run_dir):
+    """
+    Post-process the hourly CSV from the TES simulations.
+    """
+    date = date.date()
+    info, df = stor4build.read_results(csvfile)
+    if 'maximum_date' in info:
+        date = info['maximum_date']
+    # Assume thermaltank to start
+    soc_col = 'soc:PythonPlugin:OutputVariable [](Hourly)'
+    energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
+    print(energy_cols)
+    baseline_cols = []
+    tes_cols = []
+    for el in energy_cols:
+        if 'Baseline' in el:
+            baseline_cols.append(el)
+        else:
+            tes_cols.append(el)
+    assert(len(baseline_cols) == len(tes_cols))
+    df['date'] = df['Date/Time'].dt.date
+    click.echo(df)
+    dfx = df[df['date'] == date]
+    click.echo(dfx)
+    baseline = dfx[baseline_cols].sum(axis=1)
+    tes = dfx[tes_cols].sum(axis=1)
+
+    x = list(range(24))
+    fig, ax0 = plt.subplots()
+    ax0.plot(x, baseline)
+    ax0.plot(x, tes)
+    ax1 = ax0.twinx()
+    ax1.plot(x, dfx[soc_col])
+    plt.axvspan(11, 17, color='red', alpha=0.5)
+    plt.show()
+    #fig, ax = plt.subplots()
+    #
+    #plt.show()
+    
 
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
@@ -333,6 +383,7 @@ def s4b(ctx: click.Context):
     pass
 
 s4b.add_command(run)
+s4b.add_command(process)
 s4b.add_command(run_icetank)
 s4b.add_command(size_icetank)
 s4b.add_command(run_dxcoil)

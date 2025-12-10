@@ -6,7 +6,7 @@ from typing import Optional, Union
 
 import numpy as np
 
-from fluid import FluidType, get_fluid
+from fluid import FluidType, get_fluid, get_storage_medium
 
 
 def smoothing_function(x: float, x_min: float, x_max: float, y_min: float, y_max: float) -> float:
@@ -44,21 +44,23 @@ class IceTank(object):
     def __init__(self, data: dict):
         # fluid strings
         if 'storage_medium' in data:
-            self.fluid_type = data['storage_medium']
-            self.fluid = None
+            # Convert the string to an enum
             try:
-                self.fluid = get_fluid(self.fluid_type)
+                self.fluid_type = FluidType[data['storage_medium']]
+            except KeyError:
+                # Default to water
+                self.fluid_type = FluidType.Water
+            # Get an object based on the enum
+            try:
+                self.fluid = get_storage_medium(self.fluid_type)
             except ValueError:
-                try:
-                    self.fluid_type = FluidType[self.fluid_type]
-                    self.fluid = get_fluid(self.fluid_type)
-                except KeyError:
-                    pass
-            if self.fluid is None:
-                self.fluid_type = FluidType(self.fluid_type)
-                self.fluid = get_fluid(self.fluid_type)
+                # Default to water
+                self.fluid_type = FluidType.Water
+                self.fluid = get_storage_medium(FluidType.Water)
         else:
-            self.fluid = get_fluid(FluidType.Water)
+            # Default to water
+            self.fluid_type = FluidType.Water
+            self.fluid = get_storage_medium(FluidType.Water)
         self.brine = get_fluid(FluidType.PropyleneGlycol, 0.3)  # Propylene Glycol - 30% by mass
 
         # geometry

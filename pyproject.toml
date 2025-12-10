@@ -32,7 +32,8 @@ dependencies = [
   "SecondaryCoolantProps",
   "pandas",
   "psycopg2-binary",
-  "marshmallow"
+  "marshmallow",
+  "matplotlib"
 ]
 dynamic = ["version"]
 

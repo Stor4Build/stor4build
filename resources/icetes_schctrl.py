@@ -337,6 +337,20 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             state,
             num_tanks_hndl
         )
+        
+        # get storage medium
+        strg_med_hndl = self.api.exchange.get_variable_handle(
+            state,
+            "Schedule Value",
+            "Storage Medium"
+        )
+        
+        reverse_lookup = {5: "Water", 6: "SimpleWater", 7: "PCM2X2A"}
+
+        self.tank_data["storage_medium"] = reverse_lookup[self.api.exchange.get_variable_value(
+            state,
+            strg_med_hndl
+        )]
 
         # reconstruct with num tanks
         self.tank_branch = TankBypassBranch(num_tanks, self.tank_data)
