@@ -22,12 +22,6 @@ units = {'maximum_load': '(J)',
          'mass_flow': '(kg/s)',
          'computed_trim_temperature': '(C)'}
 
-# Charge temps
-sensible_and_latent_charge_temp = {'water': -3.8,
-                                   'simplewater': -3.8,
-                                   'pcm2x2a': -3.8}
-sensible_only_charge_temp = {'water': 1.1}
-
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
