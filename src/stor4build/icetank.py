@@ -9,7 +9,7 @@ import datetime
 from .util import convert_string_time_interval
 from .osmeasures import Step
 
-# Handle some fluid differences
+# Fluid properties
 freezing_temp = {'water': 0.0,
                  'simplewater': 0.0,
                  'pcm2x2a': 2.0}
@@ -17,7 +17,11 @@ specific_heat = {'water': 4180.0,
                  'simplewater': 4184.0,
                  'pcm2x2a': 4180.0}
 
+# System parameters
 charge_temp_delta = {True: -4.0, False: 1.0}
+single_tank_capacity = {'water': 668.0, # kWh
+                        'simplewater': 668.0,
+                        'pcm2x2a': 668.0}
 
 class IceTank(Simulation):
     default_charge_start = '21:00'
@@ -107,9 +111,9 @@ class IceTank(Simulation):
         energy_max = df_max['total_w'].iat[0]
         mass_flow = df_max['total_flow'].iat[0]
         requested_capacity = energy_max * peak_reduction * 0.01
-        requested_num_tanks = joules_to_kwh*requested_capacity/668.0
+        requested_num_tanks = joules_to_kwh*requested_capacity/single_tank_capacity[storage_medium]
         actual_num_tanks = int(math.ceil(requested_num_tanks))
-        actual_capacity = actual_num_tanks*668.0/joules_to_kwh
+        actual_capacity = actual_num_tanks * single_tank_capacity[storage_medium] / joules_to_kwh
         # Compute the trim temp from Q = mCp(Ti-To), need to add division by zero protection etc.
         Cp = specific_heat[storage_medium] #4180.0 # J/(kg K)
         m = mass_flow * (k1-k0) * 3600.0  # kg
