@@ -15,7 +15,7 @@ freezing_temp = {'water': 0.0,
                  'pcm2x2a': 2.0}
 specific_heat = {'water': 4180.0,
                  'simplewater': 4184.0,
-                 'pcm2x2a': 4180.0}
+                 'pcm2x2a': 2000.0}
 
 # System parameters
 charge_temp_delta = {True: -4.0, False: 1.0}

@@ -235,7 +235,7 @@ def test_50pct_sizing_pcm2x2a():
     assert icetank.sizing['interval_end'] == 18
     assert icetank.sizing['requested_capacity'] == pt.approx(21527258110.20375, abs=1.0e-8)
     assert icetank.sizing['actual_capacity'] == pt.approx(21643199999.999996, abs=1.0e-8)
-    assert icetank.sizing['computed_trim_temperature'] == pt.approx(8.629440537564381, abs=1.0e-8)
+    assert icetank.sizing['computed_trim_temperature'] == pt.approx(10.732530723509557, abs=1.0e-8)
     osw = icetank.osw(large_office, measures_dir, epw)
     assert osw is not None
     assert 'seed_file' in osw
@@ -263,7 +263,7 @@ def test_50pct_sizing_pcm2x2a():
     assert 'num_tanks' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['num_tanks'] == 9
     assert 'trim_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['trim_temp'] == 8.629440537564381
+    assert osw['steps'][1]['arguments']['trim_temp'] == 10.732530723509557
     assert 'strg_type' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['strg_type'] == 'ice'
     assert osw['steps'][1]['arguments']['strg_medium'] == 'pcm2x2a'
