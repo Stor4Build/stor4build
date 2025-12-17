@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC, Oak Ridge National Laboratory, managed by UT-Battelle, and contributors
+# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from math import pi, exp

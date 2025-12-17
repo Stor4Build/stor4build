@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC, managed by UT-Battelle, Alliance for Sustainable Energy, LLC, and contributors
+# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy, LLC and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from enum import Enum, auto
