@@ -11,7 +11,7 @@ import json
 
 # Make some assumptions
 this_dir = os.path.abspath(os.path.dirname(__file__))
-results_dir = os.path.join(this_dir, '..', 'resources', 'LargeOfficeCSV')
+results_dir = os.path.join(this_dir, 'csv')
 
 int_schedule = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
 too_early_int_schedule = [3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2]

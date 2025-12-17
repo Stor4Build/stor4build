@@ -7,8 +7,8 @@ import pytest as pt
 
 # Make some assumptions
 this_dir = os.path.abspath(os.path.dirname(__file__))
-results_dir = os.path.join(this_dir, '..', 'resources', 'LargeOfficeCSV')
-large_office = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'LargeOffice.osm'))
+results_dir = os.path.join(this_dir, 'csv')
+large_office = os.path.abspath(os.path.join('not', 'a', 'real', 'model', 'LargeOffice.osm'))
 measures_dir = os.path.abspath(os.path.join(this_dir, '..', 'measures'))
 epw = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'USA_TN_Knoxville-McGhee.Tyson.AP.723260_TMY3.epw'))
 

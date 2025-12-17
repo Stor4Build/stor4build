@@ -108,6 +108,13 @@
               0.6,
               0.5
             ]
+          },
+          "storage_medium": {
+            "type": "string",
+            "enum": [
+              "water",
+              "pcm2x2a"
+            ]
           }
         },
         "required": [
