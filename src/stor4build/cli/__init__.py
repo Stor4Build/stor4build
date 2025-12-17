@@ -59,6 +59,18 @@ def process(csvfile, date): #osm, epw, openstudio, measures_dir, measures_only, 
     info, df = stor4build.read_results(csvfile)
     if 'maximum_date' in info:
         date = info['maximum_date']
+    hilight_start = None
+    if 'interval_start' in info:
+        try:
+            hilight_start = int(info['interval_start'])
+        except ValueError:
+            pass
+    hilight_end = None
+    if 'interval_end' in info:
+        try:
+            hilight_end = int(info['interval_end'])
+        except ValueError:
+            pass
     # Assume thermaltank to start
     soc_col = 'soc:PythonPlugin:OutputVariable [](Hourly)'
     energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
@@ -80,11 +92,19 @@ def process(csvfile, date): #osm, epw, openstudio, measures_dir, measures_only, 
 
     x = list(range(24))
     fig, ax0 = plt.subplots()
-    ax0.plot(x, baseline)
-    ax0.plot(x, tes)
+    ax0.plot(x, baseline, label='Baseline Energy')
+    ax0.plot(x, tes, label='TES Energy')
+    ax0.set_ylabel('Chiller Evaporator Energy [J]')
     ax1 = ax0.twinx()
-    ax1.plot(x, dfx[soc_col])
-    plt.axvspan(11, 17, color='red', alpha=0.5)
+    ax1.plot(x, dfx[soc_col], label='SOC')
+    ax1.set_ylabel('State of Charge')
+    if hilight_start and hilight_end:
+        plt.axvspan(hilight_start-1, hilight_end-1, color='red', alpha=0.5) # default was 11 to 17
+    ax0.set_xlabel('Hour of Day [h]')
+    #ax0.legend(['one', 'two', 'three'],loc='center left')
+    lines0, labels0 = ax0.get_legend_handles_labels()
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    ax0.legend(lines0 + lines1, labels0 + labels1, loc='center left')
     plt.show()
     #fig, ax = plt.subplots()
     #
