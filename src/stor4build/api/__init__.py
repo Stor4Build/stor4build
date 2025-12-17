@@ -169,6 +169,7 @@ def create_app(config=None):
             arguments['peak_reduction'] = inputs.storage.capacity
             arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
             arguments['size_fraction'] = inputs.storage.size_fraction
+            arguments['storage_medium'] = inputs.storage.medium
 
             technology_object_factory = stor4build.IceTank.size
 
@@ -254,6 +255,8 @@ def create_app(config=None):
                     else:
                         # Something is wrong 
                         response_txt += 'Unable to determine new-to-old object mapping'
+                else:
+                    response_txt += f'storage_medium,"{inputs.storage.medium}"\n'
                 for k,v in technology_object.sizing.items():
                     response_txt += '%s,"%s"\n' % (k, str(v))
                 for k,v in arguments.items():

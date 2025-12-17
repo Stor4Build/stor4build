@@ -22,6 +22,7 @@ def test_minimal_input_ice():
     assert data.baseline.climate == '5A'
     assert data.storage.type == 'ThermalTank-Ice'
     assert data.storage.capacity == 100.0
+    assert data.storage.medium == 'water'
     assert data.energy.schedule.months['All'].month == 'All'
     assert len(data.energy.schedule.months) == 1
     assert data.demand.schedule.months['All'].month == 'All'
@@ -45,6 +46,7 @@ def test_intervals():
     assert data.baseline.climate == '5A'
     assert data.storage.type == 'ThermalTank-Ice'
     assert data.storage.capacity == 100.0
+    assert data.storage.medium == 'water'
     assert data.energy.schedule.months['All'].month == 'All'
     assert len(data.energy.schedule.months) == 1
     assert data.demand.schedule.months['All'].month == 'All'
@@ -64,6 +66,7 @@ def test_larger_input_chw():
     assert data.baseline.climate == '4A'
     assert data.storage.type == 'ThermalTank-ChilledWater'
     assert data.storage.capacity == 100.0
+    assert data.storage.medium == 'water'
     assert data.energy.schedule.months['All'].month == 'All'
     assert len(data.energy.schedule.months) == 1
     assert data.demand.schedule.months['All'].month == 'All'
