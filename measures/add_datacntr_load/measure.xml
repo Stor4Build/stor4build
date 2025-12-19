@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>add_datacenter_load</name>
+  <uid>dffb4bd6-9128-4148-b6d0-ff375c49e9fb</uid>
+  <version_id>b39eda81-afdf-4a50-9a0a-85d46d3f3b02</version_id>
+  <version_modified>2025-12-19T22:37:39Z</version_modified>
+  <xml_checksum>C9E2315D</xml_checksum>
+  <class_name>AddDatacenterLoad</class_name>
+  <display_name>Add Datacenter Load</display_name>
+  <description>This measure will add a load meant to represent a datacenter</description>
+  <modeler_description>Adds electric equipment object to a zone in the model</modeler_description>
+  <arguments>
+    <argument>
+      <name>datacntr_load_mw</name>
+      <display_name>datacntr_load_mw</display_name>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>5</default_value>
+    </argument>
+    <argument>
+      <name>datacntr_zone</name>
+      <display_name>datacntr_zone</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Basement ZN</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.3.0</identifier>
+        <min_compatible>2.3.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>19FDABD8</checksum>
+    </file>
+  </files>
+</measure>

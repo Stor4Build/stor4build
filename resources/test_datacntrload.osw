@@ -1,0 +1,23 @@
+{
+  "seed_file" : "LargeOffice.osm",
+  "weather_file": "USA_MD_Baltimore-Washington.Intl.AP.724060_TMY3.epw",
+  "measure_paths": [
+    "../measures/"
+  ],
+  "file_paths": [
+    "./"
+  ],
+  "run_directory": "./run/",
+  "steps" : [
+    {
+      "measure_dir_name" : "add_datacntr_load",
+      "name" : "Add Datacenter Load",
+      "description" : "",
+      "modeler_description" : "",
+      "arguments" : {
+        "datacntr_load_mw" : "5",
+        "datacntr_zone" : "Basement ZN"
+      }
+    }
+  ]
+}
