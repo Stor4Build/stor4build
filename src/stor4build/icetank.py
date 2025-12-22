@@ -12,16 +12,19 @@ from .osmeasures import Step
 # Fluid properties
 freezing_temp = {'water': 0.0,
                  'simplewater': 0.0,
-                 'pcm2x2a': 2.0}
+                 'pcm2x2a': 2.0,
+                 'pcm1x1a': 1.0}
 specific_heat = {'water': 4180.0,
                  'simplewater': 4184.0,
-                 'pcm2x2a': 2000.0}
+                 'pcm2x2a': 2000.0,
+                 'pcm1x1a': 2000.0}
 
 # System parameters
 charge_temp_delta = {True: -4.0, False: 1.0}
 single_tank_capacity = {'water': 668.0, # kWh
                         'simplewater': 668.0,
-                        'pcm2x2a': 668.0}
+                        'pcm2x2a': 668.0,
+                        'pcm1x1a': 668.0}
 
 class IceTank(Simulation):
     default_charge_start = '21:00'

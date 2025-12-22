@@ -252,7 +252,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               help='Target percentage to reduce the peak load.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
 @click.option('-c', '--cooling-season-only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
-@click.option('--medium', type=click.Choice(['water', 'simplewater', 'pcm2x2a']), default='water', show_default=True,
+@click.option('--medium', type=click.Choice(['water', 'simplewater', 'pcm2x2a', 'pcm1x1a']), default='water', show_default=True,
               help='Set the storage medium to use.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')

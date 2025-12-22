@@ -18,7 +18,20 @@ class FluidType(Enum):
     Water = 5
     SimpleWater = 6
     PCM2X2A = 7
-    
+    PCM1X1A = 8
+
+class PCM1X1A:
+    def freeze_point(self, _=None) -> float:
+        return 2.0
+    def density(self, temp:float) -> float:
+        return 770.0
+    def specific_heat(self, temp: float) -> float:
+        return 2000.0
+    def enthalpy_of_fusion(self) -> float:
+        return 200000.0
+    def solid_specific_heat(self) -> float:
+        return 2000.0
+
 class PCM2X2A:
     def freeze_point(self, _=None) -> float:
         return 2.0
@@ -74,5 +87,7 @@ def get_fluid(fluid_type, concentration=None):
         return SimpleWater()
     elif fluid_type == FluidType.PCM2X2A:
         return PCM2X2A()
+    elif fluid_type == FluidType.PCM1X1A:
+        return PCM1X1A()
     else:
         raise ValueError("Fluid type not recognized")

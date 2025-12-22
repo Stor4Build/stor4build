@@ -150,6 +150,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     media_chs << 'water'
     media_chs << 'simplewater'
     media_chs << 'pcm2x2a'
+    media_chs << 'pcm1x1a'
     strg_medium = OpenStudio::Measure::OSArgument.makeChoiceArgument(
       'strg_medium',
       media_chs,
@@ -232,7 +233,8 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     media_lookup = {
       'water' => 5,
       'simplewater' => 6,
-      'pcm2x2a' => 7
+      'pcm2x2a' => 7,
+      'pcm1x1a' => 8
     }                
     fluid_type = media_lookup[strg_medium] # magic number for the medium
     # add storage medium schedule
