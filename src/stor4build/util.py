@@ -7,6 +7,7 @@ import tempfile
 import dataclasses
 import json
 import datetime
+import csv
 
 def seed_model(openstudio_exe, path, filename):
     cur_dir = os.getcwd()
@@ -136,4 +137,39 @@ def get_first_day(eplusout_df):
 
 def get_last_day(eplusout_df):
     return datetime.datetime.fromisoformat(eplusout_df.tail()['Date/Time'].iloc[-1].strip()).date()
+
+def read_results(csv_file:str, echo=print):
+    with open(csv_file, 'r') as fp:
+        reader = csv.reader(fp)
+        # Check for the info block
+        info = []
+        skiprows = 0
+        for line in reader:
+            if len(line) > 1:
+                if line[0].strip() == 'Date/Time':
+                    break
+                else:
+                    info.append(line)
+                    skiprows += 1
+            else:
+                skiprows += 1
+    echo(info)
+    header_info = {}
+    for line in info:
+        try:
+            # Need to adjust this for the DX coil system
+            header_info[line[0]] = int(line[1])
+        except ValueError:
+            try:
+                header_info[line[0]] = float(line[1])
+            except ValueError:
+                header_info[line[0]] = line[1]
+    echo(header_info)
+    echo(skiprows)
+    df = pd.read_csv(csv_file, skiprows=skiprows)
+    df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='mixed')
+    if 'maximum_date' in header_info:
+        header_info['maximum_date'] = pd.to_datetime(header_info['maximum_date']).date()
+    echo(df)
+    return header_info, df
 

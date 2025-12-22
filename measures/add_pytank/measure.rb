@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2025, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2025, Alliance for Sustainable Energy, LLC and contributors
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -144,6 +144,20 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     size_frac.setDefaultValue(1)
     size_frac.setDescription('Chiller sizing factor')
     args << size_frac
+    
+    # create argument for storage medium
+    media_chs = OpenStudio::StringVector.new
+    media_chs << 'water'
+    media_chs << 'simplewater'
+    media_chs << 'pcm2x2a'
+    strg_medium = OpenStudio::Measure::OSArgument.makeChoiceArgument(
+      'strg_medium',
+      media_chs,
+      true
+    )
+    strg_medium.setDefaultValue('water')
+    strg_medium.setDescription('Set storage medium to use')
+    args << strg_medium
 
     return args
   end
@@ -168,6 +182,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
+    strg_medium = runner.getStringArgumentValue('strg_medium', usr_args)
 
     # add discharge start time schedule
     ot = 'Schedule_Constant'
@@ -212,6 +227,21 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     no.setString(1, 'Any Number')
     no.setDouble(2, num_tanks)
     ws.addObject(no)
+    
+    # handle the storage medium
+    media_lookup = {
+      'water' => 5,
+      'simplewater' => 6,
+      'pcm2x2a' => 7
+    }                
+    fluid_type = media_lookup[strg_medium] # magic number for the medium
+    # add storage medium schedule
+    ot = 'Schedule_Constant'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Storage Medium')
+    no.setString(1, 'Any Number')
+    no.setDouble(2, fluid_type)
+    ws.addObject(no)
 
     # add chiller(s) electricity rate output variable
     ot = 'Output_Variable'
@@ -225,6 +255,14 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     ot = 'Output_Variable'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
     no.setString(0, 'Num Tanks')
+    no.setString(1, 'Schedule Value')
+    no.setString(2, 'Timestep')
+    ws.addObject(no)
+    
+    # add storage medium schedule output variable (for python plugin)
+    ot = 'Output_Variable'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Storage Medium')
     no.setString(1, 'Schedule Value')
     no.setString(2, 'Timestep')
     ws.addObject(no)

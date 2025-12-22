@@ -9,18 +9,31 @@ import datetime
 from .util import convert_string_time_interval
 from .osmeasures import Step
 
+# Fluid properties
+freezing_temp = {'water': 0.0,
+                 'simplewater': 0.0,
+                 'pcm2x2a': 2.0}
+specific_heat = {'water': 4180.0,
+                 'simplewater': 4184.0,
+                 'pcm2x2a': 2000.0}
+
+# System parameters
+charge_temp_delta = {True: -4.0, False: 1.0}
+single_tank_capacity = {'water': 668.0, # kWh
+                        'simplewater': 668.0,
+                        'pcm2x2a': 668.0}
+
 class IceTank(Simulation):
     default_charge_start = '21:00'
     default_charge_end = '07:00'
     default_discharge_start = '12:00'
     default_discharge_end = '18:00'
-    default_ice_charge_temp = -3.8
-    default_chw_charge_temp = 1.1
     default_num_tanks = 1
     default_trim_temp = 10.0
     default_peak_reduction = 100.0
     default_size_fraction = 1.0
     default_store_ice = True
+    default_storage_medium = 'water'
     def __init__(self, name, pre_steps=None, post_steps=None, **kwargs):
         # Get all the data first
         self.charge_start = kwargs.get('charge_start', self.default_charge_start)
@@ -31,10 +44,11 @@ class IceTank(Simulation):
         self.trim_temp = kwargs.get('trim_temp', self.default_trim_temp)
         self.size_fraction = kwargs.get('size_fraction', self.default_size_fraction)
         self.store_ice = kwargs.get('store_ice', self.default_store_ice)
-        if 'charge_temp' in kwargs:
+        self.storage_medium = kwargs.get('storage_medium', self.default_storage_medium)
+        if 'charge_temp' in kwargs and kwargs['charge_temp'] is not None:
             self.charge_temp = kwargs['charge_temp']
         else:
-            self.charge_temp = {True: self.default_ice_charge_temp, False: self.default_chw_charge_temp}[self.store_ice]
+            self.charge_temp = freezing_temp[self.storage_medium] + charge_temp_delta[self.store_ice]
         self.sizing = kwargs.get('sizing', {})
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
@@ -44,11 +58,12 @@ class IceTank(Simulation):
                          "chrg_end": self.charge_end,
                          "dchrg_start": self.discharge_start,
                          "dchrg_end": self.discharge_end,
-                         "chrg_temp": {True: self.default_ice_charge_temp, False: self.default_chw_charge_temp}[self.store_ice],
+                         "chrg_temp": self.charge_temp,
                          "num_tanks": self.num_tanks,
                          "trim_temp": self.trim_temp,
                          "size_frac": self.size_fraction,
-                         "strg_type": {True: "ice", False: "chw"}[self.store_ice]
+                         "strg_type": {True: "ice", False: "chw"}[self.store_ice],
+                         "strg_medium": self.storage_medium
                      })]
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
@@ -60,6 +75,7 @@ class IceTank(Simulation):
         window_end = kwargs.get('discharge_end', cls.default_discharge_end)
         peak_reduction = kwargs.get('peak_reduction', cls.default_peak_reduction)
         store_ice = kwargs.get('store_ice', cls.default_store_ice)
+        storage_medium = kwargs.get('storage_medium', cls.default_storage_medium)
         
         # Figure out the window we're looking at
         k0, k1 = convert_string_time_interval(window_start, window_end)
@@ -95,11 +111,11 @@ class IceTank(Simulation):
         energy_max = df_max['total_w'].iat[0]
         mass_flow = df_max['total_flow'].iat[0]
         requested_capacity = energy_max * peak_reduction * 0.01
-        requested_num_tanks = joules_to_kwh*requested_capacity/668.0
+        requested_num_tanks = joules_to_kwh*requested_capacity/single_tank_capacity[storage_medium]
         actual_num_tanks = int(math.ceil(requested_num_tanks))
-        actual_capacity = actual_num_tanks*668.0/joules_to_kwh
+        actual_capacity = actual_num_tanks * single_tank_capacity[storage_medium] / joules_to_kwh
         # Compute the trim temp from Q = mCp(Ti-To), need to add division by zero protection etc.
-        Cp = 4180.0 # J/(kg K)
+        Cp = specific_heat[storage_medium] #4180.0 # J/(kg K)
         m = mass_flow * (k1-k0) * 3600.0  # kg
         To = 6.7 # C
         Ti = actual_capacity/(m*Cp) + To
@@ -118,7 +134,8 @@ class IceTank(Simulation):
                   'requested_capacity': requested_capacity,
                   'actual_capacity': actual_capacity,
                   'computed_trim_temperature': Ti,
-                  'storage_type': {True: 'ice', False:'chw'}[store_ice]
+                  'storage_type': {True: 'ice', False:'chw'}[store_ice],
+                  'storage_medium': storage_medium
                   }
         # Remove any arguments that might intefere
         kwargs.pop('num_tanks', None)
