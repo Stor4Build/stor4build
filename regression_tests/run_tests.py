@@ -24,7 +24,7 @@ with open(cases_file, 'r') as fp:
 
 for name,case in inputs.items():
     print(name)
-    if 'MediumOffice' not in name:
+    if 'Warehouse' not in name:
         continue
     for type, info in case.items():
         if type == 'api':

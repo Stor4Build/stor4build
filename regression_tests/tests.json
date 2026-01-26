@@ -107,6 +107,32 @@
                 "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
             ]
         }
+    },
+    "Outpatient_3A_2013_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o Outpatient_3A_2013_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/Outpatient_3A_2013.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }        
+    },
+    "Warehouse_3A_2010_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o Warehouse_3A_2010_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/Warehouse_3A_2010.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }        
     }
 }
 
