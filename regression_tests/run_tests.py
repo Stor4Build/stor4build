@@ -24,7 +24,7 @@ with open(cases_file, 'r') as fp:
 
 for name,case in inputs.items():
     print(name)
-    if 'Large' not in name:
+    if 'Primary' not in name:
         continue
     for type, info in case.items():
         if type == 'api':

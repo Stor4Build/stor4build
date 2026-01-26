@@ -20,6 +20,7 @@
                 "-m measures",
                 "-o FullServiceRestaurant_3A_pre1980_packaged_ice_defaults_cli.csv",
                 "-s",
+                "-b",
                 "models/FullServiceRestaurant_3A_pre1980.osm",
                 "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
             ],
@@ -47,6 +48,32 @@
                 "vintage": 1979,
                 "type": "LargeOffice"
             }
+        }
+    },
+    "RetailStripmall_5B_2007_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o RetailStripmall_5B_2007_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/RetailStripmall_5B_2007.osm",
+                "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
+        }
+    },
+    "PrimarySchool_5B_2016_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o PrimarySchool_5B_2016_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/PrimarySchool_5B_2016.osm",
+                "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
         }
     }
 }
