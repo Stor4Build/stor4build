@@ -1,0 +1,53 @@
+{
+    "QuickServiceRestaurant_3A_2019_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o QuickServiceRestaurant_3A_2019_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/QuickServiceRestaurant_3A_2019.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ],
+            "model": "QuickServiceRestaurant_3A_2019.osm"
+        }        
+    },
+    "FullServiceRestaurant_3A_pre1980_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o FullServiceRestaurant_3A_pre1980_packaged_ice_defaults_cli.csv",
+                "-s",
+                "models/FullServiceRestaurant_3A_pre1980.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ],
+            "model": "FullServiceRestaurant_3A_pre1980.osm"
+        }
+    },
+    "LargeOffice_5A_pre1980_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeOffice_5A_pre1980_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeOffice_5A_pre1980.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ],
+            "model": "LargeOffice_5A_pre1980.osm"
+        },
+        "api": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 1979,
+                "type": "LargeOffice"
+            }
+        }
+    }
+}
+
