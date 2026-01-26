@@ -24,11 +24,10 @@ with open(cases_file, 'r') as fp:
 
 for name,case in inputs.items():
     print(name)
-    if 'Primary' not in name:
+    if 'MediumOffice' not in name:
         continue
     for type, info in case.items():
         if type == 'api':
-            continue
             #print('   ', type)
             start = time.time()
             r = httpx.post('http://127.0.0.1:5000/simulate', json=info, timeout=None)

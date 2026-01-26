@@ -9,8 +9,7 @@
                 "-b",
                 "models/QuickServiceRestaurant_3A_2019.osm",
                 "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
-            ],
-            "model": "QuickServiceRestaurant_3A_2019.osm"
+            ]
         }        
     },
     "FullServiceRestaurant_3A_pre1980_packaged_ice_defaults": {
@@ -23,8 +22,7 @@
                 "-b",
                 "models/FullServiceRestaurant_3A_pre1980.osm",
                 "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
-            ],
-            "model": "FullServiceRestaurant_3A_pre1980.osm"
+            ]
         }
     },
     "LargeOffice_5A_pre1980_thermaltank_defaults": {
@@ -36,8 +34,7 @@
                 "-s",
                 "models/LargeOffice_5A_pre1980.osm",
                 "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
-            ],
-            "model": "LargeOffice_5A_pre1980.osm"
+            ]
         },
         "api": {
             "storage": {
@@ -73,6 +70,41 @@
                 "-b",
                 "models/PrimarySchool_5B_2016.osm",
                 "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
+        }
+    },
+    "Hospital_5A_post1980_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o Hospital_5A_post1980_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/Hospital_5A_post1980.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 1984,
+                "type": "Hospital"
+            }
+        }
+    },
+    "MediumOffice_5A_2004_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o MediumOffice_5A_2004_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/MediumOffice_5A_2004.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
             ]
         }
     }
