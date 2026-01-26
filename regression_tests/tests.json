@@ -133,6 +133,28 @@
                 "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
             ]
         }        
+    },
+    "LargeHotel_5A_2016_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeHotel_5A_2016_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeHotel_5A_2016.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 2017,
+                "type": "LargeHotel"
+            }
+        }
     }
 }
 
