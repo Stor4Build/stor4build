@@ -25,7 +25,7 @@ The `stor4build` command includes three subcommands at this time:
 
   * `run-icetank` - Runs the chiller-based ice tank Python plugin case with a specified capacity. Using `--chw` will use the chilled water version.
   * `size-icetank` - Runs the chiller-based ice tank Python plugin case with a size based on the baseline model and discharge window parameters. Using `--chw` will use the chilled water version.
-  * `run-dxcoil` - Runs the native E+ DX coil TES system with autosizing.
+  * `run-dxcoil` - Runs the native E+ DX coil packaged ice TES system with autosizing.
 
 Further information is available with the `--help` option.
 
@@ -84,29 +84,31 @@ This will start up the flask **development** server and output will appear on th
 
 ## Prototype Coverage
 
-SecondarySchool
-PrimarySchool
-SmallOffice
-MediumOffice
-LargeOffice
-SmallHotel
-LargeHotel
-Warehouse
-RetailStandalone
-RetailStripmall
-QuickServiceRestaurant
-FullServiceRestaurant
-MidriseApartment
-HighriseApartment
-Hospital
-Outpatient
-Laboratory
-LargeDataCenterHighITE
-LargeDataCenterLowITE
-SmallDataCenterHighITE
-SmallDataCenterLowITE
-Courthouse
-College
+|        Prototype       |     Supported TES    |
+|------------------------|----------------------|
+|     SecondarySchool    | DX coil packaged ice |
+|      PrimarySchool     | DX coil packaged ice |
+|       SmallOffice      | DX coil packaged ice |
+|      MediumOffice      | DX coil packaged ice |
+|       LargeOffice      |      ThermalTank     |
+|       SmallHotel       | DX coil packaged ice |
+|       LargeHotel       |      ThermalTank     |
+|        Warehouse       | DX coil packaged ice |
+|    RetailStandalone    | DX coil packaged ice |
+|     RetailStripmall    | DX coil packaged ice |
+| QuickServiceRestaurant | DX coil packaged ice |
+|  FullServiceRestaurant | DX coil packaged ice |
+|    MidriseApartment    |          TBD         |
+|    HighriseApartment   |          TBD         |
+|        Hospital        |      ThermalTank     |
+|       Outpatient       | DX coil packaged ice |
+|       Laboratory       |          TBD         |
+| LargeDataCenterHighITE |      ThermalTank     |
+|  LargeDataCenterLowITE |      ThermalTank     |
+| SmallDataCenterHighITE |          TBD         |
+|  SmallDataCenterLowITE |          TBD         |
+|       Courthouse       |          TBD         |
+|         College        |          TBD         |
 
 ## License
 

@@ -270,7 +270,7 @@
                 "-o LargeDataCenterLowITE_5A_2004_thermaltank_defaults_cli.csv",
                 "-s",
                 "models/LargeDataCenterLowITE_5A_2004.osm",
-                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
             ]
         },
         "api-skip": {
@@ -281,6 +281,50 @@
                 "climate": "5A",
                 "vintage": 2005,
                 "type": "LargeHotelDataCenterLowITE"
+            }
+        }
+    },
+    "College_3A_2007_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o College_3A_2007_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/College_3A_2007.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "3A",
+                "vintage": 2007,
+                "type": "College"
+            }
+        }
+    },
+    "Courthouse_5B_post1980_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o Courthouse_5B_post1980_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/Courthouse_5B_post1980.osm",
+                "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5B",
+                "vintage": 1981,
+                "type": "Courthouse"
             }
         }
     }
