@@ -24,8 +24,8 @@ with open(cases_file, 'r') as fp:
 
 for name,case in inputs.items():
     print(name)
-    if 'LargeHotel' not in name:
-        continue
+    #if 'LargeData' not in name:
+    #    continue
     for type, info in case.items():
         if type == 'api':
             #print('   ', type)

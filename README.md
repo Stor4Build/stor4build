@@ -82,6 +82,32 @@ flask --app stor4build.api run
 
 This will start up the flask **development** server and output will appear on the console. The API accepts JSON inputs in the form described in the `schema` directory in the file `stor4build.json`. Example inputs and scripts to send them to the API are in the `resources` and `scripts` directories.
 
+## Prototype Coverage
+
+SecondarySchool
+PrimarySchool
+SmallOffice
+MediumOffice
+LargeOffice
+SmallHotel
+LargeHotel
+Warehouse
+RetailStandalone
+RetailStripmall
+QuickServiceRestaurant
+FullServiceRestaurant
+MidriseApartment
+HighriseApartment
+Hospital
+Outpatient
+Laboratory
+LargeDataCenterHighITE
+LargeDataCenterLowITE
+SmallDataCenterHighITE
+SmallDataCenterLowITE
+Courthouse
+College
+
 ## License
 
 `stor4build` is distributed under the terms of the [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) license.

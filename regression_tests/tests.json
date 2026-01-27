@@ -47,6 +47,90 @@
             }
         }
     },
+    "LargeOffice_5A_pre1980_thermaltank_specified_defaults": {
+        "api": {
+            "storage": {
+                "type": "ThermalTank-Ice",
+                "capacity": 100,
+                "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 18}},
+                "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 7}}
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 1979,
+                "type": "LargeOffice"
+            }
+        }
+    },
+    "LargeOffice_3A_2011_thermaltank_utility": {
+        "api": {
+            "storage": {
+                "type": "ThermalTank-Ice",
+                "capacity": 100
+            },
+            "baseline": {
+                "climate": "3A",
+                "vintage": 2011,
+                "type": "LargeOffice"
+            },
+            "demand": {
+                "costs": [
+                    {
+                        "rate": 0.2,
+                        "unit": "$/kW",
+                        "period": 3
+                    },
+                    {
+                        "rate": 0.1,
+                        "unit": "$/kW",
+                        "period": 2
+                    },
+                    {
+                        "rate": 0,
+                        "unit": "$/kW",
+                        "period": 1
+                    }
+                ],
+                "schedule": {
+                    "months": [
+                        {
+                            "unit": "hour",
+                            "month": "All",
+                            "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                        }
+                    ]
+                }
+            },
+            "energy": {
+                "costs": [
+                    {
+                        "rate": 0.01,
+                        "unit": "$/kWh",
+                        "period": 1
+                    },
+                    {
+                        "rate": 0.2,
+                        "unit": "$/kWh",
+                        "period": 3
+                    },
+                    {
+                        "rate": 0.1,
+                        "unit": "$/kWh",
+                        "period": 2
+                    }
+                ],
+                "schedule": {
+                    "months": [
+                        {
+                            "unit": "hour",
+                            "month": "All",
+                            "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                        }
+                    ]
+                }
+            }
+        }
+    },
     "RetailStripmall_5B_2007_packaged_ice_defaults": {
         "cli": {
             "arguments": [
@@ -153,6 +237,50 @@
                 "climate": "5A",
                 "vintage": 2017,
                 "type": "LargeHotel"
+            }
+        }
+    },
+    "LargeDataCenterHighITE_3A_2019_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeDataCenterHighITE_3A_2019_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeDataCenterHighITE_3A_2019.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "3A",
+                "vintage": 2019,
+                "type": "LargeHotelDataCenterHighITE"
+            }
+        }
+    },
+    "LargeDataCenterLowITE_5A_2004_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeDataCenterLowITE_5A_2004_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeDataCenterLowITE_5A_2004.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 2005,
+                "type": "LargeHotelDataCenterLowITE"
             }
         }
     }
