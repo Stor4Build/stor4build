@@ -107,8 +107,8 @@ This will start up the flask **development** server and output will appear on th
 |  LargeDataCenterLowITE |      ThermalTank     |
 | SmallDataCenterHighITE |          TBD         |
 |  SmallDataCenterLowITE |          TBD         |
-|       Courthouse       |          TBD         |
-|         College        |          TBD         |
+|       Courthouse       |      ThermalTank     |
+|         College        |      ThermalTank     |
 
 ## License
 
