@@ -102,7 +102,7 @@ This will start up the flask **development** server and output will appear on th
 |    HighriseApartment   |          TBD         |
 |        Hospital        |      ThermalTank     |
 |       Outpatient       | DX coil packaged ice |
-|       Laboratory       |          TBD         |
+|       Laboratory       | DX coil packaged ice |
 | LargeDataCenterHighITE |      ThermalTank     |
 |  LargeDataCenterLowITE |      ThermalTank     |
 | SmallDataCenterHighITE |          TBD         |

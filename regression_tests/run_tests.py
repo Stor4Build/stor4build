@@ -25,7 +25,7 @@ with open(cases_file, 'r') as fp:
 for name,case in inputs.items():
     print(name)
     #if ('College' not in name) and ('LowITE' not in name):
-    #if 'Courthouse' not in name:
+    #if 'Laboratory' not in name:
     #    continue
     for type, info in case.items():
         if type == 'api':

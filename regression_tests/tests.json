@@ -327,6 +327,19 @@
                 "type": "Courthouse"
             }
         }
+    },
+    "Laboratory_5A_2004_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o Laboratory_5A_2004_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/Laboratory_5A_2004.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        }
     }
 }
 
