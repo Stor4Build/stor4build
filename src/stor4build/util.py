@@ -8,6 +8,7 @@ import dataclasses
 import json
 import datetime
 import csv
+from .__about__ import __version__
 
 def seed_model(openstudio_exe, path, filename):
     cur_dir = os.getcwd()
@@ -138,6 +139,23 @@ def get_first_day(eplusout_df):
 def get_last_day(eplusout_df):
     return datetime.datetime.fromisoformat(eplusout_df.tail()['Date/Time'].iloc[-1].strip()).date()
 
+def int_row(row):
+    x = [int(el) for el in row]
+    if len(x) == 1:
+        return x[0]
+    return x
+
+def float_row(row):
+    x = [float(el) for el in row]
+    if len(x) == 1:
+        return x[0]
+    return x
+
+def string_row(row):
+    if len(row) == 1:
+        return row[0]
+    return row
+
 def read_results(csv_file:str, echo=print):
     with open(csv_file, 'r') as fp:
         reader = csv.reader(fp)
@@ -158,12 +176,12 @@ def read_results(csv_file:str, echo=print):
     for line in info:
         try:
             # Need to adjust this for the DX coil system
-            header_info[line[0]] = int(line[1])
+            header_info[line[0]] = int_row(line[1:])
         except ValueError:
             try:
-                header_info[line[0]] = float(line[1])
+                header_info[line[0]] = float_row(line[1:])
             except ValueError:
-                header_info[line[0]] = line[1]
+                header_info[line[0]] = string_row(line[1:])
     echo(header_info)
     echo(skiprows)
     df = pd.read_csv(csv_file, skiprows=skiprows)
@@ -172,4 +190,44 @@ def read_results(csv_file:str, echo=print):
         header_info['maximum_date'] = pd.to_datetime(header_info['maximum_date']).date()
     echo(df)
     return header_info, df
+
+def prepare_detailed_header(building_type, climate_zone, vintage, storage_type, storage_medium=None, report_dir=None,
+                            sizing=None, arguments=None):
+    response_txt = f'version,{__version__}\n'
+    response_txt += f'building_type,"{building_type}"\n'
+    response_txt += f'climate_zone,"{climate_zone}"\n'
+    response_txt += f'vintage,"{vintage}"\n'
+    response_txt += f'storage,"{storage_type}"\n'
+    # This isn't handled as generally as it should be (still)
+    if storage_type == 'PackagedIceStorage':
+        sizing_report_path = os.path.join(report_dir, 'get_dx_coil_sizes_report.csv')
+        with open(sizing_report_path, 'r') as fp:
+            names = next(fp).strip()
+            values = next(fp).strip()
+        response_txt += 'packaged_ice_object_names,' + names + '\n'
+        response_txt += 'packaged_ice_capacities,' + values + '\n'
+        names = [el.strip().upper() for el in names.split(',')]
+        replacement_report_path = os.path.join(report_dir, 'add_packaged_ice_storage_report.txt')
+        with open(replacement_report_path, 'r') as fp:
+            lines = fp.read().splitlines()
+        if len(lines) % 2 == 0:
+            lookup = {}
+            itr = iter([line.strip() for line in lines])
+            for original,new in zip(itr, itr):
+                lookup[new.upper()] = original.upper()
+            replaced = [f'"{lookup[el]}"' for el in names]
+            response_txt += 'replaced_object_names,' + ','.join(replaced) + '\n'
+        else:
+            # Something is wrong 
+            response_txt += 'Unable to determine new-to-old object mapping'
+    else:
+        response_txt += f'storage_medium,"{storage_medium}"\n'
+    if sizing is not None:
+        for k,v in sizing.items():
+            response_txt += '%s,"%s"\n' % (k, str(v))
+    if arguments is not None:
+        for k,v in arguments.items():
+            response_txt += 'argument: %s,"%s"\n' % (k, str(v))
+    
+    return response_txt
 

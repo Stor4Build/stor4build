@@ -1,0 +1,345 @@
+{
+    "QuickServiceRestaurant_3A_2019_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o QuickServiceRestaurant_3A_2019_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/QuickServiceRestaurant_3A_2019.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }        
+    },
+    "FullServiceRestaurant_3A_pre1980_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o FullServiceRestaurant_3A_pre1980_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/FullServiceRestaurant_3A_pre1980.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }
+    },
+    "LargeOffice_5A_pre1980_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeOffice_5A_pre1980_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeOffice_5A_pre1980.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
+        "api": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 1979,
+                "type": "LargeOffice"
+            }
+        }
+    },
+    "LargeOffice_5A_pre1980_thermaltank_specified_defaults": {
+        "api": {
+            "storage": {
+                "type": "ThermalTank-Ice",
+                "capacity": 100,
+                "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 18}},
+                "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 7}}
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 1979,
+                "type": "LargeOffice"
+            }
+        }
+    },
+    "LargeOffice_3A_2011_thermaltank_utility": {
+        "api": {
+            "storage": {
+                "type": "ThermalTank-Ice",
+                "capacity": 100
+            },
+            "baseline": {
+                "climate": "3A",
+                "vintage": 2011,
+                "type": "LargeOffice"
+            },
+            "demand": {
+                "costs": [
+                    {
+                        "rate": 0.2,
+                        "unit": "$/kW",
+                        "period": 3
+                    },
+                    {
+                        "rate": 0.1,
+                        "unit": "$/kW",
+                        "period": 2
+                    },
+                    {
+                        "rate": 0,
+                        "unit": "$/kW",
+                        "period": 1
+                    }
+                ],
+                "schedule": {
+                    "months": [
+                        {
+                            "unit": "hour",
+                            "month": "All",
+                            "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                        }
+                    ]
+                }
+            },
+            "energy": {
+                "costs": [
+                    {
+                        "rate": 0.01,
+                        "unit": "$/kWh",
+                        "period": 1
+                    },
+                    {
+                        "rate": 0.2,
+                        "unit": "$/kWh",
+                        "period": 3
+                    },
+                    {
+                        "rate": 0.1,
+                        "unit": "$/kWh",
+                        "period": 2
+                    }
+                ],
+                "schedule": {
+                    "months": [
+                        {
+                            "unit": "hour",
+                            "month": "All",
+                            "periods": [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "RetailStripmall_5B_2007_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o RetailStripmall_5B_2007_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/RetailStripmall_5B_2007.osm",
+                "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
+        }
+    },
+    "PrimarySchool_5B_2016_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o PrimarySchool_5B_2016_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/PrimarySchool_5B_2016.osm",
+                "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
+        }
+    },
+    "Hospital_5A_post1980_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o Hospital_5A_post1980_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/Hospital_5A_post1980.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 1984,
+                "type": "Hospital"
+            }
+        }
+    },
+    "MediumOffice_5A_2004_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o MediumOffice_5A_2004_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/MediumOffice_5A_2004.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        }
+    },
+    "Outpatient_3A_2013_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o Outpatient_3A_2013_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/Outpatient_3A_2013.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }        
+    },
+    "Warehouse_3A_2010_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o Warehouse_3A_2010_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/Warehouse_3A_2010.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }        
+    },
+    "LargeHotel_5A_2016_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeHotel_5A_2016_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeHotel_5A_2016.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 2017,
+                "type": "LargeHotel"
+            }
+        }
+    },
+    "LargeDataCenterHighITE_3A_2019_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeDataCenterHighITE_3A_2019_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeDataCenterHighITE_3A_2019.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "3A",
+                "vintage": 2019,
+                "type": "LargeHotelDataCenterHighITE"
+            }
+        }
+    },
+    "LargeDataCenterLowITE_5A_2004_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o LargeDataCenterLowITE_5A_2004_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/LargeDataCenterLowITE_5A_2004.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5A",
+                "vintage": 2005,
+                "type": "LargeHotelDataCenterLowITE"
+            }
+        }
+    },
+    "College_3A_2007_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o College_3A_2007_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/College_3A_2007.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "3A",
+                "vintage": 2007,
+                "type": "College"
+            }
+        }
+    },
+    "Courthouse_5B_post1980_thermaltank_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m measures",
+                "-o Courthouse_5B_post1980_thermaltank_defaults_cli.csv",
+                "-s",
+                "models/Courthouse_5B_post1980.osm",
+                "weather/USA_CO_Denver-Aurora-Buckley.AFB_.724695_TMY3.epw"
+            ]
+        },
+        "api-skip": {
+            "storage": {
+                "type": "ThermalTank-Ice"
+            },
+            "baseline": {
+                "climate": "5B",
+                "vintage": 1981,
+                "type": "Courthouse"
+            }
+        }
+    },
+    "Laboratory_5A_2004_packaged_ice_defaults": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m measures",
+                "-o Laboratory_5A_2004_packaged_ice_defaults_cli.csv",
+                "-s",
+                "-b",
+                "models/Laboratory_5A_2004.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        }
+    }
+}
+

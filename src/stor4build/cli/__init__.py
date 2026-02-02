@@ -22,6 +22,12 @@ units = {'maximum_load': '(J)',
          'mass_flow': '(kg/s)',
          'computed_trim_temperature': '(C)'}
 
+# Charge temps
+sensible_and_latent_charge_temp = {'water': -3.8,
+                                   'simplewater': -3.8,
+                                   'pcm2x2a': -3.8}
+sensible_only_charge_temp = {'water': 1.1}
+
 @click.command()
 @click.argument('OSM', type=click.Path(exists=True))
 @click.argument('EPW', type=click.Path(exists=True))
@@ -71,32 +77,74 @@ def process(csvfile, date): #osm, epw, openstudio, measures_dir, measures_only, 
             hilight_end = int(info['interval_end'])
         except ValueError:
             pass
-    # Assume thermaltank to start
-    soc_col = 'soc:PythonPlugin:OutputVariable [](Hourly)'
-    energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
-    print(energy_cols)
-    baseline_cols = []
-    tes_cols = []
-    for el in energy_cols:
-        if 'Baseline' in el:
-            baseline_cols.append(el)
-        else:
-            tes_cols.append(el)
-    assert(len(baseline_cols) == len(tes_cols))
+
     df['date'] = df['Date/Time'].dt.date
-    click.echo(df)
-    dfx = df[df['date'] == date]
-    click.echo(dfx)
-    baseline = dfx[baseline_cols].sum(axis=1)
-    tes = dfx[tes_cols].sum(axis=1)
+
+    if 'storage' in info and info['storage'] == 'PackagedIceStorage':
+        baseline_cols = []
+        utss_cols = [el for el in df.columns.values.tolist() if 'UTSS COIL' in el]
+        notutss_cols = [el for el in df.columns.values.tolist() if 'UTSS COIL' not in el]
+        #print(utss_cols)
+        tes_cols = [el for el in utss_cols if 'Cooling Coil Electricity Energy' in el]
+        baseline_cols = [el for el in notutss_cols if 'Cooling Coil Electricity Energy' in el]
+        soc_cols = [el for el in utss_cols if 'Cooling Coil Ice Thermal Storage End Fraction' in el]
+        #print(tes_cols)
+        #print(soc_cols)
+        #print(info['packaged_ice_object_names'])
+        cap_lookup = {}
+        for k,v in zip(info['packaged_ice_object_names'],info['packaged_ice_capacities']):
+            #print(k,v)
+            cap_lookup[k] = v
+        total_cap = sum(cap_lookup.values())
+        #print(total_cap)
+        df['soc'] = 0.0
+        for col in soc_cols:
+            cap = 0.0
+            for k,v in cap_lookup.items():
+                if k in col:
+                    cap = v
+                    break
+            df['soc'] += (cap/total_cap)*df[col]
+        #print(df['soc'])
+        dfx = df[df['date'] == date]
+        baseline = dfx[baseline_cols].sum(axis=1)
+        tes = dfx[tes_cols].sum(axis=1)
+        soc = dfx['soc']
+        label = 'Coil Electrical'
+        #dfx['tes'] = 0
+        #for col in tes_cols:
+        #    dfx['tes'] += dfx[col]
+        #dfx['baseline'] = 0
+        #for col in baseline_cols:
+        #    dfx['baseline'] += dfx[col]
+    else:
+        # Assume thermaltank to start
+        soc_col = 'soc:PythonPlugin:OutputVariable [](Hourly)'
+        energy_cols = [el for el in df.columns.values.tolist() if 'Chiller Evaporator Cooling Energy' in el]
+        #print(energy_cols)
+        baseline_cols = []
+        tes_cols = []
+        for el in energy_cols:
+            if 'Baseline' in el:
+                baseline_cols.append(el)
+            else:
+                tes_cols.append(el)
+        assert(len(baseline_cols) == len(tes_cols))
+        click.echo(df)
+        dfx = df[df['date'] == date]
+        click.echo(dfx)
+        baseline = dfx[baseline_cols].sum(axis=1)
+        tes = dfx[tes_cols].sum(axis=1)
+        soc = dfx[soc_col]
+        label = 'Chiller Evaporator'
 
     x = list(range(24))
     fig, ax0 = plt.subplots()
     ax0.plot(x, baseline, label='Baseline Energy')
     ax0.plot(x, tes, label='TES Energy')
-    ax0.set_ylabel('Chiller Evaporator Energy [J]')
+    ax0.set_ylabel(f'{label} Energy [J]')
     ax1 = ax0.twinx()
-    ax1.plot(x, dfx[soc_col], label='SOC')
+    ax1.plot(x, soc, 'g', label='SOC')
     ax1.set_ylabel('State of Charge')
     if hilight_start and hilight_end:
         plt.axvspan(hilight_start-1, hilight_end-1, color='red', alpha=0.5) # default was 11 to 17
@@ -367,15 +415,17 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
 
     # Run the DX coil model
     post=[stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments={'baseline': False})]
-    if show_sizing:
+    if show_sizing or output:
         post.append(stor4build.Step('Get DX Coil Sizes', 'get_dx_coil_sizes'))
     dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre, hourly=False, post_steps=post)
     osw = dxcoil.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
     
+    report_dir = os.path.join(run_path, dxcoil.tag(),'reports')
+    
     if show_sizing:
         print('# Sizing Information #')
-        sizing_report_path = os.path.join(run_path, dxcoil.tag(),'reports', 'get_dx_coil_sizes_report.csv')
+        sizing_report_path = os.path.join(report_dir, 'get_dx_coil_sizes_report.csv')
         with open(sizing_report_path, 'r') as fp:
             names = next(fp).split(',')
             values = next(fp).split(',')
@@ -384,10 +434,14 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
     
     # Combine the CSVs
     if output:
+        header = stor4build.prepare_detailed_header('Unknown', 'Unknown', 'Unknown', 'PackagedIceStorage',
+                                                    storage_medium='water', report_dir=report_dir,
+                                                    sizing=None, arguments=None)
         baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
         dxcoil_csv = os.path.join(run_path, dxcoil.tag(),'run', 'eplusout.csv')
-        txt = stor4build.combine_single_frequency_csvs(baseline_csv, dxcoil_csv, 'Hourly')
+        txt = stor4build.combine_single_frequency_csv(baseline_csv, dxcoil_csv, 'Hourly')
         with open(output, 'w') as fp:
+            fp.write(header)
             fp.write(txt)
 
 @click.group(context_settings={'help_option_names': ['-h', '--help']}, invoke_without_command=False)
