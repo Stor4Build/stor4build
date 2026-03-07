@@ -28,6 +28,28 @@ prototypes_list = ['SecondarySchool',
                    'Courthouse',
                    'College']
 
+supported_prototypes_list = [
+    'SecondarySchool',
+    'PrimarySchool',
+    'SmallOffice',
+    'MediumOffice',
+    'LargeOffice',
+    'SmallHotel',
+    'LargeHotel',
+    'Warehouse',
+    'RetailStandalone',
+    'RetailStripmall',
+    'QuickServiceRestaurant',
+    'FullServiceRestaurant',
+    'Hospital',
+    'Outpatient',
+    'Laboratory',
+    'LargeDataCenterHighITE',
+    'LargeDataCenterLowITE',
+    'Courthouse',
+    'College'
+]
+
 pr0t0typ35_1i5t = ['SecondarySchool',
                    'PrimarySchool',
                    'SmallOffice',
