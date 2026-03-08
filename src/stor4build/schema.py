@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from marshmallow import Schema, fields, validate, EXCLUDE, post_load
-from .osmeasures import climate_zone_list, vintage_list, prototypes_list
+from .osmeasures import climate_zone_list, vintage_list, supported_prototypes_list
 from dataclasses import dataclass
 from typing import List
 import json
@@ -10,7 +10,7 @@ import datetime
 
 actual_climate_zone_list = climate_zone_list[:]
 actual_climate_zone_list.remove('5C')
-actual_prototypes_list = ['LargeOffice', 'SmallOffice', 'RetailStandalone']
+actual_prototypes_list = supported_prototypes_list
 
 class BaseSchema(Schema):
     class Meta:
