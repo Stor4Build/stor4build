@@ -177,7 +177,7 @@ class InputData:
         
     @classmethod
     def load_tessbed_v1(cls, data, ):
-        schema = TESSBeDv1Schema()
+        schema = Stor4Buildv1Schema()
         return schema.load(data)
         
     @classmethod
@@ -193,7 +193,7 @@ class InputDataSchema(BaseSchema):
     demand = fields.Nested(lambda: UtilityDataSchema(), required=False)
     promote_to = InputData
     
-class TESSBeDv1Schema(BaseSchema):
+class Stor4Buildv1Schema(BaseSchema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
     storage = fields.Nested(lambda: StorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)
