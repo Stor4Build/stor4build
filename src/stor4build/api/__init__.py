@@ -131,6 +131,9 @@ def create_app(config=None):
         building_type = inputs.baseline.type
         cz = 'ASHRAE 169-2006-%s' % inputs.baseline.climate
         vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
+
+        if not stor4build.validate_template(building_type, vintage_to_use):
+            return make_response({'error': 'Bad request', 'message': f'The requested vintage ({inputs.baseline.vintage}) is not supported for "{building_type}" buildings'}, 400)
         
         argument_keys = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end']
         # Get utility rate info, just the one energy schedule for now
@@ -162,7 +165,7 @@ def create_app(config=None):
             arguments['discharge_end'] = '%02d:00' % inputs.storage.discharge_interval.end.hour
 
         if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
-            if building_type != 'LargeOffice':
+            if building_type not in stor4build.thermaltank_supported:
                 return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
             needs_baseline = True
             
@@ -188,7 +191,7 @@ def create_app(config=None):
                                stor4build.Step('Get DX Coil Sizes', 'get_dx_coil_sizes')]
         else:
             # Should never reach here because the input is validated, but leave it in as a safety
-            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % tes_type}, 400)
+            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % inputs.storage.type}, 400)
 
         response_txt = ''
         # Run/load the baseline first, then the technology

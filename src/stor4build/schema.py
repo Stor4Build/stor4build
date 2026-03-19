@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 from marshmallow import Schema, fields, validate, EXCLUDE, post_load
-from .osmeasures import climate_zone_list, vintage_list, prototypes_list
+from .osmeasures import climate_zone_list, vintage_list, supported_prototypes_list
 from dataclasses import dataclass
 from typing import List
 import json
@@ -10,7 +10,7 @@ import datetime
 
 actual_climate_zone_list = climate_zone_list[:]
 actual_climate_zone_list.remove('5C')
-actual_prototypes_list = ['LargeOffice', 'SmallOffice', 'RetailStandalone']
+actual_prototypes_list = supported_prototypes_list
 
 class BaseSchema(Schema):
     class Meta:
@@ -177,7 +177,7 @@ class InputData:
         
     @classmethod
     def load_tessbed_v1(cls, data, ):
-        schema = TESSBeDv1Schema()
+        schema = Stor4Buildv1Schema()
         return schema.load(data)
         
     @classmethod
@@ -193,7 +193,7 @@ class InputDataSchema(BaseSchema):
     demand = fields.Nested(lambda: UtilityDataSchema(), required=False)
     promote_to = InputData
     
-class TESSBeDv1Schema(BaseSchema):
+class Stor4Buildv1Schema(BaseSchema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
     storage = fields.Nested(lambda: StorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)

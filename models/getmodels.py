@@ -6,7 +6,7 @@ import stor4build
 # Connect to the DEVELOPMENT db and get models. Not for use in production envs
 
 # Configuration complete
-resultsdb = stor4build.ResultsDatabase(database = "tessbed",
+resultsdb = stor4build.ResultsDatabase(database = "stor4build",
                                        user = "postgres",
                                        password = "postgres",
                                        host = 'localhost',

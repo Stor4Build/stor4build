@@ -28,32 +28,52 @@ prototypes_list = ['SecondarySchool',
                    'Courthouse',
                    'College']
 
-pr0t0typ35_1i5t = ['SecondarySchool',
-                   'PrimarySchool',
-                   'SmallOffice',
-                   'MediumOffice',
-                   'LargeOffice',
-                   'SmallHotel',
-                   'LargeHotel',
-                   'Warehouse',
-                   'RetailStandalone',
-                   'RetailStripmall',
-                   'QuickServiceRestaurant',
-                   'FullServiceRestaurant',
-                   'MidriseApartment',
-                   'HighriseApartment',
-                   'Hospital',
-                   'Outpatient',
-                   'SuperMarket',
-                   'SmallDataCenterLowITE',
-                   'SmallDataCenterHighITE',
-                   'LargeDataCenterLowITE',
-                   'LargeDataCenterHighITE',
-                   'SmallOfficeDetailed',
-                   'MediumOfficeDetailed',
-                   'LargeOfficeDetailed',
-                   'Laboratory'
-                   ]
+supported_prototypes_list = [
+    'SecondarySchool',
+    'PrimarySchool',
+    'SmallOffice',
+    'MediumOffice',
+    'LargeOffice',
+    'SmallHotel',
+    'LargeHotel',
+    'Warehouse',
+    'RetailStandalone',
+    'RetailStripmall',
+    'QuickServiceRestaurant',
+    'FullServiceRestaurant',
+    'Hospital',
+    'Outpatient',
+    'Laboratory',
+    'LargeDataCenterHighITE',
+    'LargeDataCenterLowITE',
+    'Courthouse',
+    'College'
+]
+
+tes_support = {
+    'SecondarySchool': ['DX coil packaged ice'],
+    'PrimarySchool': ['DX coil packaged ice'],
+    'SmallOffice': ['DX coil packaged ice'],
+    'MediumOffice': ['DX coil packaged ice'],
+    'LargeOffice': ['ThermalTank'],
+    'SmallHotel': ['DX coil packaged ice'],
+    'LargeHotel': ['ThermalTank'],
+    'Warehouse': ['DX coil packaged ice'],
+    'RetailStandalone': ['DX coil packaged ice'],
+    'RetailStripmall': ['DX coil packaged ice'],
+    'QuickServiceRestaurant': ['DX coil packaged ice'],
+    'FullServiceRestaurant': ['DX coil packaged ice'],
+    'Hospital': ['ThermalTank'],
+    'Outpatient': ['DX coil packaged ice'],
+    'Laboratory': ['DX coil packaged ice'],
+    'LargeDataCenterHighITE': ['ThermalTank'],
+    'LargeDataCenterLowITE': ['ThermalTank'],
+    'Courthouse': ['ThermalTank'],
+    'College': ['ThermalTank']
+}
+
+dxcoil_supported = [k for k,v in tes_support.items() if 'DX coil packaged ice' in v]
+thermaltank_supported = [k for k,v in tes_support.items() if 'ThermalTank' in v]
 
 climate_zone_list = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C',
                      '5A','5B', '5C', '6A', '6B', '7A', '7B', '8A']
@@ -94,6 +114,12 @@ def map_to_vintage(vintage:int):
             break
         last_key = key
     return vintage_map[last_key]
+
+def validate_template(building:str, template:str):
+    if building in ['Laboratory', 'LargeDataCenterLowITE', 'LargeDataCenterHighITE']:
+        if template in ['pre1980', 'post1980']:
+            return False
+    return True
 
 @dataclasses.dataclass
 class Step:

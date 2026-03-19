@@ -38,9 +38,25 @@
           "type": {
             "type": "string",
             "enum": [
-              "LargeOffice",
+              "SecondarySchool",
+              "PrimarySchool",
               "SmallOffice",
-              "RetailStandalone"
+              "MediumOffice",
+              "LargeOffice",
+              "SmallHotel",
+              "LargeHotel",
+              "Warehouse",
+              "RetailStandalone",
+              "RetailStripmall",
+              "QuickServiceRestaurant",
+              "FullServiceRestaurant",
+              "Hospital",
+              "Outpatient",
+              "Laboratory",
+              "LargeDataCenterHighITE",
+              "LargeDataCenterLowITE",
+              "Courthouse",
+              "College"
             ]
           }
         },

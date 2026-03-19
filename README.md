@@ -11,6 +11,7 @@
 - [Command Line Usage](#command-line-usage)
 - [VS Code/Hatch Dev Environment](#vs-codehatch-dev-environment)
 - [Web API](#web-api)
+- [Prototype Coverage](#prototype-coverage)
 - [License](#license)
 
 ## Installation
@@ -84,31 +85,33 @@ This will start up the flask **development** server and output will appear on th
 
 ## Prototype Coverage
 
-|        Prototype       |     Supported TES    |
-|------------------------|----------------------|
-|     SecondarySchool    | DX coil packaged ice |
-|      PrimarySchool     | DX coil packaged ice |
-|       SmallOffice      | DX coil packaged ice |
-|      MediumOffice      | DX coil packaged ice |
-|       LargeOffice      |      ThermalTank     |
-|       SmallHotel       | DX coil packaged ice |
-|       LargeHotel       |      ThermalTank     |
-|        Warehouse       | DX coil packaged ice |
-|    RetailStandalone    | DX coil packaged ice |
-|     RetailStripmall    | DX coil packaged ice |
-| QuickServiceRestaurant | DX coil packaged ice |
-|  FullServiceRestaurant | DX coil packaged ice |
-|    MidriseApartment    |          TBD         |
-|    HighriseApartment   |          TBD         |
-|        Hospital        |      ThermalTank     |
-|       Outpatient       | DX coil packaged ice |
-|       Laboratory       | DX coil packaged ice |
-| LargeDataCenterHighITE |      ThermalTank     |
-|  LargeDataCenterLowITE |      ThermalTank     |
-| SmallDataCenterHighITE |          TBD         |
-|  SmallDataCenterLowITE |          TBD         |
-|       Courthouse       |      ThermalTank     |
-|         College        |      ThermalTank     |
+The tool now supports the majority of the OpenStudio prototypes. Three models (Laboratory, LargeDataCenterLowITE, and LargeDataCenterHighITE) are only available for vintages 2004 and later, so these models are not available before 2004. 
+
+|          Type          |     Supported TES    | pre1980 | post1980 | 2004 | 2007 | 2010 | 2013 | 2016 | 2019 |
+|:----------------------:|:--------------------:|:-------:|:--------:|:----:|:----:|:----:|:----:|:----:|:----:|
+|       LargeOffice      |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       SmallOffice      | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|    RetailStandalone    | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|      MediumOffice      | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       Courthouse       |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       Warehouse        | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|        College         |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+| QuickServiceRestaurant | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|    RetailStripmall     | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+| FullServiceRestaurant  | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       Laboratory       | DX coil packaged ice |     -   |     -    |   X  |   X  |   X  |   X  |   X  |   X  |
+|      PrimarySchool     | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       LargeHotel       |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|        Hospital        |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       SmallHotel       | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|     SecondarySchool    | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       Outpatient       | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+| LargeDataCenterLowITE  |     ThermalTank      |     -   |     -    |   X  |   X  |   X  |   X  |   X  |   X  |
+| LargeDataCenterHighITE |     ThermalTank      |     -   |     -    |   X  |   X  |   X  |   X  |   X  |   X  |
+|    MidriseApartment    |          TBD         |     -   |     -    |   -  |   -  |   -  |   -  |   -  |   -  |
+|    HighriseApartment   |          TBD         |     -   |     -    |   -  |   -  |   -  |   -  |   -  |   -  |
+| SmallDataCenterHighITE |          TBD         |     -   |     -    |   -  |   -  |   -  |   -  |   -  |   -  |
+|  SmallDataCenterLowITE |          TBD         |     -   |     -    |   -  |   -  |   -  |   -  |   -  |   -  |
 
 ## License
 
