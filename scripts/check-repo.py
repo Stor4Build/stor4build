@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Sustainable Energy, LLC, and contributors
+# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import glob
@@ -15,7 +15,7 @@ ruby_files = glob.glob(os.path.join(repo_dir, '**', '*.rb'), recursive=True)
 # The SPDX headers we know about
 spdx_starters = [
     '# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory',
-    '# SPDX-FileCopyrightText: 2023-present Alliance for Sustainable Energy'
+    '# SPDX-FileCopyrightText: 2023-present Alliance for Energy Innovation'
 ]
 
 # Alt headers we know about

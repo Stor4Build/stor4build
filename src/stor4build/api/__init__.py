@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Sustainable Energy, LLC, and contributors
+# SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
@@ -181,7 +181,7 @@ def create_app(config=None):
             technology_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs',{'baseline': False}),
                                stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
         elif inputs.storage.type == 'PackagedIceStorage':
-            if building_type not in ['SmallOffice', 'RetailStandalone']:
+            if building_type not in stor4build.dxcoil_supported:
                 return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
             technology_object_factory = stor4build.DxCoil.size
             baseline_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs'),
