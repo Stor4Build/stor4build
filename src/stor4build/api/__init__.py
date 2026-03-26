@@ -16,7 +16,6 @@ from ..__about__ import __version__
 # Make some assumptions to get the default locations
 this_dir = os.path.abspath(os.path.dirname(__file__))
 default_measures_dir = os.path.join(this_dir, '..', '..', '..', 'measures')
-default_weather_dir = os.path.join(this_dir, '..', '..', '..', 'resources')
 
 # Supported climate zones
 supported_czs = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C', '5A', '5B', '6A', '6B', '7A', '8A']
@@ -63,14 +62,14 @@ def create_app(config=None):
     
     app.config.from_mapping(
         OPENSTUDIO='openstudio',
-        MEASURES_DIR=default_measures_dir,
-        WEATHER_DIR=default_weather_dir,
+        MEASURES_DIRECTORY=default_measures_dir,
         TIMESCALE_HOST='timescale',
         TIMESCALE_PORT='5432',
         CACHE_BASELINE=False,
         STORE_MISSING_RESULTS=True,
         OLDEST_ACCEPTABLE=None #'2025-06-30T20:20:37.885565-04:00'
     )
+    print(app.config)
 
     if config is None:
         app.config.from_prefixed_env()
@@ -78,8 +77,10 @@ def create_app(config=None):
         app.config.from_mapping(config)
     
     openstudio_exe = app.config['OPENSTUDIO']
-    measures_dir = os.path.abspath(app.config['MEASURES_DIR'])
-    weather_dir = os.path.abspath(app.config['WEATHER_DIR'])
+    # Set the measures directory and check that it exists
+    measures_dir = os.path.abspath(app.config['MEASURES_DIRECTORY'])
+    if not os.path.exists(measures_dir):
+        raise MissingConfig(f'Cannot find measures directory "{measures_dir}", cannot continue.')
     cache_baseline = app.config['CACHE_BASELINE']
     store_missing_results = app.config['STORE_MISSING_RESULTS']
     if app.config['OLDEST_ACCEPTABLE'] is None:
