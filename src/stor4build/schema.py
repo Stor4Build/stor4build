@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
-from marshmallow import Schema, fields, validate, EXCLUDE, post_load
+from marshmallow import Schema, fields, validate, EXCLUDE, post_load, ValidationError
 from .osmeasures import climate_zone_list, vintage_list, supported_prototypes_list
 from dataclasses import dataclass
 from typing import List
+from .osmeasures import dxcoil_supported
 import json
 import datetime
 
@@ -162,6 +163,21 @@ class StorageDataSchema(BaseSchema):
     size_fraction = fields.Float(validate=validate.OneOf([1.0, 0.9, 0.8, 0.7, 0.6, 0.5]), required=False)
     medium = fields.Str(validate=validate.OneOf(['water', 'pcm2x2a']), required=False)
     promote_to = StorageData
+    
+class SimplifiedStorageDataSchema(Schema):
+    type = fields.Str(validate=validate.OneOf(['ThermalTank-Ice', 'ThermalTank-ChilledWater', 'PackagedIceStorage', 'ice', 'water', 'pcm-1']), required=True)
+    capacity = fields.Float(validate=lambda x: x > 0.0 and x <= 100.0, required=False)
+    charge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
+    discharge_interval = fields.Nested(lambda: IntervalSchema(), required=False)
+    size_fraction = fields.Float(validate=validate.OneOf([1.0, 0.9, 0.8, 0.7, 0.6, 0.5]), required=False)
+    medium = fields.Str(validate=validate.OneOf(['water', 'pcm2x2a']), required=False)
+    class Meta:
+        unknown = EXCLUDE
+    @post_load
+    def promote(self, data, **kwargs):
+        if 'medium' not in data and data['type'] in ['ice', 'water', 'pcm-1']:
+            return StorageData(medium='', **data)
+        return StorageData(**data)
 
 @dataclass
 class InputData:
@@ -176,8 +192,8 @@ class InputData:
         return schema.load(data)
         
     @classmethod
-    def load_tessbed_v1(cls, data, ):
-        schema = Stor4Buildv1Schema()
+    def load_tessbed(cls, data, ):
+        schema = Stor4Build030Schema()
         return schema.load(data)
         
     @classmethod
@@ -185,15 +201,38 @@ class InputData:
         with open(input_path, 'r') as fp:
             data = json.load(fp)
         return cls.load(data)
-    
-class InputDataSchema(BaseSchema):
+
+class InputDataSchema(Schema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
-    storage = fields.Nested(lambda: StorageDataSchema(), required=True)
+    storage = fields.Nested(lambda: SimplifiedStorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=False)
     demand = fields.Nested(lambda: UtilityDataSchema(), required=False)
-    promote_to = InputData
+    class Meta:
+        unknown = EXCLUDE
+    @post_load
+    def promote(self, data, **kwargs):
+        building_type = data['baseline'].type
+        tes_type = data['storage'].type
+        if tes_type == 'ice':
+            if building_type in dxcoil_supported:
+                data['storage'].type = 'PackagedIceStorage'
+            else:
+                data['storage'].type = 'ThermalTank-Ice'
+                data['storage'].medium = 'water'
+            print(data['storage'].type)
+        elif tes_type == 'water':
+            if building_type in dxcoil_supported:
+                raise ValidationError(f'Building "{building_type}" does not support "water" storage')
+            data['storage'].type = 'ThermalTank-ChilledWater'
+            data['storage'].medium = 'water'
+        elif tes_type == 'pcm-1':
+            if building_type in dxcoil_supported:
+                raise ValidationError(f'Building "{building_type}" does not support "pcm-1" storage')
+            data['storage'].type = 'ThermalTank-Ice'
+            data['storage'].medium = 'pcm2x2a'
+        return InputData(**data)
     
-class Stor4Buildv1Schema(BaseSchema):
+class Stor4Buildv030Schema(BaseSchema):
     baseline = fields.Nested(lambda: BuildingDataSchema(), required=True)
     storage = fields.Nested(lambda: StorageDataSchema(), required=True)
     energy = fields.Nested(lambda: UtilityDataSchema(), required=True)

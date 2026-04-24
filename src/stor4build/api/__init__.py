@@ -60,6 +60,9 @@ def create_app(config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     
+    # Should make this configurable
+    noisy = True
+    
     app.config.from_mapping(
         OPENSTUDIO='openstudio',
         MEASURES_DIRECTORY=default_measures_dir,
@@ -69,7 +72,6 @@ def create_app(config=None):
         STORE_MISSING_RESULTS=True,
         OLDEST_ACCEPTABLE=None #'2025-06-30T20:20:37.885565-04:00'
     )
-    print(app.config)
 
     if config is None:
         app.config.from_prefixed_env()
@@ -90,7 +92,7 @@ def create_app(config=None):
     
     debug_run_dir = None
     if 'RUN_DIRECTORY' in app.config:
-        debug_run_dir = app.config['RUN_DIRECTORY']
+        debug_run_dir = os.path.abspath(app.config['RUN_DIRECTORY'])
     
     # Connect to the database
     try:
@@ -221,7 +223,7 @@ def create_app(config=None):
                 baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
                 osw = baseline.osw(osm, measures_dir, epw)
                 stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
-                stor4build.fix_csv(baseline_csv)
+                stor4build.fix_csv(baseline_csv, verbose=noisy)
                 if cache_baseline and store_missing_results:
                     resultsdb.set_results(building_id, baseline_csv)
             
@@ -237,6 +239,8 @@ def create_app(config=None):
                 response_txt += f'climate_zone,"{cz}"\n'
                 response_txt += f'vintage,"{vintage_to_use}"\n'
                 response_txt += f'storage,"{inputs.storage.type}"\n'
+                if noisy:
+                    print(response_txt)
                 # This isn't handled as generally as it should be
                 if inputs.storage.type == 'PackagedIceStorage':
                     sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
@@ -274,7 +278,7 @@ def create_app(config=None):
             #        energy_rates[label] = month.rate_array(inputs.energy.costs)
 
             tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
-            stor4build.fix_csv(tech_csv)
+            stor4build.fix_csv(tech_csv, verbose=noisy)
             if inputs.demand is not None:
                 rates = [cost.rate for cost in inputs.demand.costs.values()]
                 rates.sort()

@@ -103,7 +103,7 @@ The tool now supports the majority of the OpenStudio prototypes. Three models (L
 |      PrimarySchool     | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
 |       LargeHotel       |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
 |        Hospital        |     ThermalTank      |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
-|       SmallHotel       | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
+|       SmallHotel       |          TBD         |     -   |     -    |   -  |   -  |   -  |   -  |   -  |   -  |
 |     SecondarySchool    | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
 |       Outpatient       | DX coil packaged ice |     X   |     X    |   X  |   X  |   X  |   X  |   X  |   X  |
 | LargeDataCenterLowITE  |     ThermalTank      |     -   |     -    |   X  |   X  |   X  |   X  |   X  |   X  |

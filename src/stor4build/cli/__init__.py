@@ -54,10 +54,10 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 # Need to fix this so it doesn't need a year
 @click.option('--date', type=click.DateTime(formats=["%Y-%m-%d"]), default='2006-07-07')
 #@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
-#@click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
+@click.option('-l', '--legend-loc', type=str, show_default=True, default='lower left', help='Location for the matplotlib legend.')
 #@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
 #@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
-def process(csvfile, date): #osm, epw, openstudio, measures_dir, measures_only, run_dir):
+def process(csvfile, date, legend_loc): #osm, epw, openstudio, measures_dir, measures_only, run_dir):
     """
     Post-process the hourly CSV from the TES simulations.
     """
@@ -152,7 +152,7 @@ def process(csvfile, date): #osm, epw, openstudio, measures_dir, measures_only, 
     #ax0.legend(['one', 'two', 'three'],loc='center left')
     lines0, labels0 = ax0.get_legend_handles_labels()
     lines1, labels1 = ax1.get_legend_handles_labels()
-    ax0.legend(lines0 + lines1, labels0 + labels1, loc='center left')
+    ax0.legend(lines0 + lines1, labels0 + labels1, loc=legend_loc)
     plt.show()
     #fig, ax = plt.subplots()
     #

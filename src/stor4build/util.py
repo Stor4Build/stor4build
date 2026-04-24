@@ -8,6 +8,7 @@ import dataclasses
 import json
 import datetime
 import csv
+import shutil
 from .__about__ import __version__
 
 def seed_model(openstudio_exe, path, filename):
@@ -68,6 +69,7 @@ def convert_string_time_interval(start, end):
     
 def fix_csv(filepath, verbose=False):
     # This needs to be rewritten to do everything in memory
+    shutil.copy(filepath, filepath + '.bak')
     with tempfile.NamedTemporaryFile('w', delete=False) as tmp: # This is different in later versions of Python
         with open(filepath, 'r') as fp:
             for line in fp:
@@ -75,10 +77,17 @@ def fix_csv(filepath, verbose=False):
                     tmp.write(line)
         tmp.close()
         df = pd.read_csv(tmp.name)
-        drop_cols = [col for col in df.columns if 'Facility' in col]
+        keep_cols = ['Date/Time']
+        keep_cols.extend([col for col in df.columns if '(Hourly)' in col])
         if verbose:
-            print('Dropping columns: ' + ', '.join(drop_cols))
-        df = df.drop(drop_cols, axis=1).dropna()
+            print('Columns: ' + ', '.join(df.columns))
+            print('Keeping columns: ' + ', '.join(keep_cols))
+        df = df[keep_cols] #.dropna()
+        #df.to_csv(filepath+'0000.csv', index=False)
+        #drop_cols = [col for col in df.columns if 'Facility' in col]
+        #if verbose:
+        #    print('Dropping columns: ' + ', '.join(drop_cols))
+        #df = df.drop(drop_cols, axis=1).dropna()
         df.to_csv(filepath, index=False)
 
 def prefix_with_baseline(name):
@@ -103,6 +112,7 @@ def combine_single_frequency_df(baseline_csv, tech_csv, freq, energy_data=None, 
     if energy_data is not None:
         first_day = get_first_day(result)
         last_day = get_last_day(result)
+        #print(first_day, last_day)
         result['energy rate [$/kWh]'] = energy_data.rate_schedule(first_day, last_day)
         if demand_data is not None:
             result['demand period []'] = demand_data.demand_schedule(first_day, last_day)

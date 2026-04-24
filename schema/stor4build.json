@@ -2,7 +2,7 @@
   "info": {
     "description": "The stor4build API for TES calculations",
     "title": "stor4build",
-    "version": "0.3.0"
+    "version": "0.4.1"
   },
   "paths": {},
   "openapi": "3.0.2",
@@ -43,7 +43,6 @@
               "SmallOffice",
               "MediumOffice",
               "LargeOffice",
-              "SmallHotel",
               "LargeHotel",
               "Warehouse",
               "RetailStandalone",
@@ -94,7 +93,7 @@
           "end"
         ]
       },
-      "StorageData": {
+      "SimplifiedStorageData": {
         "type": "object",
         "properties": {
           "type": {
@@ -102,7 +101,10 @@
             "enum": [
               "ThermalTank-Ice",
               "ThermalTank-ChilledWater",
-              "PackagedIceStorage"
+              "PackagedIceStorage",
+              "ice",
+              "water",
+              "pcm-1"
             ]
           },
           "capacity": {
@@ -213,7 +215,7 @@
             "$ref": "#/components/schemas/BuildingData"
           },
           "storage": {
-            "$ref": "#/components/schemas/StorageData"
+            "$ref": "#/components/schemas/SimplifiedStorageData"
           },
           "energy": {
             "$ref": "#/components/schemas/UtilityData"
