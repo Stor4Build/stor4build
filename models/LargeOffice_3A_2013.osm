@@ -1,7 +1,7 @@
 
 OS:Version,
-  {35815379-4435-4a4b-b92d-f7269365adf7}, !- Handle
-  3.7.0;                                  !- Version Identifier
+  {2655dcb1-fb7e-49f2-b7f4-c5030bf2d574}, !- Handle
+  3.11.0;                                 !- Version Identifier
 
 OS:Schedule:Constant,
   {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Handle
@@ -4051,7 +4051,7 @@ OS:Schedule:Day,
   {85590092-c4c9-4412-ac37-df7ae5026720}, !- Handle
   OfficeLarge BLDG_LIGHT_SCH_2013 Default, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -4085,7 +4085,7 @@ OS:Schedule:Day,
   {52a954a9-f148-4974-8e20-b6148176fd9e}, !- Handle
   OfficeLarge BLDG_LIGHT_SCH_2013 Sat Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -4109,7 +4109,7 @@ OS:Schedule:Day,
   {4c967271-136e-4d06-8e58-44c04c8cd5bf}, !- Handle
   OfficeLarge BLDG_LIGHT_SCH_2013 Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -4137,7 +4137,7 @@ OS:Schedule:Day,
   {5c7ba032-7965-4755-8be9-38010bd5ce78}, !- Handle
   OfficeLarge BLDG_LIGHT_SCH_2013 Wkdy Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -4173,7 +4173,7 @@ OS:Schedule:Day,
   {e27bffb1-3fb8-4117-96cc-f2c92395a56b}, !- Handle
   OfficeLarge BLDG_LIGHT_SCH_2013 Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -4197,7 +4197,7 @@ OS:Schedule:Day,
   {9177276f-3f3b-43f7-b4b0-b94827a87b93}, !- Handle
   Schedule Day 3,                         !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -4206,7 +4206,7 @@ OS:Schedule:Day,
   {e37fd596-1906-44bd-8305-e1cf49eb0adf}, !- Handle
   DataCenter_EQUIP_SCH Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -4234,7 +4234,7 @@ OS:Schedule:Day,
   {70773ad9-c645-4dc8-908e-f4bc1f4edbb3}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -4262,7 +4262,7 @@ OS:Schedule:Day,
   {c9e77aa9-e895-4bf5-aefc-07dc0daa4543}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 1, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -4290,7 +4290,7 @@ OS:Schedule:Day,
   {ae8b5976-66db-44a1-97ff-8cc36144393d}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 2, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.75;                                   !- Value Until Time 1
@@ -4318,7 +4318,7 @@ OS:Schedule:Day,
   {7b925467-310f-446a-a62a-7e2e024e98ef}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 3, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -4346,7 +4346,7 @@ OS:Schedule:Day,
   {2567a725-d308-4e91-b4bb-3a6961dc37a0}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 4, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -4374,7 +4374,7 @@ OS:Schedule:Day,
   {4e514bd4-fcc3-4b95-9aa1-1455b9a472d0}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 5, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -4402,7 +4402,7 @@ OS:Schedule:Day,
   {7008d4af-8775-4e93-af02-6cefc8afc9a7}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 6, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.75;                                   !- Value Until Time 1
@@ -4430,7 +4430,7 @@ OS:Schedule:Day,
   {392cc96e-fd6a-4174-b533-9508565f1fef}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 7, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -4458,7 +4458,7 @@ OS:Schedule:Day,
   {33704e30-7385-406a-8d27-bb3fb2130994}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 8, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -4486,7 +4486,7 @@ OS:Schedule:Day,
   {90634840-a0c9-4cf8-854a-ca91986622c3}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 9, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -4514,7 +4514,7 @@ OS:Schedule:Day,
   {357aee03-3dde-4a77-a98b-21083a5e43df}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 10, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.75;                                   !- Value Until Time 1
@@ -4542,7 +4542,7 @@ OS:Schedule:Day,
   {86860cd0-70c9-46d5-a56f-eba9bedea36b}, !- Handle
   DataCenter_EQUIP_SCH Wknd|Wkdy|Hol Day 11, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -4551,7 +4551,7 @@ OS:Schedule:Day,
   {9a6b2755-9e70-4296-b570-56902324c949}, !- Handle
   DataCenter_EQUIP_SCH Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -4574,7 +4574,7 @@ OS:Schedule:Day,
   {958f3829-eece-42ae-8566-5025e4e89b4e}, !- Handle
   OfficeLarge HTGSETP_DC_SCH Default,     !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   18;                                     !- Value Until Time 1
@@ -4583,7 +4583,7 @@ OS:Schedule:Day,
   {ffb5a528-3410-4fa6-a12f-71114505818d}, !- Handle
   OfficeLarge HTGSETP_DC_SCH Winter Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   18;                                     !- Value Until Time 1
@@ -4592,7 +4592,7 @@ OS:Schedule:Day,
   {6907f224-9d20-4a30-a764-32ba3db3d2b6}, !- Handle
   OfficeLarge HTGSETP_DC_SCH Summer Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   18;                                     !- Value Until Time 1
@@ -4617,7 +4617,7 @@ OS:Schedule:Day,
   {bccb4180-6ceb-4b1b-9d42-f3e30fb3f486}, !- Handle
   OfficeLarge CLGSETP_DC_SCH Default,     !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   27;                                     !- Value Until Time 1
@@ -4626,7 +4626,7 @@ OS:Schedule:Day,
   {857ee093-a8db-41f1-98ae-e962fa6ae4e3}, !- Handle
   OfficeLarge CLGSETP_DC_SCH Winter Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   27;                                     !- Value Until Time 1
@@ -4635,7 +4635,7 @@ OS:Schedule:Day,
   {abc3f409-5c07-48fb-98cb-bfc3e741bd5f}, !- Handle
   OfficeLarge CLGSETP_DC_SCH Summer Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   27;                                     !- Value Until Time 1
@@ -4750,6 +4750,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {c955ac62-1109-458d-951c-fa42799ae5ea}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {b98c9b39-0763-4658-8816-07b0ecec4da1}, !- Clothing Insulation Schedule Name
   {1d1de837-e339-418d-95c6-f23de0b8f4df}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -4764,7 +4766,7 @@ OS:Schedule:Day,
   {cffe54f7-9dc8-4e49-9cf6-19b2f86116c2}, !- Handle
   Clothing Schedule Default Winter Clothes, !- Name
   {a7e15240-999e-4e33-83ca-8e6374533e7c}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -4792,7 +4794,7 @@ OS:Schedule:Day,
   {fd5116e9-b3f6-40ec-bbeb-d1a53281c5fe}, !- Handle
   Clothing Schedule Summer Clothes,       !- Name
   {a7e15240-999e-4e33-83ca-8e6374533e7c}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -4815,7 +4817,7 @@ OS:Schedule:Day,
   {3f5dec91-eb7e-4d57-b83f-d9fbd7c58f41}, !- Handle
   Air Velocity Schedule Default,          !- Name
   {28176a30-692d-4fde-923c-6a9f28b413f9}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.2;                                    !- Value Until Time 1
@@ -4838,7 +4840,7 @@ OS:Schedule:Day,
   {532959eb-2caf-472c-bbf9-d26435b4791b}, !- Handle
   Work Efficiency Schedule Default,       !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -4934,7 +4936,7 @@ OS:Schedule:Day,
   {5e5fc216-766e-4339-80bf-a6b45205c733}, !- Handle
   OfficeLarge BLDG_OCC_SCH Default,       !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -4968,7 +4970,7 @@ OS:Schedule:Day,
   {71fe1e01-c145-4d70-af0c-0d9bd2c8da91}, !- Handle
   OfficeLarge BLDG_OCC_SCH Sat Day,       !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -4992,7 +4994,7 @@ OS:Schedule:Day,
   {ab140405-b0db-46af-b84c-129b9a6869c8}, !- Handle
   OfficeLarge BLDG_OCC_SCH Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -5026,7 +5028,7 @@ OS:Schedule:Day,
   {6121c83a-94f1-4ccc-bb03-faa77fde06a0}, !- Handle
   OfficeLarge BLDG_OCC_SCH Wkdy Day,      !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -5059,7 +5061,7 @@ OS:Schedule:Day,
   {9d8147f3-896f-4f92-801e-2dd6fa999c3f}, !- Handle
   OfficeLarge BLDG_OCC_SCH Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -5076,7 +5078,7 @@ OS:Schedule:Day,
   {4dbd4090-41fd-4e61-b243-1ef99ef0e22e}, !- Handle
   OfficeLarge ACTIVITY_SCH Default,       !- Name
   {4beb44b5-2cf9-4fc2-95fb-4df8b15a4b32}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -5085,7 +5087,7 @@ OS:Schedule:Day,
   {b55ec997-9315-4057-9f10-51e65e5169f3}, !- Handle
   OfficeLarge ACTIVITY_SCH Winter Design Day, !- Name
   {4beb44b5-2cf9-4fc2-95fb-4df8b15a4b32}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -5094,7 +5096,7 @@ OS:Schedule:Day,
   {9cfad460-99e0-4277-a0a8-e69963f235ec}, !- Handle
   OfficeLarge ACTIVITY_SCH Summer Design Day, !- Name
   {4beb44b5-2cf9-4fc2-95fb-4df8b15a4b32}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -5119,7 +5121,7 @@ OS:Schedule:Day,
   {feaa5b78-5081-4725-b9f5-ee30d5ceee50}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH Default,     !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.3;                                    !- Value Until Time 1
@@ -5147,7 +5149,7 @@ OS:Schedule:Day,
   {a32dd927-d6f1-4e5f-bbb4-998d00e63add}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH Sat Day,     !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -5168,7 +5170,7 @@ OS:Schedule:Day,
   {35e79cb6-1a4a-4d5f-a574-0ae9e5a917d1}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -5196,7 +5198,7 @@ OS:Schedule:Day,
   {f26bc904-7470-4162-9d57-c946d129e520}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH Wkdy Day,    !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0.4,                                    !- Value Until Time 1
@@ -5220,7 +5222,7 @@ OS:Schedule:Day,
   {637efd76-dfca-4803-8f40-e0ab9c0f1b41}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -5237,7 +5239,7 @@ OS:Schedule:Day,
   {8dda76cf-fc27-4ea8-92b5-ac1ec0198ac3}, !- Handle
   OfficeLarge INFIL_SCH_PNNL Default,     !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -5246,7 +5248,7 @@ OS:Schedule:Day,
   {9b90b616-4044-401c-a734-6f77312675d7}, !- Handle
   OfficeLarge INFIL_SCH_PNNL Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   1,                                      !- Value Until Time 1
@@ -5280,7 +5282,7 @@ OS:Schedule:Day,
   {d63035c3-86cd-4145-8ebd-6b59c70679bd}, !- Handle
   OfficeLarge INFIL_SCH_PNNL SmrDsn|Wkdy Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   1,                                      !- Value Until Time 1
@@ -5295,7 +5297,7 @@ OS:Schedule:Day,
   {7da6c44e-4a60-46ab-8907-c17fa1683e09}, !- Handle
   OfficeLarge INFIL_SCH_PNNL Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   1,                                      !- Value Until Time 1
@@ -5329,7 +5331,7 @@ OS:Schedule:Day,
   {edf45366-d776-406f-a5c1-a6b759a8a40b}, !- Handle
   OfficeLarge INFIL_SCH_PNNL WntrDsn|Sat Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   1,                                      !- Value Until Time 1
@@ -5358,7 +5360,7 @@ OS:Schedule:Day,
   {644e9f40-ce6e-439e-b2ac-9907aa7f7d3f}, !- Handle
   OfficeLarge HTGSETP_SCH_YES_OPTIMUM Default, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   15.6;                                   !- Value Until Time 1
@@ -5367,7 +5369,7 @@ OS:Schedule:Day,
   {889cdb4b-f2a2-4162-ba63-9f5fe9a12e77}, !- Handle
   OfficeLarge HTGSETP_SCH_YES_OPTIMUM Summer Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   15.6;                                   !- Value Until Time 1
@@ -5395,7 +5397,7 @@ OS:Schedule:Day,
   {d3ceb00f-e3a2-4d89-8ba5-2d168a0f605c}, !- Handle
   OfficeLarge HTGSETP_SCH_YES_OPTIMUM Sat Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   15.6,                                   !- Value Until Time 1
@@ -5435,7 +5437,7 @@ OS:Schedule:Day,
   {c55ac3f8-776a-458a-9135-5ea106fc720c}, !- Handle
   OfficeLarge HTGSETP_SCH_YES_OPTIMUM Wkdy Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   15.6,                                   !- Value Until Time 1
@@ -5456,7 +5458,7 @@ OS:Schedule:Day,
   {90937e4a-2956-4497-92af-9b3be2dbfd33}, !- Handle
   OfficeLarge HTGSETP_SCH_YES_OPTIMUM Winter Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   15.6,                                   !- Value Until Time 1
@@ -5485,7 +5487,7 @@ OS:Schedule:Day,
   {b73f7c26-d638-47c1-a234-018b812c94dc}, !- Handle
   OfficeLarge CLGSETP_SCH_NO_SETBACK Default, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   24;                                     !- Value Until Time 1
@@ -5494,7 +5496,7 @@ OS:Schedule:Day,
   {780ad6d8-c062-4bc5-b505-8cb2c34a1ac8}, !- Handle
   OfficeLarge CLGSETP_SCH_NO_SETBACK Winter Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   24;                                     !- Value Until Time 1
@@ -5522,7 +5524,7 @@ OS:Schedule:Day,
   {7a39d9af-b64f-45e6-ad85-86d7ec8ba93e}, !- Handle
   OfficeLarge CLGSETP_SCH_NO_SETBACK Default|WntrDsn|Sat|Wkdy Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   24;                                     !- Value Until Time 1
@@ -5531,7 +5533,7 @@ OS:Schedule:Day,
   {503e695d-f67a-40cc-aa39-56a8230bb29b}, !- Handle
   OfficeLarge CLGSETP_SCH_NO_SETBACK Summer Design Day, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   26.7,                                   !- Value Until Time 1
@@ -5573,6 +5575,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {c955ac62-1109-458d-951c-fa42799ae5ea}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {b98c9b39-0763-4658-8816-07b0ecec4da1}, !- Clothing Insulation Schedule Name
   {1d1de837-e339-418d-95c6-f23de0b8f4df}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -5659,7 +5663,7 @@ OS:Schedule:Day,
   {793c1157-6958-4c8d-b91c-277e77947b25}, !- Handle
   Always On Default,                      !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -5695,6 +5699,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {c955ac62-1109-458d-951c-fa42799ae5ea}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {b98c9b39-0763-4658-8816-07b0ecec4da1}, !- Clothing Insulation Schedule Name
   {1d1de837-e339-418d-95c6-f23de0b8f4df}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -5783,7 +5789,7 @@ OS:Schedule:Day,
   {81f7f91f-de59-47dc-bb5d-9095703a1904}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH_2013 Default, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2210823264,                           !- Value Until Time 1
@@ -5817,7 +5823,7 @@ OS:Schedule:Day,
   {93c31d62-5b04-42fe-8a44-3ed71967eb1d}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH_2013 Sat Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2210823264,                           !- Value Until Time 1
@@ -5841,7 +5847,7 @@ OS:Schedule:Day,
   {8567a71f-b6dc-45db-8e37-c1a610365fb4}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH_2013 Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -5869,7 +5875,7 @@ OS:Schedule:Day,
   {66919bd0-3262-43e8-a3b4-74a2c46c35e0}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH_2013 Wkdy Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2947764352,                           !- Value Until Time 1
@@ -5896,7 +5902,7 @@ OS:Schedule:Day,
   {fe5fe430-9d54-4ae0-9f48-5c0185dd6bba}, !- Handle
   OfficeLarge BLDG_EQUIP_SCH_2013 Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -5938,7 +5944,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {71e9d5fa-fac3-4a6d-a87a-609856484cfe}, !- Handle
@@ -5953,7 +5960,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {e6690402-6f9d-463c-84c7-dc06e9a4618b}, !- Handle
@@ -5968,7 +5976,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {db8f996a-2e7e-42d3-9694-a2665900f67e}, !- Handle
@@ -5983,7 +5992,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {d4aa7755-5b5d-4c86-a260-4aaba387a11a}, !- Handle
@@ -5998,7 +6008,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {da0129ef-6dc5-4e69-bdff-1b81c4cf8a30}, !- Handle
@@ -6013,7 +6024,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {b6b5fe84-f6f2-4a13-8949-1ddaf3ff5290}, !- Handle
@@ -6028,7 +6040,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {f7bc1d3b-e07a-4c97-9916-3c01285f5e73}, !- Handle
@@ -6043,7 +6056,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {7a40cdc8-c172-4c0c-ab1b-faffefb0a945}, !- Handle
@@ -6058,7 +6072,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ddf192ea-1ac8-42e2-98ce-639204e16b91}, !- Handle
@@ -6073,7 +6088,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {1003372d-3274-4a0f-970e-06ec3e76d8c4}, !- Handle
@@ -6088,7 +6104,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {7517d2af-ea24-4b8c-b347-507c0ea9a021}, !- Handle
@@ -6103,7 +6120,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {0f217544-f201-40fa-b3b4-a12152f0a5bc}, !- Handle
@@ -6118,7 +6136,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {fece35ae-527e-4980-9948-e30aff9c6060}, !- Handle
@@ -6133,7 +6152,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {37ec6263-86dc-4256-a7ae-f7bcbcec68fc}, !- Handle
@@ -6148,7 +6168,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   0,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0.224,                                  !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:Site,
   {c503c232-2ddd-4afc-86a0-500081f094f6}, !- Handle
@@ -6250,7 +6271,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {cb07046a-3778-454e-a515-99782142b284}, !- Handle
@@ -6358,7 +6388,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {1bbd7c2c-c65f-4b93-b1b2-4a0f298979a6}, !- Handle
@@ -6466,7 +6499,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {b8643f15-121c-4b8f-b778-c793ee5edbab}, !- Handle
@@ -6574,7 +6610,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {9b6a2f5b-1230-4ab7-b31d-c535e437306f}, !- Handle
@@ -6676,7 +6715,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {57198409-3204-42b3-a443-947e0c8608c0}, !- Handle
@@ -6778,7 +6826,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {25409326-484a-44d6-a447-0dcdf5822fb7}, !- Handle
@@ -6880,7 +6937,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {86c5f94e-4b4a-4c04-b117-dbbdf6c928a8}, !- Handle
@@ -6982,7 +7048,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {a4ca47a5-1b08-4d4a-9266-7a328d88674a}, !- Handle
@@ -7082,7 +7157,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {14093380-1a95-42a9-acd6-3221d8ee3846}, !- Handle
@@ -7174,7 +7258,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {360ccf4b-b728-4c2b-98d0-72574f88a1ab}, !- Handle
@@ -7274,7 +7367,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {d24159b6-4908-46c2-a63c-d5d272aa178e}, !- Handle
@@ -7382,7 +7478,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {368a053b-d61d-4ac0-8b61-276a1d70a776}, !- Handle
@@ -7490,7 +7589,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {7876aa9b-6651-4692-801c-c50bb87c8456}, !- Handle
@@ -7598,7 +7700,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {93f0f004-fe53-4461-bda9-e1126ab13e5d}, !- Handle
@@ -7706,7 +7811,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {87ccf196-18d9-4d73-8801-f6d72f5dd37e}, !- Handle
@@ -7814,7 +7922,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {83e34bb0-25d4-4451-ba5e-39a3d5808479}, !- Handle
@@ -7922,7 +8033,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {223301eb-24f2-42c2-bbe0-d47bb4b22cac}, !- Handle
@@ -8030,7 +8144,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {fd01884a-4da9-41fa-b6a5-818db85ffe4b}, !- Handle
@@ -8138,7 +8255,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {94d62461-a1d1-4c87-97fa-7f4cdd75f98f}, !- Handle
@@ -8246,7 +8366,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {aa850e51-cc1b-43da-b506-abcceea41da6}, !- Handle
@@ -8354,7 +8477,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {f24b9bf4-952e-4b31-bd08-e9a1ded885b0}, !- Handle
@@ -8462,7 +8588,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0.6;                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0.6,                                    !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {beed55e7-d91c-4428-b795-f9f2c35a44c6}, !- Handle
@@ -8562,7 +8691,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {941d5c07-6f40-4ea9-bb42-7d08b2a4f78c}, !- Handle
@@ -8594,7 +8732,9 @@ OS:Site:WaterMainsTemperature,
   Correlation,                            !- Calculation Method
   ,                                       !- Temperature Schedule Name
   16.6,                                   !- Annual Average Outdoor Air Temperature {C}
-  22.5;                                   !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+  22.5,                                   !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+  1,                                      !- Temperature Multiplier {dimensionless}
+  0;                                      !- Temperature Offset {deltaC}
 
 OS:SizingPeriod:DesignDay,
   {5d2439b0-5181-41d2-8844-bf994c7aef83}, !- Handle
@@ -8852,7 +8992,7 @@ OS:Schedule:Day,
   {12c54f8e-acb2-42e2-9e3b-67e7f4e9846d}, !- Handle
   Hot Water Loop Temp - 180F Default,     !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   82.2222222222223;                       !- Value Until Time 1
@@ -9790,7 +9930,7 @@ OS:Schedule:Day,
   {f96082f3-c868-4d76-a68d-29d31e48498a}, !- Handle
   Chilled Water Loop Temp - 44F Default,  !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   6.66666666666669;                       !- Value Until Time 1
@@ -9939,7 +10079,13 @@ OS:Chiller:Electric:EIR,
   1,                                      !- Condenser Heat Recovery Relative Capacity Fraction
   ,                                       !- Heat Recovery Inlet High Temperature Limit Schedule Name
   ,                                       !- Heat Recovery Leaving Temperature Setpoint Node Name
-  General;                                !- End-Use Subcategory
+  General,                                !- End-Use Subcategory
+  ConstantFlow,                           !- Condenser Flow Control
+  ,                                       !- Condenser Loop Flow Rate Fraction Function of Loop Part Load Ratio Curve Name
+  ,                                       !- Temperature Difference Across Condenser Schedule Name
+  0.2,                                    !- Condenser Minimum Flow Fraction
+  ,                                       !- Thermosiphon Capacity Fraction Curve Name
+  0;                                      !- Thermosiphon Minimum Temperature Difference
 
 OS:Node,
   {0f8c3729-4afd-483a-a416-ca680db2286d}, !- Handle
@@ -10043,7 +10189,13 @@ OS:Chiller:Electric:EIR,
   1,                                      !- Condenser Heat Recovery Relative Capacity Fraction
   ,                                       !- Heat Recovery Inlet High Temperature Limit Schedule Name
   ,                                       !- Heat Recovery Leaving Temperature Setpoint Node Name
-  General;                                !- End-Use Subcategory
+  General,                                !- End-Use Subcategory
+  ConstantFlow,                           !- Condenser Flow Control
+  ,                                       !- Condenser Loop Flow Rate Fraction Function of Loop Part Load Ratio Curve Name
+  ,                                       !- Temperature Difference Across Condenser Schedule Name
+  0.2,                                    !- Condenser Minimum Flow Fraction
+  ,                                       !- Thermosiphon Capacity Fraction Curve Name
+  0;                                      !- Thermosiphon Minimum Temperature Difference
 
 OS:Node,
   {ee24a021-5a5a-4c0a-81fb-2654442973f4}, !- Handle
@@ -10453,7 +10605,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {08fdc969-1e98-4fb7-b399-cc63910a828f}, !- Handle
@@ -10472,7 +10626,7 @@ OS:Schedule:Day,
   {c382729f-a090-4774-996e-e53a0e06b680}, !- Handle
   OfficeLarge HVACOperationSchd Default,  !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -10481,7 +10635,7 @@ OS:Schedule:Day,
   {7f36352e-d5c1-491a-a57c-95d81aaacfdc}, !- Handle
   OfficeLarge HVACOperationSchd Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10515,7 +10669,7 @@ OS:Schedule:Day,
   {6355e99e-4dbb-458a-91ec-ffcf33e1e6dd}, !- Handle
   OfficeLarge HVACOperationSchd SmrDsn|Wkdy Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10530,7 +10684,7 @@ OS:Schedule:Day,
   {38fd3765-3136-4c9a-a186-b20a48aa80a0}, !- Handle
   OfficeLarge HVACOperationSchd Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10564,7 +10718,7 @@ OS:Schedule:Day,
   {c76dcb69-56f7-4429-9a8e-142a2ad6dc3e}, !- Handle
   OfficeLarge HVACOperationSchd WntrDsn|Sat Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10587,7 +10741,7 @@ OS:Schedule:Day,
   {a47b3253-3837-4017-897a-41c4c8a14921}, !- Handle
   OfficeLarge MinOA_MotorizedDamper_Sched Default, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -10596,7 +10750,7 @@ OS:Schedule:Day,
   {164d2429-6f2e-44fb-9b21-df531fb58692}, !- Handle
   OfficeLarge MinOA_MotorizedDamper_Sched Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10630,7 +10784,7 @@ OS:Schedule:Day,
   {7fac8e96-1a20-44f1-aa48-b4f537469907}, !- Handle
   OfficeLarge MinOA_MotorizedDamper_Sched SmrDsn|Wkdy Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10645,7 +10799,7 @@ OS:Schedule:Day,
   {00ea7cfc-08c4-43db-92d2-ca2ee4779b56}, !- Handle
   OfficeLarge MinOA_MotorizedDamper_Sched Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10679,7 +10833,7 @@ OS:Schedule:Day,
   {b37d2981-2674-487f-ae7a-1a16c0614711}, !- Handle
   OfficeLarge MinOA_MotorizedDamper_Sched WntrDsn|Sat Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -10700,7 +10854,7 @@ OS:Schedule:Day,
   {a4bf0929-9753-4199-a458-9ece2f8527b8}, !- Handle
   Supply Air Temp - 55.0F Default,        !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   12.7777777777778;                       !- Value Until Time 1
@@ -10947,8 +11101,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenOAFlowGreaterThanMinimum,     !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -11975,7 +12129,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {b6d28323-8dc5-417c-9010-03d0e87f3839}, !- Handle
@@ -12224,8 +12380,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenOAFlowGreaterThanMinimum,     !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -13252,7 +13408,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {e446e397-436b-4a43-b0e7-369edadae434}, !- Handle
@@ -13501,8 +13659,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenOAFlowGreaterThanMinimum,     !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -14524,7 +14682,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {3a4e48fc-3c7d-4d6b-b7e3-d270786c0ac1}, !- Handle
@@ -14765,8 +14925,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenOAFlowGreaterThanMinimum,     !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -15185,7 +15345,7 @@ OS:Schedule:Day,
   {0666370c-389b-4682-bc8e-666762c29655}, !- Handle
   Heat Pump Loop High Temp - 87F Default, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   30.5555555555556;                       !- Value Until Time 1
@@ -15200,7 +15360,7 @@ OS:Schedule:Day,
   {5519a478-eab5-4976-87d3-ff6666056721}, !- Handle
   Heat Pump Loop Low Temp - 67F Default,  !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   19.4444444444445;                       !- Value Until Time 1
@@ -15713,7 +15873,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {f13479a1-c3d0-4732-974e-15c96993f585}, !- Handle
@@ -15769,6 +15931,7 @@ OS:Curve:Cubic,
 OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   {83c6172b-fff2-42b4-8f87-16138799685b}, !- Handle
   DataCenter_basement_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Htg Coil 2191 Clg kBtu/hr 4.3COPH, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {0c0041db-0b2c-4c72-8d92-da3737c52c67}, !- Water Inlet Node Name
   {79d125be-2d78-4443-96a0-689cc6118ddf}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -15871,6 +16034,7 @@ OS:Curve:Linear,
 OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   {197dafbd-4b0d-48a2-8072-b88c3575316c}, !- Handle
   DataCenter_basement_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Clg Coil, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {14a885e3-9f0f-4ab7-a012-768c523487f2}, !- Water Inlet Node Name
   {977d65dc-5309-4fff-b334-50fe9fa341c8}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -16032,6 +16196,7 @@ OS:AirLoopHVAC:UnitarySystem,
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation When No Cooling or Heating is Required {m3/s-W}
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation When No Cooling or Heating is Required {m3/s-W}
+  Yes,                                    !- No Load Supply Air Flow Rate Control Set To Low Speed
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
@@ -16070,8 +16235,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -16383,7 +16548,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {9b616510-9c8a-4a3e-9fb1-2f8508e27db3}, !- Handle
@@ -16439,6 +16606,7 @@ OS:Curve:Cubic,
 OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   {80c05019-9a53-4e1e-8566-45ab54d0a1bb}, !- Handle
   DataCenter_bot_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Htg Coil 50 Clg kBtu/hr 4.3COPH, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {66bc40b1-404e-468c-84b8-54c0491e88e3}, !- Water Inlet Node Name
   {84e202ab-79bb-42df-9b07-eaa662dc531c}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -16497,6 +16665,7 @@ OS:Connection,
 OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   {deb9d72a-88c4-4ae2-ac95-087f0f95cce6}, !- Handle
   DataCenter_bot_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Clg Coil 50kBtu/hr 13.0EER, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {6b44c85d-995a-4f63-b59e-79a660ffea1d}, !- Water Inlet Node Name
   {ca144b8c-6397-4d78-b1b1-1cf6eb6fd326}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -16604,6 +16773,7 @@ OS:AirLoopHVAC:UnitarySystem,
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation When No Cooling or Heating is Required {m3/s-W}
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation When No Cooling or Heating is Required {m3/s-W}
+  Yes,                                    !- No Load Supply Air Flow Rate Control Set To Low Speed
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
@@ -16642,8 +16812,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -16955,7 +17125,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {9b4cef08-a98f-4401-bd4c-459b3424971a}, !- Handle
@@ -17011,6 +17183,7 @@ OS:Curve:Cubic,
 OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   {dd1cb0d4-73be-4aff-892c-fc774fa40fd7}, !- Handle
   DataCenter_mid_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Htg Coil 438 Clg kBtu/hr 4.3COPH, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {9f4c32f7-2a1e-4d0d-ba54-baa3c2690e08}, !- Water Inlet Node Name
   {89206bd0-f22d-4307-a271-ea14b940ad15}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -17069,6 +17242,7 @@ OS:Connection,
 OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   {6676ceec-eaea-414e-98e0-d28995cf9957}, !- Handle
   DataCenter_mid_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Clg Coil, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {26e27209-9e01-4f49-b138-9333af62f994}, !- Water Inlet Node Name
   {62bb802f-5e55-498f-8da2-ac4861256170}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -17176,6 +17350,7 @@ OS:AirLoopHVAC:UnitarySystem,
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation When No Cooling or Heating is Required {m3/s-W}
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation When No Cooling or Heating is Required {m3/s-W}
+  Yes,                                    !- No Load Supply Air Flow Rate Control Set To Low Speed
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
@@ -17214,8 +17389,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -17527,7 +17702,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {d7653a7c-5f56-41a8-aa2b-56604ce0e7a1}, !- Handle
@@ -17583,6 +17760,7 @@ OS:Curve:Cubic,
 OS:Coil:Heating:WaterToAirHeatPump:EquationFit,
   {bcd68476-012e-43d1-beb9-a3d90447a950}, !- Handle
   DataCenter_top_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Htg Coil 44 Clg kBtu/hr 4.3COPH, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {232df2a7-88b6-4fc5-adf7-109d0f11dd63}, !- Water Inlet Node Name
   {7dd13663-0bb9-419a-a275-fa7f717fc07b}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -17641,6 +17819,7 @@ OS:Connection,
 OS:Coil:Cooling:WaterToAirHeatPump:EquationFit,
   {a14f9fd4-6d90-4d2a-9428-22710aa2ee80}, !- Handle
   DataCenter_top_ZN_6 ZN PSZ-AC Data Center Water-to-Air HP Clg Coil 44kBtu/hr 13.0EER, !- Name
+  {63bf7b43-6f3e-4ba7-818b-f21e7ab37266}, !- Availability Schedule Name
   {93277738-2479-4066-88f3-f6f59af975fa}, !- Water Inlet Node Name
   {bfe9c5bd-b329-476e-968a-cd16a0592c4d}, !- Water Outlet Node Name
   ,                                       !- Air Inlet Node Name
@@ -17748,6 +17927,7 @@ OS:AirLoopHVAC:UnitarySystem,
   ,                                       !- Fraction of Autosized Design Heating Supply Air Flow Rate When No Cooling or Heating is Required
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Cooling Operation When No Cooling or Heating is Required {m3/s-W}
   ,                                       !- Design Supply Air Flow Rate Per Unit of Capacity During Heating Operation When No Cooling or Heating is Required {m3/s-W}
+  Yes,                                    !- No Load Supply Air Flow Rate Control Set To Low Speed
   80,                                     !- Maximum Supply Air Temperature {C}
   4.44444444444446,                       !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
   ,                                       !- Outdoor Dry-Bulb Temperature Sensor Node Name
@@ -17786,8 +17966,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -19121,7 +19301,7 @@ OS:Schedule:Day,
   {ee95461b-39a7-4fe0-ab65-36d6b4c88ac7}, !- Handle
   Service Water Loop Temp - 140F Default, !- Name
   {ac942945-4aa2-40f1-8915-d08dcd2fee61}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60.0000000000001;                       !- Value Until Time 1
@@ -19231,7 +19411,7 @@ OS:Schedule:Day,
   {b8d16fef-06dd-4fe5-a827-da468b7fcbb6}, !- Handle
   Schedule Day 50,                        !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22;                                     !- Value Until Time 1
@@ -19240,7 +19420,7 @@ OS:Schedule:Day,
   {9b0adc79-e0ce-40aa-9213-c57a2e42289c}, !- Handle
   Schedule Day 51,                        !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -19458,7 +19638,7 @@ OS:Schedule:Day,
   {9f9694c0-0d82-4de2-9344-f4ccd4dc9ce1}, !- Handle
   Fraction Sensible - 0.2 Default,        !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.2;                                    !- Value Until Time 1
@@ -19473,7 +19653,7 @@ OS:Schedule:Day,
   {5b7e45ec-9c4c-4ab1-a0c4-6ae03825af41}, !- Handle
   Fraction Latent - 0.05 Default,         !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.05;                                   !- Value Until Time 1
@@ -19488,7 +19668,7 @@ OS:Schedule:Day,
   {0b7dcbc9-22e9-4c32-ba93-026118a647ec}, !- Handle
   Mixed Water At Faucet Temp - 140F Default, !- Name
   {da9ba560-13f4-49d6-aa0f-c277fe6fe6b1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60.0000000000001;                       !- Value Until Time 1
@@ -19512,7 +19692,7 @@ OS:Schedule:Day,
   {c9251816-211f-4017-92f0-f39c309ba6ea}, !- Handle
   OfficeLarge BLDG_SWH_SCH Default,       !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -19545,7 +19725,7 @@ OS:Schedule:Day,
   {f16a9b9d-5a28-4b5c-a7ef-0fc281d86642}, !- Handle
   OfficeLarge BLDG_SWH_SCH Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -19624,7 +19804,7 @@ OS:Schedule:Day,
   {6a32ae6c-31fc-4453-a511-94f049dd8bcd}, !- Handle
   OfficeLarge BLDG_SWH_SCH SmrDsn|Wkdy Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -19684,7 +19864,7 @@ OS:Schedule:Day,
   {d88787b4-90fe-410c-b66e-5de3a870c98b}, !- Handle
   OfficeLarge BLDG_SWH_SCH Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -19754,7 +19934,7 @@ OS:Schedule:Day,
   {737ac065-1440-4575-ab83-67a069c474a3}, !- Handle
   OfficeLarge BLDG_SWH_SCH WntrDsn|Sat Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -19998,7 +20178,7 @@ OS:Schedule:Day,
   {0da750b8-402c-45f4-a1e1-18d4e087ab03}, !- Handle
   OfficeLarge Exterior_lighting_schedule_b Default, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.7,                                    !- Value Until Time 1
@@ -20010,7 +20190,7 @@ OS:Schedule:Day,
   {09e88a16-efd1-426d-9030-a4015efeeb05}, !- Handle
   OfficeLarge Exterior_lighting_schedule_b Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.7,                                    !- Value Until Time 1
@@ -20022,7 +20202,7 @@ OS:Schedule:Day,
   {6bb19f91-ff3d-4a14-8292-9f189a67d397}, !- Handle
   OfficeLarge Exterior_lighting_schedule_b Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.7,                                    !- Value Until Time 1
@@ -20056,7 +20236,7 @@ OS:Schedule:Day,
   {32f5b627-e79e-4aa3-a12c-c65c3fc27e65}, !- Handle
   OfficeLarge Exterior_lighting_schedule_a Default, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -20068,7 +20248,7 @@ OS:Schedule:Day,
   {a99dcdfb-446d-4812-b417-ada1c7cadda4}, !- Handle
   OfficeLarge Exterior_lighting_schedule_a Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -20080,7 +20260,7 @@ OS:Schedule:Day,
   {3bdcc3d2-7912-4eb1-9ec0-249ca57e9d05}, !- Handle
   OfficeLarge Exterior_lighting_schedule_a Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -20114,7 +20294,7 @@ OS:Schedule:Day,
   {0b93f85e-89cd-4df5-a02e-ed55c4c180c8}, !- Handle
   Large Office BLDG ELEVATORS Default,    !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -20159,7 +20339,7 @@ OS:Schedule:Day,
   {298d97d4-1a99-460c-9c0b-2652318fbdf9}, !- Handle
   Large Office BLDG ELEVATORS Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -20204,7 +20384,7 @@ OS:Schedule:Day,
   {33e02329-05fa-43b2-a0b4-ed520cefedb7}, !- Handle
   Large Office BLDG ELEVATORS Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -20271,7 +20451,7 @@ OS:Schedule:Day,
   {2df92a29-d89a-4b06-82b6-6c25d7e74fc2}, !- Handle
   OfficeLarge ELEV_LIGHT_FAN_SCH_ADD_DF Default, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -20316,7 +20496,7 @@ OS:Schedule:Day,
   {af2f2844-bd23-4843-be8d-625575c78003}, !- Handle
   OfficeLarge ELEV_LIGHT_FAN_SCH_ADD_DF Summer Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -20325,7 +20505,7 @@ OS:Schedule:Day,
   {17e17fe9-1821-45a4-8ad0-dd08a9747891}, !- Handle
   OfficeLarge ELEV_LIGHT_FAN_SCH_ADD_DF Winter Design Day, !- Name
   {625a7bab-aa39-4b24-a4e1-157b4b5c5665}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.05;                                   !- Value Until Time 1
@@ -20363,7 +20543,7 @@ OS:Schedule:Day,
   {08395efa-6803-420c-bd3b-8aed68ca9baf}, !- Handle
   Economizer Max OA Fraction 70 pct Default, !- Name
   ,                                       !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.7;                                    !- Value Until Time 1
@@ -20375,12 +20555,8 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   autosize,                               !- Nominal Supply Air Flow Rate {m3/s}
   0.7,                                    !- Sensible Effectiveness at 100% Heating Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Heating Air Flow {dimensionless}
-  0.7,                                    !- Sensible Effectiveness at 75% Heating Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Heating Air Flow {dimensionless}
   0.75,                                   !- Sensible Effectiveness at 100% Cooling Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Cooling Air Flow {dimensionless}
-  0.75,                                   !- Sensible Effectiveness at 75% Cooling Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Cooling Air Flow {dimensionless}
   {2324d172-5b60-42c0-b5b8-8c85435ba032}, !- Supply Air Inlet Node
   {5b2029f6-9856-4076-ba10-1a6df9d0f350}, !- Supply Air Outlet Node
   {025fb16f-b7af-46e1-85fb-9367c81c305a}, !- Exhaust Air Inlet Node
@@ -20392,7 +20568,11 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   -23.3,                                  !- Threshold Temperature {C}
   0.167,                                  !- Initial Defrost Time Fraction {dimensionless}
   1.44,                                   !- Rate of Defrost Time Fraction Increase {1/K}
-  Yes;                                    !- Economizer Lockout
+  Yes,                                    !- Economizer Lockout
+  ,                                       !- Sensible Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Latent Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Sensible Effectiveness of Cooling Air Flow Curve Name
+  ;                                       !- Latent Effectiveness of Cooling Air Flow Curve Name
 
 OS:Node,
   {53bcf829-7a53-4bd0-a630-94d8ea8ed5f4}, !- Handle
@@ -20517,12 +20697,8 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   autosize,                               !- Nominal Supply Air Flow Rate {m3/s}
   0.7,                                    !- Sensible Effectiveness at 100% Heating Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Heating Air Flow {dimensionless}
-  0.7,                                    !- Sensible Effectiveness at 75% Heating Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Heating Air Flow {dimensionless}
   0.75,                                   !- Sensible Effectiveness at 100% Cooling Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Cooling Air Flow {dimensionless}
-  0.75,                                   !- Sensible Effectiveness at 75% Cooling Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Cooling Air Flow {dimensionless}
   {8a907c4f-8b20-4c77-9c07-a0ce9fabea74}, !- Supply Air Inlet Node
   {0b2a01dd-2c26-4a9d-9963-fc85b63ef3df}, !- Supply Air Outlet Node
   {1416adea-f3ed-4936-8000-e6e24cad7db8}, !- Exhaust Air Inlet Node
@@ -20534,7 +20710,11 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   -23.3,                                  !- Threshold Temperature {C}
   0.167,                                  !- Initial Defrost Time Fraction {dimensionless}
   1.44,                                   !- Rate of Defrost Time Fraction Increase {1/K}
-  Yes;                                    !- Economizer Lockout
+  Yes,                                    !- Economizer Lockout
+  ,                                       !- Sensible Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Latent Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Sensible Effectiveness of Cooling Air Flow Curve Name
+  ;                                       !- Latent Effectiveness of Cooling Air Flow Curve Name
 
 OS:Node,
   {593715b4-d800-45e0-8035-2e65cc4af2de}, !- Handle
@@ -20659,12 +20839,8 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   autosize,                               !- Nominal Supply Air Flow Rate {m3/s}
   0.7,                                    !- Sensible Effectiveness at 100% Heating Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Heating Air Flow {dimensionless}
-  0.7,                                    !- Sensible Effectiveness at 75% Heating Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Heating Air Flow {dimensionless}
   0.75,                                   !- Sensible Effectiveness at 100% Cooling Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Cooling Air Flow {dimensionless}
-  0.75,                                   !- Sensible Effectiveness at 75% Cooling Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Cooling Air Flow {dimensionless}
   {7266c2a7-a6db-42c3-a09a-66bfe1076d99}, !- Supply Air Inlet Node
   {6bf61fc9-c9c9-462f-87d2-090f58876743}, !- Supply Air Outlet Node
   {22de7138-8ff0-4cd6-ba63-0b91ad138987}, !- Exhaust Air Inlet Node
@@ -20676,7 +20852,11 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   -23.3,                                  !- Threshold Temperature {C}
   0.167,                                  !- Initial Defrost Time Fraction {dimensionless}
   1.44,                                   !- Rate of Defrost Time Fraction Increase {1/K}
-  Yes;                                    !- Economizer Lockout
+  Yes,                                    !- Economizer Lockout
+  ,                                       !- Sensible Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Latent Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Sensible Effectiveness of Cooling Air Flow Curve Name
+  ;                                       !- Latent Effectiveness of Cooling Air Flow Curve Name
 
 OS:Node,
   {55a66465-d502-459a-a554-441f81e8bfff}, !- Handle
@@ -20801,12 +20981,8 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   autosize,                               !- Nominal Supply Air Flow Rate {m3/s}
   0.7,                                    !- Sensible Effectiveness at 100% Heating Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Heating Air Flow {dimensionless}
-  0.7,                                    !- Sensible Effectiveness at 75% Heating Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Heating Air Flow {dimensionless}
   0.75,                                   !- Sensible Effectiveness at 100% Cooling Air Flow {dimensionless}
   0.6,                                    !- Latent Effectiveness at 100% Cooling Air Flow {dimensionless}
-  0.75,                                   !- Sensible Effectiveness at 75% Cooling Air Flow {dimensionless}
-  0.6,                                    !- Latent Effectiveness at 75% Cooling Air Flow {dimensionless}
   {57c1c534-7c65-4c1d-a2d7-5d546f44fbba}, !- Supply Air Inlet Node
   {d6f54f63-e056-4934-84ca-f2d1f876fc9a}, !- Supply Air Outlet Node
   {50140580-6596-4bc2-a7ac-3868356936cb}, !- Exhaust Air Inlet Node
@@ -20818,7 +20994,11 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   -23.3,                                  !- Threshold Temperature {C}
   0.167,                                  !- Initial Defrost Time Fraction {dimensionless}
   1.44,                                   !- Rate of Defrost Time Fraction Increase {1/K}
-  Yes;                                    !- Economizer Lockout
+  Yes,                                    !- Economizer Lockout
+  ,                                       !- Sensible Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Latent Effectiveness of Heating Air Flow Curve Name
+  ,                                       !- Sensible Effectiveness of Cooling Air Flow Curve Name
+  ;                                       !- Latent Effectiveness of Cooling Air Flow Curve Name
 
 OS:Node,
   {82a6161c-f96b-4021-96c6-4028abf14c05}, !- Handle
@@ -21462,6 +21642,7 @@ OS:OutputControl:Files,
   Yes,                                    !- Output SQLite
   Yes,                                    !- Output JSON
   Yes,                                    !- Output AUDIT
+  Yes,                                    !- Output Space Sizing
   Yes,                                    !- Output Zone Sizing
   Yes,                                    !- Output System Sizing
   Yes,                                    !- Output DXF
@@ -21483,7 +21664,8 @@ OS:OutputControl:Files,
   Yes,                                    !- Output WRL
   Yes,                                    !- Output Screen
   Yes,                                    !- Output ExtShd
-  Yes;                                    !- Output Tarcog
+  Yes,                                    !- Output Tarcog
+  Yes;                                    !- Output Plant Component Sizing
 
 OS:OutputControl:Timestamp,
   {349b65dd-1b6b-4e27-817a-76316bb8c689}, !- Handle

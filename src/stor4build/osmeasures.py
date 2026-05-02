@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
-from typing import Dict, Union
 import dataclasses
 
 prototypes_list = ['SecondarySchool',
@@ -120,12 +119,3 @@ def validate_template(building:str, template:str):
         if template in ['pre1980', 'post1980']:
             return False
     return True
-
-@dataclasses.dataclass
-class Step:
-    name: str
-    measure_dir_name: str
-    arguments: Dict[str, Union[str, float, int]] = dataclasses.field(default_factory=dict)
-    
-    def to_dict(self):
-        return dataclasses.asdict(self)

@@ -158,6 +158,14 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     strg_medium.setDefaultValue('water')
     strg_medium.setDescription('Set storage medium to use')
     args << strg_medium
+    
+    # create argument for custom site packages
+    custom_site = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'custom_site_packages',
+      false
+    )
+    custom_site.setDefaultValue('')
+    args << custom_site
 
     return args
   end
@@ -183,6 +191,18 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
     strg_medium = runner.getStringArgumentValue('strg_medium', usr_args)
+    custom_site_packages = runner.getStringArgumentValue('custom_site_packages', usr_args).strip()
+    
+    if custom_site_packages.length == 0
+      if (RUBY_PLATFORM =~ /linux/) != nil
+        custom_site_packages = '/usr/local/lib/python3.8/dist-packages'
+      elsif (RUBY_PLATFORM =~ /darwin/) != nil
+        custom_site_packages = '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages'
+      elsif (RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/) != nil
+        h = ENV['USERPROFILE'].to_s.gsub('\\', '/')
+        custom_site_packages = "#{h}/AppData/Local/Programs/Python/Python38/Lib/site-packages"
+      end
+    end
 
     # add discharge start time schedule
     ot = 'Schedule_Constant'
@@ -534,23 +554,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       no.setString(1, 'Yes')
       no.setString(2, 'Yes')
       no.setString(3, 'No')
-      if (RUBY_PLATFORM =~ /linux/) != nil
-        no.setString(
-          4,
-          '/usr/local/lib/python3.8/dist-packages'
-        )
-      elsif (RUBY_PLATFORM =~ /darwin/) != nil
-        no.setString(
-          4,
-          '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages'
-        )
-      elsif (RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/) != nil
-        h = ENV['USERPROFILE'].to_s.gsub('\\', '/')
-        no.setString(
-          4,
-          "#{h}/AppData/Local/Programs/Python/Python38/Lib/site-packages"
-        )
-      end
+      no.setString(4, custom_site_packages)
       no.setString(5, File.join(p, 'resources'))
       ws.addObject(no)
     end
@@ -594,7 +598,7 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       end
     end
 
-    # add python plugin output variables and correspinding output variables
+    # add python plugin output variables and corresponding output variables
     py_vars.each do |v|
       ot = 'PythonPlugin_OutputVariable'
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
