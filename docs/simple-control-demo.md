@@ -71,6 +71,17 @@ class NoonToSix(EnergyPlusPlugin):
 
 It first imports the necessary features from the EnergyPlus plugin framework, then the case details that tell it where to do things. The code itself is quite simple. The `actuate` method does the changing, and the `on_begin_timestep_before_predictor` figures out what needs to be done. Note that the plugin simply requests the time from EnergyPlus and then acts upon it.
 
+## Results
+The large office model for climate zone 5A with the defaults is used to demonstrate the plugin. The default results, which discharges between 11AM and 5PM is shown in the following figure:
+
+![Default results with discharge from 11AM to 5PM](./images/defaults.png)
+
+Note that the state of charge drops off at 11AM, stops at zero charge around 5PM, then is idle until after 8PM. The plugin-controlled results look a little bit different:
+
+![Plugin-controlled results with discharge from noon to 6PM](./images/noon-to-six.png)
+
+Note that the state of charge now drops at noon and at 6PM there is an abrupt transition from discharging to charging. This difference is because the plugin is either charging or discharging. The interested reader should be able to modify the plugin logic to be idle for an hour or two after discharge is complete.
+
 ## Summary
 
 The demonstration plugin is described and the two parts (a measure and a plugin file) are explained. The measure sets up the plugin and writes out a file that includes directions for the plugin. The plugin file then takes that information and controls the TES system. This demonstration is very simple and only bases what it does on the hour of day, but additional signals are easy to add. Any output variable found in the RDD can be utilized along with the other parts of the plugin feature that are not shown here.
