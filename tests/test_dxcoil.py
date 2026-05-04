@@ -30,7 +30,7 @@ def test_dxcoil_init():
 
 def test_dxcoil_size():
     # Not a lot to test here, maybe more later
-    pre = [s4b.Step("Add CSV Output", "add_csv_output")]
+    pre = [s4b.ModelMeasure("Add CSV Output", "add_csv_output")]
     post = []
     dxcoil = s4b.DxCoil.size('dxcoil', None, pre_steps=pre, post_steps=post)
     osw = dxcoil.osw(stand_alone_retail, measures_dir, epw)
