@@ -555,8 +555,8 @@ class AddPyTank < OpenStudio::Measure::EnergyPlusMeasure
       no.setString(2, 'Yes')
       no.setString(3, 'No')
       no.setString(4, custom_site_packages)
-      no.setString(5, File.join(p, 'resources'))
-      no.setString(6, File.join(p, 'plugins', 'thermaltank'))
+      no.setString(5, File.join(p, 'plugins', 'thermaltank'))
+      no.setString(6, File.join(p, 'plugins', 'controls'))
       ws.addObject(no)
     end
 
