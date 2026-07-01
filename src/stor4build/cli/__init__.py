@@ -309,7 +309,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
 @click.option('--control', metavar='NAME', show_default=True,
-              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure that implements the scheme.')
+              default='default', help='Specify a built-in control scheme (default | demo12to6 | demo_ambient_soc) or a measure that implements the scheme.')
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
@@ -370,6 +370,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         measure_name = control
         if control == 'demo12to6':
             measure_name = 'add_demo_noon_to_six'
+        elif control == 'demo_ambient_soc':
+            measure_name = 'add_demo_ambient_soc'
         # For this to work, the measure will need to be in the measures directory
         control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
         if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
