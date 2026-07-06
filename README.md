@@ -66,7 +66,7 @@ You should see the help output from the tool.
 
 ## Web API
 
-A simple flask-based web api is included. To run it, a PostgreSQL database storing the baseline models and weather is required. That setup is not described here yet. The following four environment variables need to be set:
+A FastAPI-based web API is included. To run it, a PostgreSQL database storing the baseline models and weather is required. That setup is not described here yet. The following environment variables must be set:
 
 ```
 FLASK_TIMESCALE_HOST
@@ -75,13 +75,13 @@ FLASK_TIMESCALE_USERNAME
 FLASK_TIMESCALE_PASSWORD
 ```
 
-Standard password rules apply. To launch the back end (that does the calculation) run
+The `FLASK_` prefix is retained for backward compatibility with the previous API deployment configuration. To launch the back end locally, run
 
 ```console
-flask --app stor4build.api run
+uvicorn stor4build.api:create_app --factory --reload
 ```
 
-This will start up the flask **development** server and output will appear on the console. The API accepts JSON inputs in the form described in the `schema` directory in the file `stor4build.json`. Example inputs and scripts to send them to the API are in the `resources` and `scripts` directories.
+This starts the FastAPI development server on `http://127.0.0.1:8000`. The API accepts JSON inputs in the form described by the generated OpenAPI schema in `schema/stor4build.json`. Example inputs and scripts to send them to the API are in the `resources` and `scripts` directories.
 
 ## Prototype Coverage
 
@@ -116,3 +116,5 @@ The tool now supports the majority of the OpenStudio prototypes. Three models (L
 ## License
 
 `stor4build` is distributed under the terms of the [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) license.
+
+

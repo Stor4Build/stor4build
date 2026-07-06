@@ -27,12 +27,14 @@ classifiers = [
 ]
 dependencies = [
   "click",
-  "flask",
+  "fastapi",
+  "pydantic",
+  "pydantic-settings",
+  "uvicorn",
   "scipy",
   "SecondaryCoolantProps",
   "pandas",
   "psycopg2-binary",
-  "marshmallow",
   "matplotlib"
 ]
 dynamic = ["version"]
@@ -53,8 +55,7 @@ python = "3.12"
 dependencies = [
   "pytest",
   "pytest-cov",
-  "httpx",
-  "apispec"
+  "httpx"
 ]
 [tool.hatch.envs.default.scripts]
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/stor4build --cov=tests {args}"

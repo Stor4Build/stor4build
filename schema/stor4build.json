@@ -1,15 +1,109 @@
 {
+  "openapi": "3.1.0",
   "info": {
-    "description": "The stor4build API for TES calculations",
     "title": "stor4build",
+    "description": "The stor4build API for TES calculations",
     "version": "0.4.1"
   },
-  "paths": {},
-  "openapi": "3.0.2",
+  "paths": {
+    "/simulate": {
+      "post": {
+        "summary": "Simulate a TES technology, including sizing.",
+        "operationId": "simulate_route_simulate_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "TES simulation results as CSV.",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Simulation input or domain validation error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request validation error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server or configuration error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
-      "BuildingData": {
-        "type": "object",
+      "BuildingDataPayload": {
         "properties": {
           "climate": {
             "type": "string",
@@ -30,10 +124,12 @@
               "7A",
               "7B",
               "8A"
-            ]
+            ],
+            "title": "Climate"
           },
           "vintage": {
-            "type": "integer"
+            "type": "integer",
+            "title": "Vintage"
           },
           "type": {
             "type": "string",
@@ -56,45 +152,89 @@
               "LargeDataCenterLowITE",
               "Courthouse",
               "College"
-            ]
+            ],
+            "title": "Type"
           }
         },
+        "type": "object",
         "required": [
           "climate",
-          "type",
-          "vintage"
-        ]
+          "vintage",
+          "type"
+        ],
+        "title": "BuildingDataPayload"
       },
-      "HourMinute": {
-        "type": "object",
+      "HourMinutePayload": {
         "properties": {
           "hour": {
             "type": "integer",
-            "minimum": 0,
-            "maximum": 23
+            "maximum": 23.0,
+            "minimum": 0.0,
+            "title": "Hour"
           }
         },
+        "type": "object",
         "required": [
           "hour"
-        ]
+        ],
+        "title": "HourMinutePayload"
       },
-      "Interval": {
-        "type": "object",
+      "IntervalPayload": {
         "properties": {
           "begin": {
-            "$ref": "#/components/schemas/HourMinute"
+            "$ref": "#/components/schemas/HourMinutePayload"
           },
           "end": {
-            "$ref": "#/components/schemas/HourMinute"
+            "$ref": "#/components/schemas/HourMinutePayload"
           }
         },
+        "type": "object",
         "required": [
           "begin",
           "end"
-        ]
+        ],
+        "title": "IntervalPayload"
       },
-      "SimplifiedStorageData": {
+      "MonthSchedulePayload": {
+        "properties": {
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "periods": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Periods"
+          }
+        },
         "type": "object",
+        "required": [
+          "unit",
+          "month",
+          "periods"
+        ],
+        "title": "MonthSchedulePayload"
+      },
+      "SchedulePayload": {
+        "properties": {
+          "months": {
+            "items": {
+              "$ref": "#/components/schemas/MonthSchedulePayload"
+            },
+            "type": "array",
+            "title": "Months"
+          }
+        },
+        "type": "object",
+        "title": "SchedulePayload"
+      },
+      "SimplifiedStorageDataPayload": {
         "properties": {
           "type": {
             "type": "string",
@@ -105,16 +245,37 @@
               "ice",
               "water",
               "pcm-1"
-            ]
+            ],
+            "title": "Type"
           },
           "capacity": {
-            "type": "number"
+            "type": "number",
+            "maximum": 100.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Capacity",
+            "default": 100.0
           },
           "charge_interval": {
-            "$ref": "#/components/schemas/Interval"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntervalPayload"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Charge Interval"
           },
           "discharge_interval": {
-            "$ref": "#/components/schemas/Interval"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntervalPayload"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discharge Interval"
           },
           "size_fraction": {
             "type": "number",
@@ -125,109 +286,126 @@
               0.7,
               0.6,
               0.5
-            ]
+            ],
+            "title": "Size Fraction",
+            "default": 1.0
           },
           "medium": {
-            "type": "string",
-            "enum": [
-              "water",
-              "pcm2x2a"
-            ]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "water",
+                  "pcm2x2a"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Medium"
           }
         },
+        "type": "object",
         "required": [
           "type"
-        ]
+        ],
+        "title": "SimplifiedStorageDataPayload"
       },
-      "UtilityRate": {
-        "type": "object",
-        "properties": {
-          "rate": {
-            "type": "number"
-          },
-          "unit": {
-            "type": "string"
-          },
-          "period": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "period",
-          "rate",
-          "unit"
-        ]
-      },
-      "MonthSchedule": {
-        "type": "object",
-        "properties": {
-          "unit": {
-            "type": "string"
-          },
-          "month": {
-            "type": "string"
-          },
-          "periods": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            }
-          }
-        },
-        "required": [
-          "month",
-          "periods",
-          "unit"
-        ]
-      },
-      "Schedule": {
-        "type": "object",
-        "properties": {
-          "months": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MonthSchedule"
-            }
-          }
-        }
-      },
-      "UtilityData": {
-        "type": "object",
-        "properties": {
-          "costs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UtilityRate"
-            }
-          },
-          "schedule": {
-            "$ref": "#/components/schemas/Schedule"
-          }
-        },
-        "required": [
-          "schedule"
-        ]
-      },
-      "InputData": {
-        "type": "object",
+      "SimulationRequest": {
         "properties": {
           "baseline": {
-            "$ref": "#/components/schemas/BuildingData"
+            "$ref": "#/components/schemas/BuildingDataPayload"
           },
           "storage": {
-            "$ref": "#/components/schemas/SimplifiedStorageData"
+            "$ref": "#/components/schemas/SimplifiedStorageDataPayload"
           },
           "energy": {
-            "$ref": "#/components/schemas/UtilityData"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UtilityDataPayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "demand": {
-            "$ref": "#/components/schemas/UtilityData"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UtilityDataPayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "header_style": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "simple",
+                  "detailed"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Header Style"
           }
         },
+        "type": "object",
         "required": [
           "baseline",
           "storage"
-        ]
+        ],
+        "title": "SimulationRequest"
+      },
+      "UtilityDataPayload": {
+        "properties": {
+          "costs": {
+            "items": {
+              "$ref": "#/components/schemas/UtilityRatePayload"
+            },
+            "type": "array",
+            "title": "Costs"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/SchedulePayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "schedule"
+        ],
+        "title": "UtilityDataPayload"
+      },
+      "UtilityRatePayload": {
+        "properties": {
+          "rate": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Rate"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "period": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Period"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rate",
+          "unit",
+          "period"
+        ],
+        "title": "UtilityRatePayload"
       }
     }
   }

@@ -277,7 +277,7 @@ if len(sys.argv) > 1:
             inputs =json.load(fp) #['request']['body']
     
 start = time.time()
-r = httpx.post('http://127.0.0.1:5000/simulate', json=inputs, timeout=None)
+r = httpx.post('http://127.0.0.1:8000/simulate', json=inputs, timeout=None)
 #r = httpx.post('http://127.0.0.1:5000/simple', json={'technology': {'type': 'icetank'}}, timeout=None)
 delta = time.time() - start
 
@@ -286,5 +286,6 @@ print(r.status_code, r.text)
 
 with open('result.csv', 'w') as fp:
     fp.write(r.text)
+
 
 

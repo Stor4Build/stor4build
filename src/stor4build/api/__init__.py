@@ -1,294 +1,78 @@
 # SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
-import os
-import csv
-import tempfile
-import io
-import contextlib
-import stor4build
-import datetime
-from flask import Flask, request, make_response
-from marshmallow import ValidationError
+from __future__ import annotations
+
+from typing import Mapping, Optional
+
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, Response
+from pydantic import ValidationError
 
 from ..__about__ import __version__
+from ..schema import SimulationRequest
+from .service import APIError, MissingConfig, run_simulation_request
+from .settings import load_settings
 
-# Make some assumptions to get the default locations
-this_dir = os.path.abspath(os.path.dirname(__file__))
-default_measures_dir = os.path.join(this_dir, '..', '..', '..', 'measures')
 
-# Supported climate zones
-supported_czs = ['1A', '2A', '2B', '3A', '3B', '3C', '4A', '4B', '4C', '5A', '5B', '6A', '6B', '7A', '8A']
+ERROR_RESPONSE = {
+    "type": "object",
+    "properties": {
+        "error": {"type": "string"},
+        "message": {"type": "string"},
+    },
+    "required": ["error", "message"],
+}
 
-@contextlib.contextmanager
-def managed_directory(run_dir):
-    if run_dir is None:
-        tmp = tempfile.TemporaryDirectory()
-        try:
-            yield tmp.name
-        finally:
-            tmp.cleanup()
-    else:
-        try:
-            yield run_dir
-        finally:
-            pass
 
-class MissingConfig(Exception):
-    pass
-
-def process_validation_error(err):
-    mesgs = []
-    try:
-        for k,v in err.messages.items():
-            if isinstance(v, dict):
-                if 'type' in v:
-                    if isinstance(v['type'], list):
-                        mesg = ' '.join(v['type'])
-                    else:
-                        mesg = str(v['type'])
-                else:
-                    mesg = str(v)
-            else:
-                mesg = str(v)
-            mesgs.append(f'{k}: {mesg}')
-    except:
-        return str(err)
-    return '; '.join(mesgs)
-
-def create_app(config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    
-    # Should make this configurable
-    noisy = True
-    
-    app.config.from_mapping(
-        OPENSTUDIO='openstudio',
-        MEASURES_DIRECTORY=default_measures_dir,
-        TIMESCALE_HOST='timescale',
-        TIMESCALE_PORT='5432',
-        CACHE_BASELINE=False,
-        STORE_MISSING_RESULTS=True,
-        OLDEST_ACCEPTABLE=None #'2025-06-30T20:20:37.885565-04:00'
+def create_app(config: Optional[Mapping[str, object]] = None) -> FastAPI:
+    app = FastAPI(
+        title="stor4build",
+        version=__version__,
+        description="The stor4build API for TES calculations",
     )
 
-    if config is None:
-        app.config.from_prefixed_env()
-    else:
-        app.config.from_mapping(config)
-    
-    openstudio_exe = app.config['OPENSTUDIO']
-    # Set the measures directory and check that it exists
-    measures_dir = os.path.abspath(app.config['MEASURES_DIRECTORY'])
-    if not os.path.exists(measures_dir):
-        raise MissingConfig(f'Cannot find measures directory "{measures_dir}", cannot continue.')
-    cache_baseline = app.config['CACHE_BASELINE']
-    store_missing_results = app.config['STORE_MISSING_RESULTS']
-    if app.config['OLDEST_ACCEPTABLE'] is None:
-        oldest_acceptable = None
-    else:
-        oldest_acceptable = datetime.datetime.fromisoformat(app.config['OLDEST_ACCEPTABLE'])
-    
-    debug_run_dir = None
-    if 'RUN_DIRECTORY' in app.config:
-        debug_run_dir = os.path.abspath(app.config['RUN_DIRECTORY'])
-    
-    # Connect to the database
-    try:
-        database = app.config['TIMESCALE_DB']
-        user = app.config['TIMESCALE_USERNAME']
-        password = app.config['TIMESCALE_PASSWORD']
-    except KeyError as exc:
-        raise MissingConfig('Missing flask configuration variable: {}'.format(str(exc)))
-        
-    # Configuration complete
-    resultsdb = stor4build.ResultsDatabase(database = database,
-                                           user = user,
-                                           password = password,
-                                           host = app.config['TIMESCALE_HOST'],
-                                           port = app.config['TIMESCALE_PORT'],
-                                           cases_table = 'baseline_cases',
-                                           results_table = 'baseline_results',
-                                           weather_table = 'weather',
-                                           verbose = True)
+    @app.exception_handler(APIError)
+    async def api_error_handler(request: Request, exc: APIError) -> JSONResponse:
+        return JSONResponse(status_code=exc.status_code, content={"error": exc.error, "message": exc.message})
 
-    # Route(s)
-    @app.route('/simulate', methods=['POST'])
-    def simulate_route():
-        """
-        Simulate a TES technology, including sizing.
-        """
-        # Get the inputs
-        data = request.get_json()
-        # This may not be needed
-        detailed_header = True
-        if 'header_style' in data:
-            if data['header_style'] == 'simple':
-                detailed_header = False
-        try:
-            inputs = stor4build.InputData.load(data)
-        except ValidationError as ve:
-            return make_response({'error': 'Bad request', 'message': process_validation_error(ve)}, 400)
- 
-        building_type = inputs.baseline.type
-        cz = 'ASHRAE 169-2006-%s' % inputs.baseline.climate
-        vintage_to_use = stor4build.map_to_vintage(inputs.baseline.vintage)
+    @app.exception_handler(MissingConfig)
+    async def missing_config_handler(request: Request, exc: MissingConfig) -> JSONResponse:
+        return JSONResponse(status_code=500, content={"error": "MissingConfig", "message": str(exc)})
 
-        if not stor4build.validate_template(building_type, vintage_to_use):
-            return make_response({'error': 'Bad request', 'message': f'The requested vintage ({inputs.baseline.vintage}) is not supported for "{building_type}" buildings'}, 400)
-        
-        argument_keys = ['charge_start', 'charge_end', 'discharge_start', 'discharge_end']
-        # Get utility rate info, just the one energy schedule for now
-        if inputs.energy is not None:
-            energy_sch = inputs.energy.schedule.months['All'].periods
-            if len(energy_sch) != 24:
-                return make_response({'error': 'Bad request', 'message': 'Energy cost schedule is not the correct length in input.'}, 400)
-            # Translate the utility rate parameters to charge/discharge start/end
-            results = stor4build.process_energy_schedule(energy_sch)
-            arguments = {k:v for k,v in zip(argument_keys, results)}
+    @app.exception_handler(RequestValidationError)
+    async def request_validation_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+        return JSONResponse(status_code=422, content={"error": "Bad request", "message": str(exc)})
 
-        else:
-            energy_sch = None
-            arguments = {}
+    @app.exception_handler(ValidationError)
+    async def validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
+        return JSONResponse(status_code=422, content={"error": "Bad request", "message": str(exc)})
 
-        needs_baseline = False
-        baseline_post = []
-        technology_post = []
-        technology_object_factory = None
-        
-        # Handle inputs of the charge/discharge interval
-        if inputs.storage.charge_interval is not None:
-            # Override the charge interval if it's in the input
-            arguments['charge_start'] = '%02d:00' % inputs.storage.charge_interval.begin.hour
-            arguments['charge_end'] = '%02d:00' % inputs.storage.charge_interval.end.hour
-        if inputs.storage.discharge_interval is not None:
-            # Override the discharge interval if it's in the input
-            arguments['discharge_start'] = '%02d:00' % inputs.storage.discharge_interval.begin.hour
-            arguments['discharge_end'] = '%02d:00' % inputs.storage.discharge_interval.end.hour
+    @app.post(
+        "/simulate",
+        responses={
+            200: {
+                "description": "TES simulation results as CSV.",
+                "content": {
+                    "text/csv": {
+                        "schema": {"type": "string"},
+                    }
+                },
+            },
+            400: {"description": "Simulation input or domain validation error.", "content": {"application/json": {"schema": ERROR_RESPONSE}}},
+            422: {"description": "Request validation error.", "content": {"application/json": {"schema": ERROR_RESPONSE}}},
+            500: {"description": "Server or configuration error.", "content": {"application/json": {"schema": ERROR_RESPONSE}}},
+        },
+        summary="Simulate a TES technology, including sizing.",
+    )
+    async def simulate_route(payload: SimulationRequest) -> Response:
+        settings = load_settings(config)
+        response_txt = run_simulation_request(payload, settings)
+        return Response(
+            content=response_txt,
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=results.csv"},
+        )
 
-        if inputs.storage.type in ['ThermalTank-Ice', 'ThermalTank-ChilledWater']:
-            if building_type not in stor4build.thermaltank_supported:
-                return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
-            needs_baseline = True
-            
-            arguments['peak_reduction'] = inputs.storage.capacity
-            arguments['store_ice'] = {"ThermalTank-Ice": True, "ThermalTank-ChilledWater": False}[inputs.storage.type]
-            arguments['size_fraction'] = inputs.storage.size_fraction
-            arguments['storage_medium'] = inputs.storage.medium
-
-            technology_object_factory = stor4build.IceTank.size
-
-            baseline_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs'),
-                             stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
-            technology_post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs',{'baseline': False}),
-                               stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
-        elif inputs.storage.type == 'PackagedIceStorage':
-            if building_type not in stor4build.dxcoil_supported:
-                return make_response({'error': 'Bad request', 'message': f'Building type "{building_type}" is not supported for this TES type.'}, 400)
-            technology_object_factory = stor4build.DxCoil.size
-            baseline_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs'),
-                             stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only')]
-            technology_post = [stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs',{'baseline': False}),
-                               stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'),
-                               stor4build.Step('Get DX Coil Sizes', 'get_dx_coil_sizes')]
-        else:
-            # Should never reach here because the input is validated, but leave it in as a safety
-            return make_response({'error': 'UnknownTechnologyType', 'message': 'Technology type "%s" is unknown.' % inputs.storage.type}, 400)
-
-        response_txt = ''
-        # Run/load the baseline first, then the technology
-        with managed_directory(debug_run_dir) as run_dir:
-            run_path = os.path.abspath(run_dir)
-            
-            # Get the weather
-            epw = os.path.join(run_dir, 'weather.epw')
-            epw_file = resultsdb.get_weather(epw, inputs.baseline.climate)
-            if epw_file is None:
-                return make_response({'error': 'UnknownWeather', 'message': 'Failed to find weather file for climate zone "%s".' % climate_string}, 500)
-            
-            # Get the baseline model
-            osm = os.path.join(run_dir, 'baseline.osm')
-            building_id = resultsdb.get_model(osm, building_type=building_type, climate_zone=inputs.baseline.climate, vintage=vintage_to_use)
-            if building_id is None:
-                return make_response({'error': 'UnknownBaseline', 'message': 'Baseline for inputs %s, %s, %s is unknown.' % (type, climate_string, vintage_to_use)}, 400)
-            # Get the baseline results
-            baseline_path = os.path.join(run_dir, 'baseline', 'run')
-            baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
-            found_results = False
-            if cache_baseline:
-                found_results = resultsdb.get_results(building_id, output_path=baseline_path, filename='eplusout.csv', oldest_acceptable=oldest_acceptable)
-            if not found_results:
-                # Run the baseline
-                baseline = stor4build.Simulation('baseline', post_steps=baseline_post)
-                osw = baseline.osw(osm, measures_dir, epw)
-                stor4build.run_workflow(openstudio_exe, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
-                stor4build.fix_csv(baseline_csv, verbose=noisy)
-                if cache_baseline and store_missing_results:
-                    resultsdb.set_results(building_id, baseline_csv)
-            
-            # Run the technology
-            technology_object = technology_object_factory('tes', baseline_path, post_steps=technology_post, **arguments)
-            osw = technology_object.osw(osm, measures_dir, epw)
-            stor4build.run_workflow(openstudio_exe, os.path.join(run_path, 
-                                    technology_object.tag()), osw, measures_only=False)
-
-            if detailed_header:
-                response_txt += f'version,{__version__}\n'
-                response_txt += f'building_type,"{building_type}"\n'
-                response_txt += f'climate_zone,"{cz}"\n'
-                response_txt += f'vintage,"{vintage_to_use}"\n'
-                response_txt += f'storage,"{inputs.storage.type}"\n'
-                if noisy:
-                    print(response_txt)
-                # This isn't handled as generally as it should be
-                if inputs.storage.type == 'PackagedIceStorage':
-                    sizing_report_path = os.path.join(run_dir, 'tes', 'reports', 'get_dx_coil_sizes_report.csv')
-                    with open(sizing_report_path, 'r') as fp:
-                        names = next(fp).strip()
-                        values = next(fp).strip()
-                    response_txt += 'packaged_ice_object_names,' + names + '\n'
-                    response_txt += 'packaged_ice_capacities,' + values + '\n'
-                    names = [el.strip().upper() for el in names.split(',')]
-                    replacement_report_path = os.path.join(run_dir, 'tes', 'reports', 'add_packaged_ice_storage_report.txt')
-                    with open(replacement_report_path, 'r') as fp:
-                        lines = fp.read().splitlines()
-                    if len(lines) % 2 == 0:
-                        lookup = {}
-                        itr = iter([line.strip() for line in lines])
-                        for original,new in zip(itr, itr):
-                            lookup[new.upper()] = original.upper()
-                        replaced = [lookup[el] for el in names]
-                        response_txt += 'replaced_object_names,' + ','.join(replaced) + '\n'
-                    else:
-                        # Something is wrong 
-                        response_txt += 'Unable to determine new-to-old object mapping'
-                else:
-                    response_txt += f'storage_medium,"{inputs.storage.medium}"\n'
-                for k,v in technology_object.sizing.items():
-                    response_txt += '%s,"%s"\n' % (k, str(v))
-                for k,v in arguments.items():
-                    response_txt += 'argument: %s,"%s"\n' % (k, str(v))
-
-            # Handle economics
-            #energy_rates = None
-            #if inputs.energy is not None:
-            #    energy_rates = {}
-            #    for label, month in inputs.energy.schedule.months.items():
-            #        energy_rates[label] = month.rate_array(inputs.energy.costs)
-
-            tech_csv = os.path.join(run_dir, 'tes', 'run', 'eplusout.csv')
-            stor4build.fix_csv(tech_csv, verbose=noisy)
-            if inputs.demand is not None:
-                rates = [cost.rate for cost in inputs.demand.costs.values()]
-                rates.sort()
-                response_txt += 'demand rates,' + ','.join([str(el) for el in rates]) + '\n'
-            response_txt += stor4build.combine_single_frequency_csv(baseline_csv, tech_csv, 'Hourly',
-                                                                    energy_data=inputs.energy, demand_data=inputs.demand)
-
-        response = make_response(response_txt)
-        response.headers["Content-Disposition"] = "attachment; filename=results.csv"
-        response.headers["Content-type"] = "text/csv"
-        return response
     return app
-
