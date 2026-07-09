@@ -10,7 +10,7 @@ class AmbientSoc(EnergyPlusPlugin):
     def actuate(self, state, x):
         self.api.exchange.set_actuator_value(state, self.data['mode_actuator'], x)
 
-    def on_begin_timestep_before_predictor(self, state) -> int:
+    def on_begin_zone_timestep_before_init_heat_balance(self, state) -> int:
         if 'mode_actuator' not in self.data:
             self.data['mode_actuator'] = self.api.exchange.get_actuator_handle(
                 state, MODE_SCHEDULE_TYPE, "Schedule Value", MODE_SCHEDULE_NAME
@@ -38,13 +38,13 @@ class AmbientSoc(EnergyPlusPlugin):
         # Get values
         oat = self.api.exchange.get_variable_value(state, self.data['oat_handle'])
         mode = self.api.exchange.get_variable_value(state, self.data['mode_schedule'])
-        soc = 1.0 #self.get_global_value(state, self.data['soc'])
+        soc = self.api.exchange.get_global_value(state, self.data['soc'])
 
-        #hour = self.api.exchange.hour(state)
-        #month = self.api.exchange.month(state)
-        #day_of_month = self.api.exchange.day_of_month(state)
-        if mode == Mode.DISCHARGE.value:
-            if oat <= 30.0 or soc <= 0.3:
-                self.actuate(state, Mode.IDLE.value)
+        month = self.api.exchange.month(state)
+        day_of_month = self.api.exchange.day_of_month(state)
+        if month == 7 and day_of_month == 7:
+            if mode == Mode.DISCHARGE.value:
+                if oat <= 30.0 or soc <= 0.3:
+                    self.actuate(state, Mode.IDLE.value)
 
         return 0
