@@ -12,6 +12,7 @@ class AmbientSoc(EnergyPlusPlugin):
 
     def on_begin_zone_timestep_before_init_heat_balance(self, state) -> int:
         if 'mode_actuator' not in self.data:
+            # Get all the handles, any failures here and we have to stop
             self.data['mode_actuator'] = self.api.exchange.get_actuator_handle(
                 state, MODE_SCHEDULE_TYPE, "Schedule Value", MODE_SCHEDULE_NAME
             )
@@ -35,16 +36,22 @@ class AmbientSoc(EnergyPlusPlugin):
                 self.api.runtime.issue_severe(state, "Could not get global handle to state of charge variable")
                 return 1
         
-        # Get values
+        # Get model values
         oat = self.api.exchange.get_variable_value(state, self.data['oat_handle'])
         mode = self.api.exchange.get_variable_value(state, self.data['mode_schedule'])
         soc = self.api.exchange.get_global_value(state, self.data['soc'])
 
+        # Get date/time
+        hour = self.api.exchange.hour(state)
         month = self.api.exchange.month(state)
         day_of_month = self.api.exchange.day_of_month(state)
+
+        # Do the thing
         if month == 7 and day_of_month == 7:
             if mode == Mode.DISCHARGE.value:
                 if oat <= 30.0 or soc <= 0.3:
                     self.actuate(state, Mode.IDLE.value)
+            elif hour >= 22: 
+                self.actuate(state, Mode.CHARGE.value)
 
         return 0

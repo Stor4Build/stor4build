@@ -50,7 +50,7 @@ class NoonToSix(EnergyPlusPlugin):
     def actuate(self, state, x):
         self.api.exchange.set_actuator_value(state, self.data['mode_schedule'], x)
 
-    def on_begin_timestep_before_predictor(self, state) -> int:
+    def on_begin_zone_timestep_before_init_heat_balance(self, state) -> int:
         if 'mode_schedule' not in self.data:
             self.data['mode_schedule'] = self.api.exchange.get_actuator_handle(
                 state, MODE_SCHEDULE_TYPE, "Schedule Value", MODE_SCHEDULE_NAME
