@@ -607,8 +607,9 @@ class AddCentralIceStorage < OpenStudio::Measure::ModelMeasure
     #-------------------------------------------------------------------------------------------------------------------
     if new
       ## Check for Schedule Type Limits and Create if Needed------------------------------------------------------------
-      if model.getModelObjectByName('OnOff').get.initialized
-        sched_limits_onoff = model.getModelObjectByName('OnOff').get.to_ScheduleTypeLimits.get
+      sched_limits_onoff_obj = model.getModelObjectByName('OnOff')
+      if !sched_limits_onoff_obj.empty? && !sched_limits_onoff_obj.get.to_ScheduleTypeLimits.empty?
+        sched_limits_onoff = sched_limits_onoff_obj.get.to_ScheduleTypeLimits.get
       else
         sched_limits_onoff = OpenStudio::Model::ScheduleTypeLimits.new(model)
         sched_limits_onoff.setName('OnOff')
@@ -618,8 +619,9 @@ class AddCentralIceStorage < OpenStudio::Measure::ModelMeasure
         sched_limits_onoff.setUpperLimitValue(1.0)
       end
 
-      if model.getModelObjectByName('Temperature').get.initialized
-        sched_limits_temp = model.getModelObjectByName('Temperature').get.to_ScheduleTypeLimits.get
+      sched_limits_temp_obj = model.getModelObjectByName('Temperature')
+      if !sched_limits_temp_obj.empty? && !sched_limits_temp_obj.get.to_ScheduleTypeLimits.empty?
+        sched_limits_temp = sched_limits_temp_obj.get.to_ScheduleTypeLimits.get
         if sched_limits_temp.lowerLimitValue.to_f > chg_sp
           sched_limits_temp.setLowerLimitValue(chg_sp)
         end
