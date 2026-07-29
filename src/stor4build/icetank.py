@@ -45,6 +45,9 @@ class IceTank(Simulation):
         self.size_fraction = kwargs.get('size_fraction', self.default_size_fraction)
         self.store_ice = kwargs.get('store_ice', self.default_store_ice)
         self.storage_medium = kwargs.get('storage_medium', self.default_storage_medium)
+        # ADDED: Extract dynamic schedule arguments
+        self.chrg_temp_sch_file = kwargs.get('chrg_temp_sch_file', None)
+        self.timestep_min = kwargs.get('timestep_min', None)
         if 'charge_temp' in kwargs and kwargs['charge_temp'] is not None:
             self.charge_temp = kwargs['charge_temp']
         else:
@@ -52,19 +55,39 @@ class IceTank(Simulation):
         self.sizing = kwargs.get('sizing', {})
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
-        return [Step('Add Python Tank', 'add_pytank',
-                     arguments={
-                         "chrg_start": self.charge_start,
-                         "chrg_end": self.charge_end,
-                         "dchrg_start": self.discharge_start,
-                         "dchrg_end": self.discharge_end,
-                         "chrg_temp": self.charge_temp,
-                         "num_tanks": self.num_tanks,
-                         "trim_temp": self.trim_temp,
-                         "size_frac": self.size_fraction,
-                         "strg_type": {True: "ice", False: "chw"}[self.store_ice],
-                         "strg_medium": self.storage_medium
-                     })]
+        # if we're using a chrg_temp_sch_file, construct this differently
+        if self.chrg_temp_sch_file is not None:
+            measure_args = {
+                "chrg_start": self.charge_start,
+                "chrg_end": self.charge_end,
+                "dchrg_start": self.discharge_start,
+                "dchrg_end": self.discharge_end,
+                "chrg_temp": self.charge_temp,
+                "num_tanks": self.num_tanks,
+                "trim_temp": self.trim_temp,
+                "size_frac": self.size_fraction,
+                "strg_type": {True: "ice", False: "chw"}[self.store_ice],
+                "strg_medium": self.storage_medium
+            }
+            measure_name = 'add_pytank_with_schedule'
+            measure_args["chrg_temp_sch_file"] = self.chrg_temp_sch_file
+            if self.timestep_min is not None:
+                measure_args["timestep_min"] = self.timestep_min
+            return [Step('Add Python Tank', measure_name, arguments=measure_args)]
+        else: # original code
+            return [Step('Add Python Tank', 'add_pytank',
+                        arguments={
+                            "chrg_start": self.charge_start,
+                            "chrg_end": self.charge_end,
+                            "dchrg_start": self.discharge_start,
+                            "dchrg_end": self.discharge_end,
+                            "chrg_temp": self.charge_temp,
+                            "num_tanks": self.num_tanks,
+                            "trim_temp": self.trim_temp,
+                            "size_frac": self.size_fraction,
+                            "strg_type": {True: "ice", False: "chw"}[self.store_ice],
+                            "strg_medium": self.storage_medium
+                        })]
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
         joules_to_kwh = 1.0e-5/36.0
