@@ -26,6 +26,7 @@ The `stor4build` command includes three subcommands at this time:
 
   * `run-icetank` - Runs the chiller-based ice tank Python plugin case with a specified capacity. Using `--chw` will use the chilled water version.
   * `size-icetank` - Runs the chiller-based ice tank Python plugin case with a size based on the baseline model and discharge window parameters. Using `--chw` will use the chilled water version.
+  * `run-icetank-dynamic` - Runs an iterative simulation process that optimizes the charging schedule based on electricity rates and demand charges.
   * `run-dxcoil` - Runs the native E+ DX coil packaged ice TES system with autosizing.
 
 Further information is available with the `--help` option.

@@ -104,7 +104,7 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
       'chrg_temp_sch_file',
       false
     )
-    chrg_temp_sch_file.setDefaultValue('../../../../measures/add_pytank_with_schedule/baseline_schedule_15min.csv')
+    chrg_temp_sch_file.setDefaultValue('../../../resources/baseline_schedule_15min.csv')
     args << chrg_temp_sch_file
 
     # create argument for timestep (minutes)
@@ -135,10 +135,9 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     storage_chs = OpenStudio::StringVector.new
     storage_chs << 'ice'
     storage_chs << 'chw'
-    strg_type = OpenStudio::Measure::OSArgument.makeChoiceArgument(
+    strg_type = OpenStudio::Measure::OSArgument.makeStringArgument(
       'strg_type',
-      storage_chs,
-      true
+      false
     )
     strg_type.setDefaultValue('ice')
     strg_type.setDescription('Options are ice or chw')
@@ -176,6 +175,27 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     strg_medium.setDescription('Set storage medium to use')
     args << strg_medium
 
+    # create argument for plugin directory
+    plugin_dir = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'plugin_directory',
+      false
+    )
+    plugin_dir.setDefaultValue('')
+    args << plugin_dir
+
+    # create argument for storage type
+    storage_chs = OpenStudio::StringVector.new
+    storage_chs << 'ice'
+    storage_chs << 'chw'
+    # create argument for TES type (used by CLI)
+    tes_type = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'tes_type',
+      false
+    )
+    tes_type.setDefaultValue('ice')
+    tes_type.setDescription('Options are ice or chw')
+    args << tes_type
+
     return args
   end
 
@@ -200,7 +220,8 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
     strg_medium = runner.getStringArgumentValue('strg_medium', usr_args)
-    timestep_min = runner.getIntArgumentValue('timestep_min', usr_args)
+    timestep_min = runner.getIntegerArgumentValue('timestep_min', usr_args)
+    chrg_temp_sch_file = runner.getStringArgumentValue('chrg_temp_sch_file', usr_args)
 
     # modify existing timestep
     ot = 'Timestep'

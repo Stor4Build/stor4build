@@ -313,12 +313,18 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 @click.option('--schedule-file', type=str, default=os.path.abspath(os.path.join('resources', 'baseline_schedule_15min.csv')), help='File path to CSV schedule for schedule-based control.')
 @click.option('--timestep', type=int, default=15, help='Timestep in minutes for the schedule file.')
+@click.option('--demand-charge-schedule', type=str, default=None, help='Comma-separated list for demand charge schedule.')
+@click.option('--demand-charge-rate', type=str, default=None, help='Comma-separated list for demand charge rate.')
+@click.option('--electric-rate', type=str, default=None, help='Comma-separated list for electricity rate.')
 def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
-                cooling_season_only, medium, size_fraction, control, sensible_only, schedule_file, timestep):
+                cooling_season_only, medium, size_fraction, control, sensible_only, schedule_file, timestep,
+                demand_charge_schedule, demand_charge_rate, electric_rate):
     """
     Add an ice tank TES system to an OpenStudio model and run it.
     """
+    print("Running icetank with dynamic charge controls")
+
     # Make paths absolute
     run_path = os.path.abspath(run_dir)
     osm = os.path.abspath(osm)
@@ -366,21 +372,6 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
     post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
-    # if control == 'default':
-    #     pass
-    # else:
-    #     measure_name = control
-    #     if control == 'demo12to6':
-    #         measure_name = 'add_demo_noon_to_six'
-    #     # For this to work, the measure will need to be in the measures directory
-    #     control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
-    #     if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
-    #         # Found it!
-    #         post.append(stor4build.Step(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
-    #                                                                                            'plugin_directory': os.path.join(run_dir, 'icetank')}))
-    #         post.append(stor4build.Step('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
-    #     else:
-    #         warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
     
     # Setup the control measure path
     control_measure_path = os.path.join(measures_dir, control, 'measure')
@@ -413,11 +404,17 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
     from stor4build.dynamic_charge_controls import generate_schedule
     
     if not measures_only:
-        # Generate the new schedule using the output from Step 1
-        new_schedule_file = generate_schedule(step1_eplusout_csv)
+        # Parse rate options if provided
+        dcs = [float(x) for x in demand_charge_schedule.split(',')] if demand_charge_schedule else None
+        dcr = [float(x) for x in demand_charge_rate.split(',')] if demand_charge_rate else None
+        er = [float(x) for x in electric_rate.split(',')] if electric_rate else None
+
+        # Generate the new schedule using the output directory from Step 1.
+        # We point to the 'run' subfolder because that's where OpenStudio saves the IDF and E+ output files.
+        new_schedule_file = generate_schedule(os.path.join(no_charging_dir, 'run'), demand_charge_schedule=dcs, demand_charge_rate=dcr, electric_rate=er)
     else:
         # Fallback if we only generated measures and didn't simulate
-        new_schedule_file = baseline_schedule
+        new_schedule_file = os.path.abspath(schedule_file)
 
     # =========================================================
     # STEP 3: Run Second Simulation (Dynamic Schedule)

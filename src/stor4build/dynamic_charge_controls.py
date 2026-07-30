@@ -457,7 +457,7 @@ def applyDemandCharge(df_in, demand_charge_rate, cost='Electricity Rate [$/kWh]'
     return df, curr_max_elec
 
 
-def preprocess_baseline(baseline_run_path):
+def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None):
     """
     Function to set up baseline data, prices, and info dictionary
     """
@@ -546,11 +546,26 @@ def preprocess_baseline(baseline_run_path):
     info["timestep_s"] = 3600
 
     # TODO: Get electricity prices from some other source, ideally not hardcoded
-    demand_charge_schedule = np.array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,2,2,2,2,1,1,0])
-    demand_charge_rate = [0,9.92+5.09,45.8+20.36,32+19.11]
-    electric_rate = [0.22663]*14 + [0.29896] * 2 + [0.35709] * 5 +  [0.29896] * 2 + [0.22663]
+    if demand_charge_schedule is None:
+        demand_charge_schedule = np.array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,2,2,2,2,1,1,0])
+    else:
+        demand_charge_schedule = np.array(demand_charge_schedule)
+
+    if demand_charge_rate is None:
+        demand_charge_rate = [0,9.92+5.09,45.8+20.36,32+19.11]
+    else:
+        demand_charge_rate = list(demand_charge_rate)
+
+    if electric_rate is None:
+        electric_rate = [0.22663]*14 + [0.29896] * 2 + [0.35709] * 5 +  [0.29896] * 2 + [0.22663]
+    else:
+        electric_rate = list(electric_rate)
 
     prices = generate_electricity_prices(electric_rate, demand_charge_schedule, demand_charge_rate, info)
+    
+    info["demand_charge_schedule"] = demand_charge_schedule
+    info["demand_charge_rate"] = demand_charge_rate
+    info["electric_rate"] = electric_rate
 
     dfh.set_index("datetime", inplace=True)
     prices.set_index("datetime", inplace=True)
@@ -724,7 +739,7 @@ def generate_schedule_file(dms, info, file_path):
     df.to_csv(file_path, index=False)
 
 
-def generate_schedule(baseline_run_path):
+def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None):
     """
     Generates the optimized load shifting schedule using dynamic charge controls. 
 
@@ -735,7 +750,8 @@ def generate_schedule(baseline_run_path):
     - path to the resulting schedule file
     """
 
-    df, info = preprocess_baseline(baseline_run_path)
+    df, info = preprocess_baseline(baseline_run_path, demand_charge_schedule, demand_charge_rate, electric_rate)
+    demand_charge_rate = info['demand_charge_rate']
 
     df["Electricity:Facility [kW]"] = df["Electricity:Facility [W]"] / 1000
 
