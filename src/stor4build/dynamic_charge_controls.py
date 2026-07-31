@@ -12,6 +12,8 @@ import collections
 from epw import epw
 import sys
 
+debug = True
+
 def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
     """
     Reads eplusout.csv file and skips the sizing rows where the specified date_column has a year of "0000".
@@ -175,6 +177,8 @@ def get_chiller_design_capacities(eio_path):
     Extracts the Initial Design Size Reference Capacity [W] for all 
     Chiller:Electric:EIR components from an .eio file.
     """
+    if debug: print(f"[dynamic_charge_controls] run\nget_chiller_design_capacities({eio_path})")
+
     capacities = collections.OrderedDict()
     target_field = "Initial Design Size Reference Capacity [W]"
     target_object = "Chiller:Electric:EIR"
@@ -198,6 +202,8 @@ def get_chiller_design_capacities(eio_path):
 
 
 def get_idf_info(file_path):
+    if debug: print(f"[dynamic_charge_controls] run\nget_idf_info({file_path})")
+
     with open(file_path, 'r') as f:
         content = f.read()
 
@@ -250,6 +256,8 @@ def get_idf_info(file_path):
     # Count chillers: Only match "Chiller:Electric:EIR" if it starts a line (or follows a semicolon/newline)
     # This prevents counting the string if it appears inside a name or comment.
     num_chillers = len(re.findall(r'(?:^|\n)Chiller:Electric:EIR,', content))
+
+    if debug: print(f"Found {num_chillers} chillers")
 
     chiller_match = re.search(r'Chiller:Electric:EIR,.*?;', content, re.DOTALL)
     if chiller_match:
@@ -457,12 +465,13 @@ def applyDemandCharge(df_in, demand_charge_rate, cost='Electricity Rate [$/kWh]'
     return df, curr_max_elec
 
 
-def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None):
+def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None, epw_file=None):
     """
     Function to set up baseline data, prices, and info dictionary
     """
 
     print(f'[dynamic_charge_controls] Processing baseline from: {baseline_run_path}')
+    if debug: print(f"[dynamic_charge_controls] run\npreprocess_baseline({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate}, {epw_file})")
 
     info = get_idf_info(os.path.join(baseline_run_path, "in.idf"))
 
@@ -496,8 +505,12 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
         dfc['Dry Bulb Temperature'] = df['Environment:Site Outdoor Air Drybulb Temperature [C](TimeStep)']
     except KeyError:
         print('[dynamic_charge_controls] Warning: No OAT data available in the output file, using epw file as fallback')
+        
+        # Try explicitly provided epw_file first, then fallback to in.epw in baseline_run_path
+        epw_path = epw_file if epw_file else os.path.join(baseline_run_path, "in.epw")
+        
         a=epw()
-        a.read(os.path.join(baseline_run_path, "in.epw"))
+        a.read(epw_path)
         dfw=a.dataframe
         dfc['Dry Bulb Temperature'] = dfw['Dry Bulb Temperature']
     
@@ -513,30 +526,30 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     for chiller in range(0,info["num_chillers"]):
         # Use keyterms in col names to find correct data automatically for any number of chillers
         # could probably be refactored into a function
-        matching_cols = [col for col in df.columns if any(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Electricity Rate [W](TimeStep)"])]
+        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Electricity Rate [W](TimeStep)"])]
         if len(matching_cols) != 1:
             print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} electricity\n{matching_cols}')
         dfc[f"ChillerElec{chiller}"] = df[matching_cols[0]]
         dfc["Chiller Electricity [W]"] += dfc[f"ChillerElec{chiller}"]
 
-        matching_cols = [col for col in df.columns if any(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Condenser Heat Transfer Rate [W](TimeStep)"])]
+        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Condenser Heat Transfer Rate [W](TimeStep)"])]
         if len(matching_cols) != 1:
             print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} cond heat transfer \n{matching_cols}')
         dfc[f"Cond Heat Transfer Chiller{chiller}"] = df[matching_cols[0]]
         dfc["Condenser Heat Transfer [W]"] += dfc[f"Cond Heat Transfer Chiller{chiller}"]
 
-        matching_cols = [col for col in df.columns if any(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Evaporator Cooling Rate [W](TimeStep)"])]
+        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Evaporator Cooling Rate [W](TimeStep)"])]
         if len(matching_cols) != 1:
             print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} evap cool rate\n{matching_cols}')
         dfc[f"Thermal Load Chiller{chiller}"] = df[matching_cols[0]]
         dfc["Thermal Load [W]"] += dfc[f"Thermal Load Chiller{chiller}"]
 
-        matching_cols = [col for col in df.columns if any(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Part Load Ratio [](TimeStep)"])]
+        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Part Load Ratio [](TimeStep)"])]
         if len(matching_cols) != 1:
             print(f'[dynamic_charge_controls] Warning: got wrong number of columns for PLR\n{matching_cols}')
         dfc[f"PartLoadRatio{chiller}"] = df[matching_cols[0]]
 
-        matching_cols = [col for col in df.columns if any(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller COP [W/W](TimeStep)"])]
+        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller COP [W/W](TimeStep)"])]
         if len(matching_cols) != 1:
             print(f'[dynamic_charge_controls] Warning: got wrong number of columns for COP\n{matching_cols}')
         dfc[f"ChillerCOP{chiller}"] = df[matching_cols[0]]
@@ -642,10 +655,9 @@ def consolidate_charging_hours(sch, demand_charge_rate):
                 # Zero out the isolated hour
                 sch.loc[sch.index[i], 'charging'] = 0
                 sch.loc[sch.index[i], 'Cooling'] -= current_charge # bw added manually to fix cooling
-                # print(f"Avoid single-hour operation in hour {i}, shift to hour {target_j_idx}")
-                print(f"Avoid single-hour operation {sch.loc[sch.index[i], 'datetime']}, shift to hour {sch.loc[sch.index[target_j_idx], 'datetime']}")
+                if debug: print(f"Avoid single-hour operation {sch.loc[sch.index[i], 'datetime']}, shift to hour {sch.loc[sch.index[target_j_idx], 'datetime']}")
             else: # no earlier hour would work
-                print(f"Could not avoid single-hour operation {sch.loc[sch.index[i], 'datetime']} --> deactivate charging anyway")
+                if debug: print(f"Could not avoid single-hour operation {sch.loc[sch.index[i], 'datetime']} --> deactivate charging anyway")
                 sch.loc[sch.index[i], 'charging'] = 0
                 sch.loc[sch.index[i], 'Cooling'] -= current_charge # bw added manually to fix cooling
 
@@ -653,6 +665,8 @@ def consolidate_charging_hours(sch, demand_charge_rate):
 
 
 def generate_schedule_file(dms, info, file_path):
+    if debug: print(f"[dynamic_charge_controls] run\ngenerate_schedule_file({dms}, {info}, {file_path})")
+
     YEAR = info["year"] 
     timesteps_per_hour = info['timesteps_per_hour'] 
 
@@ -743,7 +757,7 @@ def generate_schedule_file(dms, info, file_path):
     df.to_csv(file_path, index=False)
 
 
-def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None):
+def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None, epw_file=None):
     """
     Generates the optimized load shifting schedule using dynamic charge controls. 
 
@@ -754,7 +768,9 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     - path to the resulting schedule file
     """
 
-    df, info = preprocess_baseline(baseline_run_path, demand_charge_schedule, demand_charge_rate, electric_rate)
+    if debug: print(f"[dynamic_charge_controls] run\ngenerate_schedule({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate}, {epw_file})")
+
+    df, info = preprocess_baseline(baseline_run_path, demand_charge_schedule, demand_charge_rate, electric_rate, epw_file=epw_file)
     demand_charge_rate = info['demand_charge_rate']
 
     df["Electricity:Facility [kW]"] = df["Electricity:Facility [W]"] / 1000
@@ -810,8 +826,9 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         start_time = datetime_value - pd.Timedelta(hours=24)
         end_time = datetime_value
 
-        print('Expensive hour: ', i_expensive_hour, expensive_hour['datetime'].iloc[0])
-        print('Search range: ', start_time, ' - ', end_time)
+        if debug:
+            print('Expensive hour: ', i_expensive_hour, expensive_hour['datetime'].iloc[0])
+            print('Search range: ', start_time, ' - ', end_time)
         
         # Filter the dataframe for rows within this time range
         h = sch[(sch['datetime'] >= start_time) & (sch['datetime'] < end_time)].copy()
@@ -820,12 +837,12 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         for hrr in hours_tested:
             if hrr in h.index:
                 h.drop(hrr, inplace=True)
-        print('Remaining indices: ', h.index)
+        if debug: print('Remaining indices: ', h.index)
         # if there are no hours left, stop this loop
         if len(h.index) <= 1: 
-            print('Warning: no valid hours to shift to, from hour: ', i_expensive_hour, '  ', end_time)
+            if debug: print('Warning: no valid hours to shift to, from hour: ', i_expensive_hour, '  ', end_time)
             unavoidable_hours.append(i_expensive_hour)
-            print('unavoidable_hours =', unavoidable_hours, '  num hours_tested = ', len(hours_tested))
+            if debug: print('unavoidable_hours =', unavoidable_hours, '  num hours_tested = ', len(hours_tested))
             n_small += 1
             continue
         
@@ -855,7 +872,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         if expensive_hour['Cooling'].iloc[0] > expensive_hour['Thermal Load [kW]'].iloc[0]+1:
             was_charging = True
             remaining_load_expensive_hour = int(expensive_hour['Cooling'].iloc[0] - expensive_hour['Thermal Load [kW]'].iloc[0])
-            print(f"Expensive hour was charging, so use {expensive_hour['Cooling'].iloc[0]} - {expensive_hour['Thermal Load [kW]'].iloc[0]} = {remaining_load_expensive_hour}")
+            if debug: print(f"Expensive hour was charging, so use {expensive_hour['Cooling'].iloc[0]} - {expensive_hour['Thermal Load [kW]'].iloc[0]} = {remaining_load_expensive_hour}")
 
         # duplicate schedule
         sch2 = sch.copy(deep=True)
@@ -870,13 +887,14 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             # between cheap_hours[c] and expensive_hour
             # Done using sch2 (continually updated)
             remaining_TES_cap = info['usable_TES_capacity'] - sch2.loc[(sch2['datetime'] >= cheap_hours['datetime'].iloc[c]) & (sch2['datetime'] < end_time), 'Storage'].max()
-            print('cheap_hour: ', cheap_hour['datetime'])#cheap_hours['datetime'].iloc[c])
-            print('max storage in range: ', sch2.loc[(sch2['datetime'] >= cheap_hours['datetime'].iloc[c]) & (sch2['datetime'] < end_time), 'Storage'].max())
+            if debug: 
+                print('cheap_hour: ', cheap_hour['datetime'])#cheap_hours['datetime'].iloc[c])
+                print('max storage in range: ', sch2.loc[(sch2['datetime'] >= cheap_hours['datetime'].iloc[c]) & (sch2['datetime'] < end_time), 'Storage'].max())
             # print('remaining_TES_cap =' , remaining_TES_cap)
             # problem is charge_rate doesn't account for prior charging assigned to hour
             curr_charge_c = cheap_hours['Cooling'].iloc[c] - cheap_hours['Thermal Load [kW]'].iloc[c]
             remaining_charge_c = info['charge_rate'] - curr_charge_c
-            print(f"remaining_charge_c = {remaining_charge_c}")
+            if debug: print(f"remaining_charge_c = {remaining_charge_c}")
 
             if demand_charge_rate[cheap_hours['Demand Charge Schedule'].iloc[c]] > demand_charge_rate[expensive_hour['Demand Charge Schedule'].iloc[0]]:
                 amt_to_shift[c] = max(min(remaining_chiller_cap, remaining_above_hourly_demand_charge, remaining_above_overall_demand_charge, remaining_load_expensive_hour, remaining_charge_c, info['discharge_rate'], remaining_TES_cap),0) # added max condition to ensure this isn't negative
@@ -932,7 +950,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             c += 1
 
         # if sum(amt_to_shift) > expensive_hour['Thermal Load [kW]'].iloc[0]:
-        print('amt_to_shift =', amt_to_shift)
+        if debug: print('amt_to_shift =', amt_to_shift)
 
         # 4. Execute shifting
         # editing cheap hours was moved to prior loop

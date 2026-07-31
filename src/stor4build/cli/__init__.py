@@ -404,7 +404,7 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
 
         # Generate the new schedule using the output directory from Step 1.
         # We point to the 'run' subfolder because that's where OpenStudio saves the IDF and E+ output files.
-        new_schedule_file = generate_schedule(os.path.join(no_charging_dir, 'run'), demand_charge_schedule=dcs, demand_charge_rate=dcr, electric_rate=er)
+        new_schedule_file = generate_schedule(os.path.join(no_charging_dir, 'run'), demand_charge_schedule=dcs, demand_charge_rate=dcr, electric_rate=er, epw_file=epw)
     else:
         # Fallback if we only generated measures and didn't simulate
         new_schedule_file = os.path.abspath(schedule_file)

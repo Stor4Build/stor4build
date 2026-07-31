@@ -221,7 +221,7 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
     strg_medium = runner.getStringArgumentValue('strg_medium', usr_args)
     timestep_min = runner.getIntegerArgumentValue('timestep_min', usr_args)
-    timesteps_per_hour = int(60/timestep_min)
+    timesteps_per_hour = (60 / timestep_min).to_i # Untested
     chrg_temp_sch_file = runner.getStringArgumentValue('chrg_temp_sch_file', usr_args)
 
     # modify existing timestep
