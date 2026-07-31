@@ -467,6 +467,10 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     info = get_idf_info(os.path.join(baseline_run_path, "in.idf"))
 
     info["chiller_capacities"] = get_chiller_design_capacities(os.path.join(baseline_run_path, "eplusout.eio"))
+    if len(info["chiller_capacities"]) < 1:
+        print(f'[dynamic_charge_controls] got chiller capacities of {info["chiller_capacities"]}')
+        print('Check if EnergyPlus was able to run in.idf (check err file) before checking get_chiller_design_capacities')
+    
     info["design_capacity_kw"] = info["chiller_capacities"][0]/1000 # assume all chillers are the same and convert W to kW
 
     file_path = os.path.join(baseline_run_path, "eplusout.csv")

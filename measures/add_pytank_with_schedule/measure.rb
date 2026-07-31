@@ -104,7 +104,7 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
       'chrg_temp_sch_file',
       false
     )
-    chrg_temp_sch_file.setDefaultValue('../../../resources/baseline_schedule_15min.csv')
+    chrg_temp_sch_file.setDefaultValue('../../../../baseline_schedule_15min.csv')
     args << chrg_temp_sch_file
 
     # create argument for timestep (minutes)
@@ -112,7 +112,7 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
       'timestep_min',
       false
     )
-    timestep_min.setDefaultValue(15)
+    timestep_min.setDefaultValue(4) #this might be misnamed. Need 4 to get 15min timesteps
     args << timestep_min
 
     # create argument for number of tanks

@@ -311,7 +311,8 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('--control', metavar='NAME', show_default=True,
               default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure that implements the scheme.')
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
-@click.option('--schedule-file', type=str, default=os.path.abspath(os.path.join('resources', 'baseline_schedule_15min.csv')), help='File path to CSV schedule for schedule-based control.')
+# @click.option('--schedule-file', type=str, default=os.path.abspath(os.path.join(os.getcwd(), 'resources', 'baseline_schedule_15min.csv')), help='File path to CSV schedule for schedule-based control.')
+@click.option('--schedule-file', type=str, default='resources/baseline_schedule_15min.csv', help='File path to CSV schedule for schedule-based control.')
 @click.option('--timestep', type=int, default=15, help='Timestep in minutes for the schedule file.')
 @click.option('--demand-charge-schedule', type=str, default=None, help='Comma-separated list for demand charge schedule.')
 @click.option('--demand-charge-rate', type=str, default=None, help='Comma-separated list for demand charge rate.')
@@ -347,7 +348,11 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
         "timestep_min" : str(timestep)
     }
 
+    # convert 
+    # from pathlib import PureWindowsPath
+    # schedule_file = str(PureWindowsPath(schedule_file))
     print(f"Schedule file is {schedule_file}")
+
 
     # Override the control variable to use the new measure folder
     control = 'add_pytank_with_schedule'
