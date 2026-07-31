@@ -313,7 +313,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 # @click.option('--schedule-file', type=str, default=os.path.abspath(os.path.join(os.getcwd(), 'resources', 'baseline_schedule_15min.csv')), help='File path to CSV schedule for schedule-based control.')
 @click.option('--schedule-file', type=str, default='resources/baseline_schedule_15min.csv', help='File path to CSV schedule for schedule-based control.')
-@click.option('--timestep', type=int, default=15, help='Timestep in minutes for the schedule file.')
+@click.option('--timestep', type=int, default=15, help='Timesteps per hour for the schedule file.')
 @click.option('--demand-charge-schedule', type=str, default=None, help='Comma-separated list for demand charge schedule.')
 @click.option('--demand-charge-rate', type=str, default=None, help='Comma-separated list for demand charge rate.')
 @click.option('--electric-rate', type=str, default=None, help='Comma-separated list for electricity rate.')
@@ -354,9 +354,6 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
     print(f"Schedule file is {schedule_file}")
 
 
-    # Override the control variable to use the new measure folder
-    control = 'add_pytank_with_schedule'
-
     # Handle storage details
     tes_type = 'ThermalTank-Ice'
     if sensible_only:
@@ -378,15 +375,6 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
     if cooling_season_only:
         post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
     
-    # Setup the control measure path
-    control_measure_path = os.path.join(measures_dir, control, 'measure')
-    if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
-        post.append(stor4build.Step(control.replace('_', ' ').title(), control, {'tes_type': tes_type, 
-                                                                                'plugin_directory': os.path.join(run_dir, 'icetank')}))
-        post.append(stor4build.Step('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
-    else:
-        warnings.warn(f'Failed to find measure "{control}", default control will be used.')
-
     # =========================================================
     # STEP 1: Run First Simulation (No Charging / Baseline)
     # =========================================================

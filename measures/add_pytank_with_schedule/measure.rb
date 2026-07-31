@@ -112,7 +112,7 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
       'timestep_min',
       false
     )
-    timestep_min.setDefaultValue(4) #this might be misnamed. Need 4 to get 15min timesteps
+    timestep_min.setDefaultValue(15) # NOTE: need timesteps in minutes for schedules, but timesteps per hour for "Timestep" entry in idf
     args << timestep_min
 
     # create argument for number of tanks
@@ -221,12 +221,13 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
     strg_medium = runner.getStringArgumentValue('strg_medium', usr_args)
     timestep_min = runner.getIntegerArgumentValue('timestep_min', usr_args)
+    timesteps_per_hour = int(60/timestep_min)
     chrg_temp_sch_file = runner.getStringArgumentValue('chrg_temp_sch_file', usr_args)
 
     # modify existing timestep
     ot = 'Timestep'
     ws.getObjectsByType(ot.to_IddObjectType).each do |o|
-      o.setInt(0, timestep_min)
+      o.setInt(0, timesteps_per_hour)
     end
 
     # add discharge start time schedule
