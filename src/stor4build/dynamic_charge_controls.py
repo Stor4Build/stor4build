@@ -12,7 +12,7 @@ import collections
 from epw import epw
 import sys
 
-debug = True
+debug = False
 
 def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
     """
@@ -46,49 +46,65 @@ def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
     return df
 
 
-def quadratic(x,a,b,c):
+def quadratic(x, *coeffs):
     """
     Evaluate a quadratic function.
 
+    This function can be called in two ways:
+    1. With separate coefficients: quadratic(x, a, b, c)
+    2. With a list or tuple of coefficients: quadratic(x, [a, b, c])
+
     Parameters:
-    - x: float, the independent variable
-    - a: float, constant term
-    - b: float, coefficient of linear term
-    - c: float, coefficient of quadratic term
+    - x: float, the independent variable.
+    - a, b, c: float, coefficients for the function OR a list [a, b, c]
 
     Returns:
-    - float, the result of a + bx + cx^2
+    - float: The result of the quadratic equation a + bx + cx^2.
+    
+    Raises:
+    - TypeError: If the coefficients are not provided in one of the two valid formats.
     """
-    return a + b*x + c*x**2
+    # Case 1: Separate arguments (a, b, c)
+    if len(coeffs) == 3:
+        a, b, c = coeffs
+    # Case 2: A single list or tuple of 3 elements [a, b, c]
+    elif len(coeffs) == 1 and isinstance(coeffs[0], (list, tuple)) and len(coeffs[0]) == 3:
+        a, b, c = coeffs[0]
+    else:
+        raise TypeError("Invalid arguments. Coefficients must be either 3 floats or a list of 3 floats")
+    
+    return a + b * x + c * x**2
 
-def biquadratic(x,y,a,b,c,d,e,f):
+
+def biquadratic(x,y,*coeffs):
     """
     Evaluate a biquadratic function of two variables.
 
     Parameters:
     - x: float, first independent variable
     - y: float, second independent variable
-    - a, b, c, d, e, f: float, coefficients for the function
+    - a, b, c, d, e, f: float, coefficients for the function OR a list [a, b, c, d, e, f]
 
     Returns:
     - float, the result of a + bx + cx^2 + dy + ey^2 + fxy
     """
+    if len(coeffs) ==6:
+        a,b,c,d,e,f = coeffs
+    elif len(coeffs)==1  and isinstance(coeffs[0], (list, tuple)) and len(coeffs[0]) == 6:
+        a,b,c,d,e,f = coeffs[0]
+    else: raise TypeError("Invalid arguments. Coefficients must be either 6 floats or a list of 6 floats")
     return a + b*x + c*x**2 + d*y + e*y**2 + f*x*y
 
 
 # Constants for this particular system (LargeOffice_new.osm)
 # Note: these are PER CHILLER, and there are 2 chillers
 # TODO: figure out how to get this automatically
-design_capacity = 1505041.80 #W
-design_capacity_kW = 1505.04180 #kW
-full_load_power = 225840.67 #W
-# COP_ref = 6.1059
-# num_chillers = 2
-# chiller_capacity_kW = num_chillers * design_capacity_kW
-# min_PLR=0.15
+# design_capacity = 1505041.80 #W
+# design_capacity_kW = 1505.04180 #kW
+# full_load_power = 225840.67 #W
 
 
-def getCOPstaged(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.04180, min_PLR=0.15, min_unloading=0.25, num_chillers=2):
+def getCOPstaged(load, T_cw, info, T_cond=25):
     """
     Calculate the COP of 2+ staged chillers, based on the criteria E+ uses.
     Assumes chillers are identical
@@ -97,15 +113,16 @@ def getCOPstaged(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
     - load: float or pd.Series, thermal load on chiller, kW
     - T_cw: float or pd.Series, chilled water temperature, °C
     - T_cond: float, condenser side temperature, °C
-    - COP_ref: float, reference COP constant for chiller
-    - design_capacity_kW: float, reference design capacity for chiller
-    - min_PLR: float, minimum PLR at which chiller can operate
-    - min_unloading: float, the unloading ratio for the chiller
-    - num_chillers: int, number of chillers 
+    - info: dictionary as specified in getCOP
 
     Returns:
     - float or pd.Series with the calculated COP
     """
+    COP_ref = info["cop_ref"]
+    design_capacity_kW = info["design_capacity_kW"]
+    min_PLR = info['min_plr']
+    min_unloading = info['min_ur']
+    num_chillers = info['num_chillers']
     def calculate_cop_single_load(single_load):
         """
         Calculate the COP for a single load across staged chillers.
@@ -123,7 +140,7 @@ def getCOPstaged(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
         chiller_load = np.zeros(num_chillers)
         PLR = np.zeros(num_chillers)
         EIRfPLR = np.zeros(num_chillers)
-        EIRfT = biquadratic(T_cw, T_cond, 0.6772577,0.0117857,-0.0001967, 0.0014414, 0.0003005, -0.0006807) # EIRfT is constant
+        EIRfT = biquadratic(T_cw, T_cond, info['eirft_coeffs']) # EIRfT is constant
         COP = np.ones(num_chillers)
         while remaining_load > 0 and c < num_chillers:
             chiller_load[c] = min(remaining_load, design_capacity_kW )
@@ -134,7 +151,7 @@ def getCOPstaged(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
             PLR[c] = chiller_load[c]/design_capacity_kW
             if PLR[c] < min_PLR:
                 PLR[c] = min_PLR
-            EIRfPLR[c] = quadratic(PLR[c], 0.222149, 0.503156,0.256905)
+            EIRfPLR[c] = quadratic(PLR[c], info['fqratio_coeffs'])
             COP[c] =  (COP_ref * PLR[c]) / (EIRfPLR[c] * EIRfT)
             c += 1
         return sum(chiller_load) / sum(chiller_load/COP)
@@ -145,7 +162,7 @@ def getCOPstaged(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
         return calculate_cop_single_load(load)
 
 
-def getCOPpaired(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.04180, min_PLR=0.15, min_unloading=0.25, num_chillers=2):
+def getCOPpaired(load, T_cw, info, T_cond=25):
     """
     Calculate the COP of paired chillers (both run in sync), based on the criteria E+ uses.
     Assumes chillers are identical
@@ -154,15 +171,17 @@ def getCOPpaired(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
     - load: float or pd.Series, thermal load on chiller, kW
     - T_cw: float or pd.Series, chilled water temperature, °C
     - T_cond: float, condenser side temperature, °C
-    - COP_ref: float, reference COP constant for chiller
-    - design_capacity_kW: float, reference design capacity for chiller
-    - min_PLR: float, minimum PLR at which chiller can operate
-    - min_unloading: float, the unloading ratio for the chiller
-    - num_chillers: int, number of chillers 
+    - info: dictionary as specified in getCOP
 
     Returns:
     - float or pd.Series with the calculated COP
     """
+    COP_ref = info["cop_ref"]
+    # print(f"COP_ref = {COP_ref}")
+    design_capacity_kW = info["design_capacity_kW"]
+    min_PLR = info['min_plr']
+    min_unloading = info['min_ur']
+    num_chillers = info['num_chillers']
     def calculate_cop_single_load(single_load):
         """
         Calculate the COP for a single load using paired chiller operation.
@@ -175,8 +194,8 @@ def getCOPpaired(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
         """
         if single_load <= 0: return COP_ref #987654.3
         PLR = max(single_load/(design_capacity_kW*num_chillers), min_unloading)
-        EIRfPLR = quadratic(PLR, 0.222149, 0.503156,0.256905)
-        EIRfT = biquadratic(T_cw, T_cond, 0.6772577,0.0117857,-0.0001967, 0.0014414, 0.0003005, -0.0006807)
+        EIRfPLR = quadratic(PLR, info['fqratio_coeffs'])
+        EIRfT = biquadratic(T_cw, T_cond, info['eirft_coeffs'])
         COP =  (COP_ref * PLR) / (EIRfPLR * EIRfT)
         return COP
 
@@ -185,7 +204,7 @@ def getCOPpaired(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
     else:
         return calculate_cop_single_load(load)
 
-def getCOPoptimal(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.04180, min_PLR=0.15, min_unloading=0.25, num_chillers=2):
+def getCOPoptimal(load, T_cw, info, T_cond=25):
     """
     Calculate the COP of 2+ chillers running in the current optimal configuration,
     defined as whichever of paired or staged configuration has the higher COP
@@ -195,19 +214,15 @@ def getCOPoptimal(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 15
     - load: float or pd.Series, thermal load on chiller, kW
     - T_cw: float or pd.Series, chilled water temperature, °C
     - T_cond: float, condenser side temperature, °C
-    - COP_ref: float, reference COP constant for chiller
-    - design_capacity_kW: float, reference design capacity for chiller
-    - min_PLR: float, minimum PLR at which chiller can operate
-    - min_unloading: float, the unloading ratio for the chiller
-    - num_chillers: int, number of chillers 
+    - info: dictionary as specified in getCOP
 
     Returns:
     - float or pd.Series with the calculated COP
     """
-    return max( getCOPstaged(load, T_cw, T_cond, COP_ref, design_capacity_kW, min_PLR, min_unloading, num_chillers),  getCOPpaired(load, T_cw, T_cond, COP_ref, design_capacity_kW, min_PLR, min_unloading, num_chillers))
+    return max( getCOPstaged(load, T_cw, info, T_cond),  getCOPpaired(load, T_cw, info, T_cond))
 
 
-def getCOP(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.04180, min_PLR=0.15, min_unloading=0.25, num_chillers=2):
+def getCOP(load, T_cw, info, T_cond=25):
     """
     Wrapper function that calculates the COP (currently using the paired chiller configuration, but can easily be pointed to a different configuration as needed)
 
@@ -215,16 +230,19 @@ def getCOP(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.0418
     - load: float or pd.Series, thermal load on chiller, kW
     - T_cw: float or pd.Series, chilled water temperature, °C
     - T_cond: float, condenser side temperature, °C
-    - COP_ref: float, reference COP constant for chiller
-    - design_capacity_kW: float, reference design capacity for chiller
-    - min_PLR: float, minimum PLR at which chiller can operate
-    - min_unloading: float, the unloading ratio for the chiller
-    - num_chillers: int, number of chillers
+    - info: dict that contains variables to represent these items
+        - COP_ref: float, reference COP constant for chiller
+        - design_capacity_kW: float, reference design capacity for chiller
+        - min_PLR: float, minimum PLR at which chiller can operate
+        - min_unloading: float, the unloading ratio for the chiller
+        - num_chillers: int, number of chillers
+        - eirft_coeffs: list of 6 floats
+        - fqratio_coeffs: list of 3 floats
 
     Returns:
     - float or pd.Series with the calculated COP
     """
-    return getCOPpaired(load, T_cw, T_cond, COP_ref, design_capacity_kW, min_PLR, min_unloading, num_chillers)
+    return getCOPpaired(load, T_cw, info, T_cond)
 
 
 
@@ -272,7 +290,7 @@ def get_idf_info(file_path):
     - file_path: str, path to the .idf file
 
     Returns:
-    - dict, contains start_date, end_date, eirft_coeffs, fqratio_coeffs, num_chillers, ref_cop, min_plr, and min_ur
+    - dict, contains start_date, end_date, eirft_coeffs, fqratio_coeffs, num_chillers, cop_ref, min_plr, and min_ur
     """
     if debug: print(f"[dynamic_charge_controls] run\nget_idf_info({file_path})")
 
@@ -285,7 +303,7 @@ def get_idf_info(file_path):
     eirft_coeffs = [0.6772577,0.0117857,-0.0001967, 0.0014414, 0.0003005, -0.0006807]
     fqratio_coeffs = [0.222149, 0.503156,0.256905]
     num_chillers = 0
-    ref_cop = 6
+    cop_ref = 6
     min_plr = 0.15
     min_ur = 0.25
 
@@ -304,6 +322,7 @@ def get_idf_info(file_path):
             # Index 0: Name
             # Index 1: Begin Month, 2: Begin Day, 3: Begin Year
             # Index 4: End Month, 5: End Day, 6: End Year
+            # Note: detected off-by-one error, so indexes had to be decremented manually by 1
             start_date = f"{lines[3]}-{lines[1].zfill(2)}-{lines[2].zfill(2)}"
             end_date = f"{lines[6]}-{lines[4].zfill(2)}-{lines[5].zfill(2)}"
             if debug: print(f"RunPeriod: {start_date}   to   {end_date}")
@@ -345,7 +364,7 @@ def get_idf_info(file_path):
 
     if debug: print(f"Found {num_chillers} chillers")
 
-    chiller_match = re.search(r'Chiller:Electric:EIR,.*?;', content, re.DOTALL)
+    chiller_match = re.search(r'Chiller:Electric:EIR,\n.*?;', content, re.DOTALL)
     if chiller_match:
         # if debug: print(f'Found chiller_match: {chiller_match}')
         lines = [line.split('!')[0].strip().rstrip(',') for line in chiller_match.group(0).split('\n') if line.strip()]
@@ -354,22 +373,27 @@ def get_idf_info(file_path):
             # Index 1: Name
             # Index 2: Reference Capacity
             # Index 3: Reference COP
-            ref_cop = lines[3]
+            cop_ref = float(lines[3])
             # Index 11: Minimum Part Load Ratio
             # Index 14: Minimum Unloading Ratio
-            min_plr = lines[11]
-            min_ur = lines[14]
+            min_plr = float(lines[11])
+            min_ur = float(lines[14])
         except IndexError:
             print("[dynamic_charge_controls] Warning: Chiller:Electric:EIR section not found or bad data")
+        except ValueError:
+            print("[dynamic_charge_controls] Warning: Invalid data for one of these: ")
+            print(f"   cop_ref: {lines[3]}")
+            print(f"   min_plr: {lines[11]}")
+            print(f"   min_ur: {lines[14]}")
 
-    # return start_date, end_date, eirft_coeffs, fqratio_coeffs, num_chillers, ref_cop, min_plr, min_ur
+    # return start_date, end_date, eirft_coeffs, fqratio_coeffs, num_chillers, cop_ref, min_plr, min_ur
     return {
         "start_date": start_date,
         "end_date": end_date,
         "eirft_coeffs": eirft_coeffs,
         "fqratio_coeffs": fqratio_coeffs,
         "num_chillers": num_chillers,
-        "ref_cop": ref_cop,
+        "cop_ref": cop_ref,
         "min_plr": min_plr,
         "min_ur": min_ur
     }
@@ -662,7 +686,7 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     dfh['Storage'] = 0.0
     dfh['Cooling'] = dfh['Thermal Load [kW]'] # Do NOT change all instances of 'Cooling' to 'Thermal Load [kW]' -- they will mean different things later on, 'Cooling' is how much cooling it will do in that hour (using storage to make up the diff) whereas 'Thermal Load [kW]' is the building load which can be met by chiller operation or storage.
     # dfh['Demand Charge Schedule'] = dfh['Demand Period'] # changed all of these to 'Demand Period' already
-    dfh['COP'] = getCOP(dfh['Thermal Load [kW]'], 6.7)
+    dfh['COP'] = getCOP(dfh['Thermal Load [kW]'], 6.7, info)
     dfh['Electricity Consumption'] = dfh['Cooling'] / dfh['COP'] # electricity used to meet 'Cooling'; kept in sync with 'Cooling'/'COP' updates made throughout generate_schedule()
     dfh['Cost [kWh]'] = dfh['Electricity Rate [$/kWh]'] * dfh['Electricity Consumption']
 
@@ -985,7 +1009,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             continue
         
         # 2.2 COP if the system were in charge mode 
-        h['COP_c'] = getCOP((h['Thermal Load [kW]'] + info['charge_rate']) , -3.8)
+        h['COP_c'] = getCOP((h['Thermal Load [kW]'] + info['charge_rate']) , -3.8, info)
 
         # 2.3: incremental cost, demand charges
         h['inc_demand'] = 0.0
@@ -1082,7 +1106,6 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             sch2.loc[sch2.index == cheap_hour.index.to_list()[0], 'COP'] = cheap_hour['COP_c']
 
             # decrease cost on adjacent hours to current charging
-
             cheap_hours = cheap_hours.sort_values(by='inc_cost', ascending=True).copy()
             
             c += 1
@@ -1132,7 +1155,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             sch2.loc[sch2.index == i_expensive_hour, 'Cooling'] = 0
             
         # recalc COP for expensive hour. T_cw now 10degC for discharging
-        sch2.loc[sch2.index == i_expensive_hour, 'COP'] = getCOP(sch2.loc[sch2.index == i_expensive_hour, 'Cooling'], 10) 
+        sch2.loc[sch2.index == i_expensive_hour, 'COP'] = getCOP(sch2.loc[sch2.index == i_expensive_hour, 'Cooling'], 10, info) 
         sch2.loc[sch2.index == i_expensive_hour, 'Electricity Consumption'] = sch2.loc[sch.index == i_expensive_hour, 'Cooling'] / sch2.loc[sch2.index == i_expensive_hour, 'COP']
         sch2.loc[sch2.index == i_expensive_hour, 'Cost [kWh]'] = sch2.loc[sch.index == i_expensive_hour, rate] * sch2.loc[sch2.index == i_expensive_hour, 'Electricity Consumption']
 
@@ -1169,13 +1192,10 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             total_cost_log.append(totalcost2)
             # remove duplicates from hours_tested
             hours_tested = list(set(hours_tested))
-            # if i_expensive_hour in hours_tested: hours_tested.remove(i_expensive_hour) # ADDED 20250930 as attempt to debug issue of moving operation to part peak, see Bakersfiedl_Debug_3-allow-repeat-test
-            # if (i_expensive_hour in hours_tested) & (sch2.loc[sch2.index == i_expensive_hour, 'Demand Period'].iloc[0] >= len(demand_charge_rate)-1): hours_tested.remove(i_expensive_hour) # ADDED 20250930 as attempt to debug issue of moving operation to part peak, see Bakersfiedl_Debug_4_Select-repeat-test
             unavoidable_hours = list(set(unavoidable_hours))
             for iex in [1,2,3,4]:
                 if i_expensive_hour + iex in unavoidable_hours: unavoidable_hours.remove(i_expensive_hour + iex)
         else: #new schedule is more expensive
-            # hours_tested.append(i_expensive_hour) #remove I think??? 20250930
             unavoidable_hours.append(i_expensive_hour)
             print('Warning: Changing operation from ', i_expensive_hour, ' to ',cheap_hours.iloc[0].index[0],  ' would increase cost')
             total_cost_log.append(totalcost1)
