@@ -12,7 +12,7 @@ import collections
 from epw import epw
 import sys
 
-debug = False
+debug = True
 
 def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
     """
@@ -1075,7 +1075,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             # problem is charge_rate doesn't account for prior charging assigned to hour
             curr_charge_c = cheap_hours['Cooling'].iloc[c] - cheap_hours['Thermal Load [kW]'].iloc[c]
             remaining_charge_c = info['charge_rate'] - curr_charge_c
-            if debug: print(f"remaining_charge_c = {remaining_charge_c}")
+            if debug: print(f"remaining_charge_c = {remaining_charge_c}, remaining_load_expensive_hour = {remaining_load_expensive_hour}, remaining_chiller_cap = {remaining_chiller_cap}, remaining_TES_cap = {remaining_TES_cap}, remaining_above_hourly_demand_charge = {remaining_above_hourly_demand_charge}, remaining_above_overall_demand_charge = {remaining_above_overall_demand_charge}")
 
             if demand_charge_rate[cheap_hours['Demand Period'].iloc[c]] > demand_charge_rate[expensive_hour['Demand Period'].iloc[0]]:
                 amt_to_shift[c] = max(min(remaining_chiller_cap, remaining_above_hourly_demand_charge, remaining_above_overall_demand_charge, remaining_load_expensive_hour, remaining_charge_c, info['discharge_rate'], remaining_TES_cap),0) # added max condition to ensure this isn't negative
@@ -1166,7 +1166,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
 
 
         # recompute demand charge (inc_cost also recalculated as part of the applyDemandCharge function)
-        sch2, curr_max_elec2 = applyDemandCharge(sch2, demand_charge_rate, cost='Electricity Rate [$/kWh]', elec = 'Electricity:Facility [kW]', demandWindow='Demand Period', demandCost='Demand Cost', debug=False)
+        sch2, curr_max_elec2 = applyDemandCharge(sch2, demand_charge_rate, cost='Electricity Rate [$/kWh]', elec = 'Electricity Consumption', demandWindow='Demand Period', demandCost='Demand Cost', debug=False) # check variable mapping!
         totalcost1 = sch['Cost [kWh]'].sum()+ sum([a/4*b for a,b in zip(curr_max_elec,demand_charge_rate)])
         totalcost2 = sch2['Cost [kWh]'].sum()+ sum([a/4*b for a,b in zip(curr_max_elec2,demand_charge_rate)])
 
