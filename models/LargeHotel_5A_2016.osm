@@ -26488,3 +26488,115 @@ OS:Daylighting:Control,
   ,                                       !- Number of Daylighting Views
   22;                                     !- Maximum Allowable Discomfort Glare Index
 
+
+
+OS:OutputControl:Timestamp,
+  {a89e74ac-a8fc-4e91-9759-73810c59acc0}, !- Handle
+  Yes,                                    !- ISO 8601 Format
+  Yes;                                    !- Timestamp at Beginning of Interval
+
+OS:Output:Variable,
+  {2ad8e570-5046-47a2-9b34-cb78ee4ab5ef}, !- Handle
+  Output Variable 1,                      !- Name
+  *,                                      !- Key Value
+  Chiller COP,                            !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {11793aff-1b20-41e8-8492-4eb9a4f464c1}, !- Handle
+  Output Variable 2,                      !- Name
+  *,                                      !- Key Value
+  Chiller Condenser Heat Transfer Energy, !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {125864cf-45fa-47a9-99b9-e8c05e829bcb}, !- Handle
+  Output Variable 3,                      !- Name
+  *,                                      !- Key Value
+  Chiller Condenser Heat Transfer Rate,   !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {0c6eed39-1d7e-4b4e-924b-4d8c0410043e}, !- Handle
+  Output Variable 4,                      !- Name
+  *,                                      !- Key Value
+  Chiller Cycling Ratio,                  !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {787113dd-e7c0-4488-b790-2b281fc21dce}, !- Handle
+  Output Variable 5,                      !- Name
+  *,                                      !- Key Value
+  Chiller Electricity Energy,             !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {d3b6de2e-9efd-4a1b-a103-2250aac0268d}, !- Handle
+  Output Variable 6,                      !- Name
+  *,                                      !- Key Value
+  Chiller Electricity Rate,               !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {dc9e0fb6-891f-46bc-849d-209638539f10}, !- Handle
+  Output Variable 7,                      !- Name
+  *,                                      !- Key Value
+  Chiller Evaporator Cooling Energy,      !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {2e7a39d1-cb82-4ed4-8aa8-2723657bd4d8}, !- Handle
+  Output Variable 8,                      !- Name
+  *,                                      !- Key Value
+  Chiller Evaporator Cooling Rate,        !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {d71dd69c-3e64-4d88-a09d-d978f1ef57ff}, !- Handle
+  Output Variable 9,                      !- Name
+  *,                                      !- Key Value
+  Chiller Evaporator Inlet Temperature,   !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {268c95b6-d0d3-404a-8061-3214b2473b86}, !- Handle
+  Output Variable 10,                     !- Name
+  *,                                      !- Key Value
+  Chiller Evaporator Mass Flow Rate,      !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {1b9eae57-c33c-40fc-8cde-faa36fc2a057}, !- Handle
+  Output Variable 11,                     !- Name
+  *,                                      !- Key Value
+  Chiller Evaporator Outlet Temperature,  !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {9e514b3a-e5e6-46b1-b8a9-17f579642d33}, !- Handle
+  Output Variable 12,                     !- Name
+  *,                                      !- Key Value
+  Chiller False Load Heat Transfer Energy, !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {ea0e43c4-8b66-4e0d-b38a-caf2154acae9}, !- Handle
+  Output Variable 13,                     !- Name
+  *,                                      !- Key Value
+  Chiller False Load Heat Transfer Rate,  !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+OS:Output:Variable,
+  {fed62916-bd79-4b72-ba6d-3d76e6c8bc15}, !- Handle
+  Output Variable 14,                     !- Name
+  *,                                      !- Key Value
+  Chiller Part Load Ratio,                !- Variable Name
+  Timestep;                               !- Reporting Frequency
+
+
+OS:Output:Variable,
+  {36f822f6-6ba3-4fe1-80c5-96202a3cec26}, !- Handle
+  Output Variable 21,                     !- Name
+  *,                                      !- Key Value
+  System Node Temperature,                !- Variable Name
+  Timestep;                               !- Reporting Frequency
