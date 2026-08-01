@@ -319,6 +319,7 @@ def get_idf_info(file_path):
             lines = [line.split('!')[0].strip().rstrip(',') for line in text.split('\n') if line.strip()]
             # Index 0: Class, 1: Handle, 2: Name, 3-8: Coefficients
             eirft_coeffs = lines[2:8]
+            eirft_coeffs = [float(coeff) for coeff in eirft_coeffs]
             if debug: 
                 print(f'Found EIRFT: {text}')
                 print(f'eirft_coeffs: {eirft_coeffs}')
@@ -331,6 +332,7 @@ def get_idf_info(file_path):
             lines = [line.split('!')[0].strip().rstrip(',') for line in text.split('\n') if line.strip()]
             # Index 0: Class, 1: Handle, 2: Name, 3-5: Coefficients
             fqratio_coeffs = lines[2:5]
+            fqratio_coeffs = [float(coeff) for coeff in fqratio_coeffs]
             if debug: 
                 print(f'Found fQRatio: {text}')
                 print(f'fqratio_coeffs: {fqratio_coeffs}')
@@ -359,81 +361,6 @@ def get_idf_info(file_path):
             min_ur = lines[14]
         except IndexError:
             print("[dynamic_charge_controls] Warning: Chiller:Electric:EIR section not found or bad data")
-
-    # # Regex to find the RunPeriod block
-    # # Matches from 'RunPeriod,' until the terminating semicolon ';'
-    # pattern = re.compile(r'RunPeriod,.*?;', re.DOTALL)
-    # match = pattern.search(content)
-
-    # # Split by comma or newline and strip whitespace/comments
-    # lines = match.group(0).split('\n')
-    # # Filter out empty lines and remove comments (everything after !)
-    # data = [line.split('!')[0].strip().rstrip(',') for line in lines if line.strip()]
-    # # Further clean to remove trailing commas from the split logic
-    # data = [item.strip(',') for item in data if item]
-
-    # try:
-    #     # Based on IDF schema for RunPeriod:
-    #     # Index 0: Name
-    #     # Index 1: Begin Month, 2: Begin Day, 3: Begin Year
-    #     # Index 4: End Month, 5: End Day, 6: End Year
-    #     start_date = f"{data[3]}-{data[1].zfill(2)}-{data[2].zfill(2)}"
-    #     end_date = f"{data[6]}-{data[4].zfill(2)}-{data[5].zfill(2)}"
-    # except IndexError:
-    #     print("[dynamic_charge_controls] Warning: Start and end date not found")
-    
-
-    # # Patterns to find the blocks starting with the class name and ending with ;
-    # # Using non-greedy matching (.*?) to isolate specific blocks
-    # biquad_pattern = re.compile(r'OS:Curve:Biquadratic,.*?;', re.DOTALL)
-    # quad_pattern = re.compile(r'OS:Curve:Quadratic,.*?;', re.DOTALL)
-
-    # # Find all Biquadratic curves to look for EIRFT
-    # for block in biquad_pattern.finditer(content):
-    #     text = block.group(0)
-    #     # Search for the Name line containing "EIRFT"
-    #     if "EIRFT" in text:
-    #         lines = [line.split('!')[0].strip().rstrip(',') for line in text.split('\n') if line.strip()]
-    #         # Index 0: Class, 1: Handle, 2: Name, 3-8: Coefficients
-    #         eirft_coeffs = lines[3:9]
-    #         break
-
-    # # Find all Quadratic curves to look for fQRatio
-    # for block in quad_pattern.finditer(content):
-    #     text = block.group(0)
-    #     # Search for the Name line containing "fQRatio"
-    #     if "fQRatio" in text:
-    #         lines = [line.split('!')[0].strip().rstrip(',') for line in text.split('\n') if line.strip()]
-    #         # Index 0: Class, 1: Handle, 2: Name, 3-5: Coefficients
-    #         fqratio_coeffs = lines[3:6]
-    #         break
-    
-    # # Count chillers: Only match "Chiller:Electric:EIR" if it starts a line (or follows a semicolon/newline)
-    # # This prevents counting the string if it appears inside a name or comment.
-    # num_chillers = len(re.findall(r'(?:^|\n)Chiller:Electric:EIR,', content))
-
-    # # Get specific values from the first Chiller:Electric:EIR block
-    # # Regex matches from "Chiller:Electric:EIR," until the terminating ";"
-    # chiller_pattern = re.compile(r'Chiller:Electric:EIR,.*?;', re.DOTALL)
-    # match = chiller_pattern.search(content)
-
-    # if match:
-    #     # Clean the block into a list of values, removing comments and trailing commas
-    #     lines = [line.split('!')[0].strip().rstrip(',') for line in match.group(0).split('\n') if line.strip()]
-        
-    #     try:
-    #         # Index 0: Class name
-    #         # Index 1: Name
-    #         # Index 2: Reference Capacity
-    #         # Index 3: Reference COP
-    #         ref_cop = lines[3]
-            
-    #         # Index 10: Minimum Part Load Ratio (count from start of list)
-    #         # Index 13: Minimum Unloading Ratio
-    #         min_plr = lines[10]
-    #         min_ur = lines[13]
-    #     except IndexError:
-    #         pass
 
     # return start_date, end_date, eirft_coeffs, fqratio_coeffs, num_chillers, ref_cop, min_plr, min_ur
     return {
@@ -978,7 +905,16 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     # loop while there are still hours left to test
     # note that h contains the remaining hours from the previous run
     # each run, 1 hour is eliminated
-    while (total_hours > len(hours_tested)+1+len(unavoidable_hours)) & (i<total_hours):
+
+    # If the number of hours sharing the current tied inc_cost value exceeds this threshold while
+    # searching for a non-unavoidable expensive hour, treat the schedule as fully optimized (no more
+    # meaningful improvements are distinguishable) and stop the outer loop, rather than looping
+    # through a large tied block that can never advance past an already-unavoidable low-index hour.
+    HOURS_WITH_SAME_INCREMENTAL_COST_THRESHOLD = 100
+    schedule_fully_optimized = False
+    # Otherwise, it will loop thorugh all available hours
+    # Note: added a /2 to speed up this loop, acknowledging where there are diminishing returns
+    while (total_hours/2 > len(hours_tested)+1+len(unavoidable_hours)) & (i<total_hours/2):
         # 1. find most expensive hour
         expensive_hour = sch.loc[sch['inc_cost'] == sch['inc_cost'].nlargest(1).iloc[-1]]
         
@@ -989,8 +925,29 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         while (i_expensive_hour in unavoidable_hours) & (skipped < total_hours):
             # print('Skipped expensive_hour index: ', i_expensive_hour)
             skipped += 1
-            expensive_hour = sch.loc[sch['inc_cost'] == sch['inc_cost'].nlargest(skipped).iloc[-1]]
+            nlargest_val = sch['inc_cost'].nlargest(skipped).iloc[-1]
+            matching_rows = sch.loc[sch['inc_cost'] == nlargest_val]
+
+            # A large tied block means a huge fraction of remaining hours share the same incremental
+            # cost -- there's no meaningful "most expensive hour" left to optimize, and this tie also
+            # causes the loop to repeatedly re-select the same lowest-index row within the block
+            # (since selection is by value, not position), which can never advance past an
+            # already-unavoidable hour. Stop the outer loop in this case.
+            if len(matching_rows.index) > HOURS_WITH_SAME_INCREMENTAL_COST_THRESHOLD:
+                if debug:
+                    print(f"Schedule considered fully optimized: {len(matching_rows.index)} hours tied at inc_cost={nlargest_val!r} (> {HOURS_WITH_SAME_INCREMENTAL_COST_THRESHOLD}); stopping optimization loop.")
+                schedule_fully_optimized = True
+                break
+
+            expensive_hour = matching_rows
+            prev_i_expensive_hour = i_expensive_hour
             i_expensive_hour = expensive_hour.index.to_list()[0]
+            # if debug:
+            #     print(f"DEBUG_SKIP: skipped={skipped}, nlargest_val={nlargest_val!r}, num_matching_rows={len(matching_rows.index)}, matching_indices={matching_rows.index.to_list()[:10]}, prev_i_expensive_hour={prev_i_expensive_hour}, new_i_expensive_hour={i_expensive_hour}, unchanged={prev_i_expensive_hour == i_expensive_hour}")
+        if schedule_fully_optimized:
+            break
+        if debug and skipped >= total_hours - 1:
+            print(f"DEBUG_SKIP: Inner skip loop hit safety bound skipped={skipped} >= total_hours-1={total_hours-1}. Final i_expensive_hour={i_expensive_hour}, still in unavoidable_hours={i_expensive_hour in unavoidable_hours}")
 
         # 2. calculate incremental cost in prior hours
 
@@ -1142,7 +1099,22 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         # decrease storage all subsequent hours - NO! Instead, 
         # sch2.loc[sch2.index > i_expensive_hour, 'Storage'] -= round(sum(amt_to_shift), 2)
         # reduce load
-        sch2.loc[sch2.index == i_expensive_hour, 'Cooling'] -= round(sum(amt_to_shift), 1) # cooling vs thermal load?
+        # if debug:
+        #     print(f"DEBUG_SHIFT: expensive_hour Cooling before = {sch2.loc[sch2.index == i_expensive_hour, 'Cooling'].iloc[0]}, sum(amt_to_shift) = {sum(amt_to_shift)}, round(sum(amt_to_shift),1) = {round(sum(amt_to_shift), 1)}")
+        rounded_shift = round(sum(amt_to_shift), 1)
+        sch2.loc[sch2.index == i_expensive_hour, 'Cooling'] -= rounded_shift # cooling vs thermal load?
+        # if debug:
+        #     print(f"DEBUG_SHIFT: expensive_hour Cooling after = {sch2.loc[sch2.index == i_expensive_hour, 'Cooling'].iloc[0]}")
+
+        # Detect tiny shifts that may cause errors: if the total shift rounds down to 0, the expensive hour's Cooling was not
+        # actually reduced (even though amt_to_shift may have nonzero raw values). Without this,
+        # the same expensive/cheap hour pair can be reselected indefinitely (up to total_hours times)
+        # since neither hour gets marked as tested/unavoidable in that scenario, causing a
+        # semi-infinite loop. Treat this expensive hour as unavoidable and move to the next iteration.
+        if rounded_shift == 0:
+            print(f"Warning: Shift to expensive hour {i_expensive_hour} ({expensive_hour['datetime'].iloc[0]}) rounded to 0 (raw sum(amt_to_shift)={sum(amt_to_shift)}); marking as unavoidable and skipping to avoid infinite loop.")
+            unavoidable_hours.append(i_expensive_hour)
+            continue
         # check issues
         if sch2.loc[sch2.index == i_expensive_hour, 'Cooling'].iloc[0] < 0:
             if sch2.loc[sch2.index == i_expensive_hour, 'Cooling'].iloc[0] < -1:
@@ -1169,6 +1141,9 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         sch2, curr_max_elec2 = applyDemandCharge(sch2, demand_charge_rate, cost='Electricity Rate [$/kWh]', elec = 'Electricity Consumption', demandWindow='Demand Period', demandCost='Demand Cost', debug=False) # check variable mapping!
         totalcost1 = sch['Cost [kWh]'].sum()+ sum([a/4*b for a,b in zip(curr_max_elec,demand_charge_rate)])
         totalcost2 = sch2['Cost [kWh]'].sum()+ sum([a/4*b for a,b in zip(curr_max_elec2,demand_charge_rate)])
+        # if debug:
+        #     sch_equal = sch.equals(sch2)
+        #     print(f"DEBUG_COST: iter={i}, totalcost1={totalcost1!r}, totalcost2={totalcost2!r}, diff={totalcost1-totalcost2!r}, sch.equals(sch2)={sch_equal}, i_expensive_hour={i_expensive_hour}, i_expensive_hour in hours_tested BEFORE update = {i_expensive_hour in hours_tested}, len(hours_tested)={len(hours_tested)}, len(unavoidable_hours)={len(unavoidable_hours)}")
 
         # Detect errors
         if sch2.loc[sch2.index == i_expensive_hour, 'Electricity Consumption'].iloc[0] < 0:
