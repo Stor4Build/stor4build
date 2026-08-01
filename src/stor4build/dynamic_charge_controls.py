@@ -519,7 +519,7 @@ def generate_electricity_prices(electric_rate, demand_charge_schedule, demand_ch
     # Extend through the end of that final day so the resulting time_index covers the same span as the
     # hourly-resampled baseline dataframe (which runs through 23:00 on the last day).
     end_of_last_day = pd.Timestamp(info['end_date']) + pd.Timedelta(days=1) - pd.Timedelta(seconds=info['timestep_s'])
-    time_index = pd.date_range(start=info['start_date'], end=end_of_last_day, freq=f"{info['timestep_s']}S")
+    time_index = pd.date_range(start=info['start_date'], end=end_of_last_day, freq=f"{info['timestep_s']}s")
     num_timesteps = len(time_index) / int(3600/info["timestep_s"])
 
     electric_rate = np_extend_repeat(np.array(electric_rate), num_timesteps)
@@ -687,7 +687,7 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     dfc["Electricity:Facility [W]"] = df["Electricity:Facility [J](TimeStep)"] / timestep_s
 
     # NOTE: Resampling here to be compatible with earlier code. There might be a more efficient place to put this
-    dfh = dfc.resample('H', on='datetime').mean()
+    dfh = dfc.resample('h', on='datetime').mean()
     # resample(..., on='datetime') sets 'datetime' as the index and drops it as a column;
     # keep it as a column too so it survives the set_index() call below unchanged
     dfh['datetime'] = dfh.index
@@ -728,7 +728,7 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     # Safety net: if dfh and prices don't perfectly align (e.g. differing lengths), the concat can
     # introduce NaNs which silently upcast integer columns like 'Demand Period' to float. Downstream
     # code uses 'Demand Period' values as list indices, so cast back to int here.
-    dfh['Demand Period'] = dfh['Demand Period'].fillna(method='ffill').fillna(method='bfill').astype(int)
+    dfh['Demand Period'] = dfh['Demand Period'].ffill().bfill().astype(int)
 
     dfh["Thermal Load [kW]"] = dfh["Thermal Load [W]"] / 1000
 
@@ -1084,9 +1084,9 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
 
             # Increase cost for future runs if it would set a new demand charge to run more operation at this hour again
             if amt_to_shift[c] >= remaining_above_hourly_demand_charge:
-                cheap_hours['inc_cost'].iloc[c] += demand_charge_rate[cheap_hours['Demand Period'].iloc[c]]
+                cheap_hours.iloc[c, cheap_hours.columns.get_loc('inc_cost')] += demand_charge_rate[cheap_hours['Demand Period'].iloc[c]]
             if amt_to_shift[c] >= remaining_above_overall_demand_charge:
-                cheap_hours['inc_cost'].iloc[c] += demand_charge_rate[-1]
+                cheap_hours.iloc[c, cheap_hours.columns.get_loc('inc_cost')] += demand_charge_rate[-1]
             # if cost due to demand charge becomes higher than what was previously next least expensive hour that is available,
             if (c + 1 < len(cheap_hours)) and (cheap_hours['inc_cost'].iat[c + 1] < cheap_hours['inc_cost'].iat[c]):
                 # restrict max to demand charge limits
