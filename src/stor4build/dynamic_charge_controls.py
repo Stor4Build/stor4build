@@ -12,7 +12,7 @@ import collections
 from epw import epw
 import sys
 
-debug = True
+debug = False
 
 def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
     """
@@ -47,9 +47,32 @@ def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
 
 
 def quadratic(x,a,b,c):
+    """
+    Evaluate a quadratic function.
+
+    Parameters:
+    - x: float, the independent variable
+    - a: float, constant term
+    - b: float, coefficient of linear term
+    - c: float, coefficient of quadratic term
+
+    Returns:
+    - float, the result of a + bx + cx^2
+    """
     return a + b*x + c*x**2
 
 def biquadratic(x,y,a,b,c,d,e,f):
+    """
+    Evaluate a biquadratic function of two variables.
+
+    Parameters:
+    - x: float, first independent variable
+    - y: float, second independent variable
+    - a, b, c, d, e, f: float, coefficients for the function
+
+    Returns:
+    - float, the result of a + bx + cx^2 + dy + ey^2 + fxy
+    """
     return a + b*x + c*x**2 + d*y + e*y**2 + f*x*y
 
 
@@ -84,6 +107,15 @@ def getCOPstaged(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
     - float or pd.Series with the calculated COP
     """
     def calculate_cop_single_load(single_load):
+        """
+        Calculate the COP for a single load across staged chillers.
+
+        Parameters:
+        - single_load: float, the thermal load to be distributed across chillers
+
+        Returns:
+        - float, the combined COP of the staged system
+        """
         if single_load <= 0: return COP_ref #987654.3
         remaining_load = single_load
         COP_list = []
@@ -132,6 +164,15 @@ def getCOPpaired(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 150
     - float or pd.Series with the calculated COP
     """
     def calculate_cop_single_load(single_load):
+        """
+        Calculate the COP for a single load using paired chiller operation.
+
+        Parameters:
+        - single_load: float, the thermal load to be distributed across chillers
+
+        Returns:
+        - float, the COP for the paired configuration
+        """
         if single_load <= 0: return COP_ref #987654.3
         PLR = max(single_load/(design_capacity_kW*num_chillers), min_unloading)
         EIRfPLR = quadratic(PLR, 0.222149, 0.503156,0.256905)
@@ -167,6 +208,22 @@ def getCOPoptimal(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 15
 
 
 def getCOP(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.04180, min_PLR=0.15, min_unloading=0.25, num_chillers=2):
+    """
+    Wrapper function that calculates the COP (currently using the paired chiller configuration, but can easily be pointed to a different configuration as needed)
+
+    Parameters:
+    - load: float or pd.Series, thermal load on chiller, kW
+    - T_cw: float or pd.Series, chilled water temperature, °C
+    - T_cond: float, condenser side temperature, °C
+    - COP_ref: float, reference COP constant for chiller
+    - design_capacity_kW: float, reference design capacity for chiller
+    - min_PLR: float, minimum PLR at which chiller can operate
+    - min_unloading: float, the unloading ratio for the chiller
+    - num_chillers: int, number of chillers
+
+    Returns:
+    - float or pd.Series with the calculated COP
+    """
     return getCOPpaired(load, T_cw, T_cond, COP_ref, design_capacity_kW, min_PLR, min_unloading, num_chillers)
 
 
@@ -174,8 +231,14 @@ def getCOP(load, T_cw, T_cond=25, COP_ref=6.1059, design_capacity_kW = 1505.0418
 
 def get_chiller_design_capacities(eio_path):
     """
-    Extracts the Initial Design Size Reference Capacity [W] for all 
+    Extracts the Initial Design Size Reference Capacity [W] for all
     Chiller:Electric:EIR components from an .eio file.
+
+    Parameters:
+    - eio_path: str, path to the EnergyPlus .eio output file
+
+    Returns:
+    - list, a list of design capacities (float) for each chiller found
     """
     if debug: print(f"[dynamic_charge_controls] run\nget_chiller_design_capacities({eio_path})")
 
@@ -202,6 +265,15 @@ def get_chiller_design_capacities(eio_path):
 
 
 def get_idf_info(file_path):
+    """
+    Parse an IDF file to extract chiller specifications and simulation run periods.
+
+    Parameters:
+    - file_path: str, path to the .idf file
+
+    Returns:
+    - dict, contains start_date, end_date, eirft_coeffs, fqratio_coeffs, num_chillers, ref_cop, min_plr, and min_ur
+    """
     if debug: print(f"[dynamic_charge_controls] run\nget_idf_info({file_path})")
 
     with open(file_path, 'r') as f:
@@ -222,34 +294,46 @@ def get_idf_info(file_path):
     if rp_match:
         # Clean the block into a list of values, removing comments and trailing commas
         lines = [line.split('!')[0].strip().rstrip(',') for line in rp_match.group(0).split('\n') if line.strip()]
+
+        # Drop the object type line ("RunPeriod") itself, keeping only the field values
+        if lines and lines[0].strip().lower() == 'runperiod':
+            lines = lines[1:]
+
         try:
             # Based on IDF schema for RunPeriod:
             # Index 0: Name
             # Index 1: Begin Month, 2: Begin Day, 3: Begin Year
             # Index 4: End Month, 5: End Day, 6: End Year
-            # Use zfill only if the value exists
             start_date = f"{lines[3]}-{lines[1].zfill(2)}-{lines[2].zfill(2)}"
             end_date = f"{lines[6]}-{lines[4].zfill(2)}-{lines[5].zfill(2)}"
+            if debug: print(f"RunPeriod: {start_date}   to   {end_date}")
         except (IndexError, AttributeError):
             print("[dynamic_charge_controls] Warning: RunPeriod data malformed")
 
     # --- Curves ---
     # EIRFT (Biquadratic)
-    for block in re.finditer(r'OS:Curve:Biquadratic,.*?;', content, re.DOTALL):
+    # for block in re.finditer(r'OS:Curve:Biquadratic,.*?;', content, re.DOTALL):
+    for block in re.finditer(r'Curve:Biquadratic,.*?;', content, re.DOTALL):
         text = block.group(0)
         if "EIRFT" in text:
             lines = [line.split('!')[0].strip().rstrip(',') for line in text.split('\n') if line.strip()]
             # Index 0: Class, 1: Handle, 2: Name, 3-8: Coefficients
-            eirft_coeffs = lines[3:9]
+            eirft_coeffs = lines[2:8]
+            if debug: 
+                print(f'Found EIRFT: {text}')
+                print(f'eirft_coeffs: {eirft_coeffs}')
             break
 
     # fQRatio (Quadratic)
-    for block in re.finditer(r'OS:Curve:Quadratic,.*?;', content, re.DOTALL):
+    for block in re.finditer(r'Curve:Quadratic,.*?;', content, re.DOTALL):
         text = block.group(0)
         if "fQRatio" in text:
             lines = [line.split('!')[0].strip().rstrip(',') for line in text.split('\n') if line.strip()]
             # Index 0: Class, 1: Handle, 2: Name, 3-5: Coefficients
-            fqratio_coeffs = lines[3:6]
+            fqratio_coeffs = lines[2:5]
+            if debug: 
+                print(f'Found fQRatio: {text}')
+                print(f'fqratio_coeffs: {fqratio_coeffs}')
             break
     
     # --- Chiller Info ---
@@ -261,6 +345,7 @@ def get_idf_info(file_path):
 
     chiller_match = re.search(r'Chiller:Electric:EIR,.*?;', content, re.DOTALL)
     if chiller_match:
+        # if debug: print(f'Found chiller_match: {chiller_match}')
         lines = [line.split('!')[0].strip().rstrip(',') for line in chiller_match.group(0).split('\n') if line.strip()]
         try:
             # Index 0: Class name
@@ -268,10 +353,10 @@ def get_idf_info(file_path):
             # Index 2: Reference Capacity
             # Index 3: Reference COP
             ref_cop = lines[3]
-            # Index 10: Minimum Part Load Ratio (count from start of list)
-            # Index 13: Minimum Unloading Ratio
-            min_plr = lines[10]
-            min_ur = lines[13]
+            # Index 11: Minimum Part Load Ratio
+            # Index 14: Minimum Unloading Ratio
+            min_plr = lines[11]
+            min_ur = lines[14]
         except IndexError:
             print("[dynamic_charge_controls] Warning: Chiller:Electric:EIR section not found or bad data")
 
@@ -365,7 +450,13 @@ def get_idf_info(file_path):
 
 def get_icetank_specs(num_tanks):
     """
-    Placeholder function for getting icetank specs
+    Calculate ice tank specifications based on the number of tanks. NOTE: Future development should get this from the icetank definitions rather than hardcoded values for robustness. This seems to work for now.
+
+    Parameters:
+    - num_tanks: int, number of ice storage tanks
+
+    Returns:
+    - dict, contains total_capacity, usable_TES_capacity, discharge_rate, charge_rate, loss_rate, and Q_env
     """
 
     total_capacity = 668*num_tanks #kWh
@@ -395,26 +486,40 @@ def get_icetank_specs(num_tanks):
 
 def generate_electricity_prices(electric_rate, demand_charge_schedule, demand_charge_rate, info):
     """
-    Placeholder function to get electricity prices
+    Generate a yearly electricity price and demand charge schedule. 
+    NOTE: This function may be replaced later on with something more sophisticated. 
 
-    Parameters
-    - electric_rate: 24-hour array
+    Parameters:
+    - electric_rate: list or array, 24-hour electricity rates
+    - demand_charge_schedule: list or array, 24-hour demand charge period mappings
+    - demand_charge_rate: list, rates for different demand periods and overall demand
+    - info: dict, contains simulation timing information (start_date, end_date, timestep_s)
 
-    Key output is an 8760 dataframe 
-    - index: hour of year
-    - "Electricity Rate": $/kWh
-    - "TOU Demand Rate": $/kW
-    - "Overall Demand Rate": 
-    - "Demand Period": demand charge period, where lower number is lower cost
+    Returns:
+    - pd.DataFrame, containing datetime, Electricity Rate [$/kWh], Demand Period, and Overall Demand Rate [$/kW]
     """
     def np_extend_repeat(arr, target_length):
+        """
+        Extend an array by repeating its elements sequentially until the target length is reached.
+
+        Parameters:
+        - arr: np.array, the base array to repeat
+        - target_length: int, the desired final length of the array
+
+        Returns:
+        - np.array, the extended array
+        """
         i = 0
         while len(arr) < target_length:
             arr = np.append(arr, arr[i])
             i += 1
         return arr
 
-    time_index = pd.date_range(start=info['start_date'], end=info['end_date'], freq=f"{info['timestep_s']}S")
+    # info['end_date'] is a date-only string (e.g. '2006-12-31'), which pandas interprets as midnight.
+    # Extend through the end of that final day so the resulting time_index covers the same span as the
+    # hourly-resampled baseline dataframe (which runs through 23:00 on the last day).
+    end_of_last_day = pd.Timestamp(info['end_date']) + pd.Timedelta(days=1) - pd.Timedelta(seconds=info['timestep_s'])
+    time_index = pd.date_range(start=info['start_date'], end=end_of_last_day, freq=f"{info['timestep_s']}S")
     num_timesteps = len(time_index) / int(3600/info["timestep_s"])
 
     electric_rate = np_extend_repeat(np.array(electric_rate), num_timesteps)
@@ -432,7 +537,22 @@ def generate_electricity_prices(electric_rate, demand_charge_schedule, demand_ch
 # Calculate demand charge
 # demand charge will only be the incremental over the next highest hour for purposes of algorithm
 # demand_charge_rate = [group0, group1, group2, ..., overall]
-def applyDemandCharge(df_in, demand_charge_rate, cost='Electricity Rate [$/kWh]', elec = 'Electricity Consumption', demandWindow='Demand Charge Schedule', demandCost='Demand Cost', debug=False):
+def applyDemandCharge(df_in, demand_charge_rate, cost='Electricity Rate [$/kWh]', elec = 'Electricity Consumption', demandWindow='Demand Period', demandCost='Demand Cost', debug=False):
+    """
+    Calculate and apply demand charges to a power consumption dataframe.
+
+    Parameters:
+    - df_in: pd.DataFrame, input dataframe containing power consumption and demand windows
+    - demand_charge_rate: list, rates for different demand charge periods
+    - cost: str, column name for electricity rate
+    - elec: str, column name for electricity consumption
+    - demandWindow: str, column name for the demand charge period schedule
+    - demandCost: str, output column name for calculated demand costs
+    - debug: bool, whether to print debug information
+
+    Returns:
+    - tuple (pd.DataFrame, list), the modified dataframe and a list of peak consumption levels per window
+    """
     df = df_in.copy()
     df[demandCost] = 0.0
     curr_max_elec = [0]*len(demand_charge_rate)
@@ -467,7 +587,17 @@ def applyDemandCharge(df_in, demand_charge_rate, cost='Electricity Rate [$/kWh]'
 
 def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None, epw_file=None):
     """
-    Function to set up baseline data, prices, and info dictionary
+    Process baseline simulation results to set up baseline data dataframes and info dictionary.
+
+    Parameters:
+    - baseline_run_path: str, path to the folder containing EnergyPlus output files
+    - demand_charge_schedule: array, optional custom demand charge schedule
+    - demand_charge_rate: list, optional custom demand charge rates
+    - electric_rate: list, optional custom electricity rates
+    - epw_file: str, optional path to weather file for fallback OAT data
+
+    Returns:
+    - tuple (pd.DataFrame, dict), processed baseline dataframe and a dictionary of system specifications
     """
 
     print(f'[dynamic_charge_controls] Processing baseline from: {baseline_run_path}')
@@ -480,7 +610,7 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
         print(f'[dynamic_charge_controls] got chiller capacities of {info["chiller_capacities"]}')
         print('Check if EnergyPlus was able to run in.idf (check err file) before checking get_chiller_design_capacities')
     
-    info["design_capacity_kw"] = info["chiller_capacities"][0]/1000 # assume all chillers are the same and convert W to kW
+    info["design_capacity_kW"] = info["chiller_capacities"][0]/1000 # assume all chillers are the same and convert W to kW
 
     file_path = os.path.join(baseline_run_path, "eplusout.csv")
     df = read_eplusout_skip_sizing(file_path, date_column = 'Date/Time')
@@ -504,10 +634,10 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     try:
         dfc['Dry Bulb Temperature'] = df['Environment:Site Outdoor Air Drybulb Temperature [C](TimeStep)']
     except KeyError:
-        print('[dynamic_charge_controls] Warning: No OAT data available in the output file, using epw file as fallback')
-        
         # Try explicitly provided epw_file first, then fallback to in.epw in baseline_run_path
         epw_path = epw_file if epw_file else os.path.join(baseline_run_path, "in.epw")
+
+        print(f'[dynamic_charge_controls] Warning: No OAT data available in the output file, using epw file: {epw_path}')
         
         a=epw()
         a.read(epw_path)
@@ -558,6 +688,9 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
 
     # NOTE: Resampling here to be compatible with earlier code. There might be a more efficient place to put this
     dfh = dfc.resample('H', on='datetime').mean()
+    # resample(..., on='datetime') sets 'datetime' as the index and drops it as a column;
+    # keep it as a column too so it survives the set_index() call below unchanged
+    dfh['datetime'] = dfh.index
     # fix timestep_s
     info["original_timestep_s"] = info["timestep_s"]
     info["timestep_s"] = 3600
@@ -587,18 +720,50 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     dfh.set_index("datetime", inplace=True)
     prices.set_index("datetime", inplace=True)
 
+    if len(dfh) != len(prices):
+        print(f"[dynamic_charge_controls] Warning: dfh ({len(dfh)} rows) and prices ({len(prices)} rows) have different lengths; concat may introduce NaNs")
+
     dfh = pd.concat([dfh, prices] , axis=1)
+
+    # Safety net: if dfh and prices don't perfectly align (e.g. differing lengths), the concat can
+    # introduce NaNs which silently upcast integer columns like 'Demand Period' to float. Downstream
+    # code uses 'Demand Period' values as list indices, so cast back to int here.
+    dfh['Demand Period'] = dfh['Demand Period'].fillna(method='ffill').fillna(method='bfill').astype(int)
 
     dfh["Thermal Load [kW]"] = dfh["Thermal Load [W]"] / 1000
 
-    return dfc, info
+    dfh['Storage'] = 0.0
+    dfh['Cooling'] = dfh['Thermal Load [kW]'] # Do NOT change all instances of 'Cooling' to 'Thermal Load [kW]' -- they will mean different things later on, 'Cooling' is how much cooling it will do in that hour (using storage to make up the diff) whereas 'Thermal Load [kW]' is the building load which can be met by chiller operation or storage.
+    # dfh['Demand Charge Schedule'] = dfh['Demand Period'] # changed all of these to 'Demand Period' already
+    dfh['COP'] = getCOP(dfh['Thermal Load [kW]'], 6.7)
+    dfh['Electricity Consumption'] = dfh['Cooling'] / dfh['COP'] # electricity used to meet 'Cooling'; kept in sync with 'Cooling'/'COP' updates made throughout generate_schedule()
+    dfh['Cost [kWh]'] = dfh['Electricity Rate [$/kWh]'] * dfh['Electricity Consumption']
+
+    # set_index() above drops 'datetime' as a column (it becomes the index only);
+    # restore it as a column too since downstream code (generate_schedule, etc.) expects df['datetime'] to work
+    dfh['datetime'] = dfh.index
+
+    return dfh, info
 
 def consolidate_charging_hours(sch, demand_charge_rate):
+    """
+    Shift isolated single-hour charging events to be extend the beginning or end of an existing period with multi-hour charging to avoid inefficient operation. With the adaptive charge temperature, charging for 1 hour wastes electricity but does not lead to a net increase in SOC. 
+
+    Parameters:
+    - sch: pd.DataFrame, the charge schedule containing costs and charging status
+    - demand_charge_rate: list, rates for different demand charge periods
+
+    Returns:
+    - pd.DataFrame, the updated schedule with consolidated charging hours
+    """
     # Calculate the max cost threshold once
     cost_threshold = 0.5 * sch['inc_cost'].max()
     
     # Ensure the dataframe is sorted chronologically before running this
     # sch = sch.sort_index() 
+
+    # Create charging col
+    sch['charging'] = sch['Cooling'] - sch['Thermal Load [kW]']
 
     # Iterate through the DataFrame
     # Starting at index 1 and ending at len-1 to safely check i-1 and i+1
@@ -639,7 +804,7 @@ def consolidate_charging_hours(sch, demand_charge_rate):
                     
                     low_demand_charge = True
                     if len(demand_charge_rate) > 2:
-                        low_demand_charge = (demand_charge_rate[sch['Demand Charge Schedule'].iloc[j]] < max(demand_charge_rate))
+                        low_demand_charge = (demand_charge_rate[sch['Demand Period'].iloc[j]] < max(demand_charge_rate))
                     
                     if adjacent_to_charge and below_threshold and low_demand_charge:
                         # If multiple valid 'j' hours exist, track the one with the lowest cost
@@ -665,6 +830,17 @@ def consolidate_charging_hours(sch, demand_charge_rate):
 
 
 def generate_schedule_file(dms, info, file_path):
+    """
+    Create and save a CSV schedule file for the EnergyPlus simulation.
+
+    Parameters:
+    - dms: pd.DataFrame, the optimized schedule data
+    - info: dict, simulation information including year and timesteps_per_hour
+    - file_path: str, path where the resulting CSV file will be saved
+
+    Returns:
+    - None
+    """
     if debug: print(f"[dynamic_charge_controls] run\ngenerate_schedule_file({dms}, {info}, {file_path})")
 
     YEAR = info["year"] 
@@ -724,20 +900,20 @@ def generate_schedule_file(dms, info, file_path):
     #    and isolate only the columns we need to merge
     dms_subset = dms.rename(columns={"charge_temperature": "chrg_temp"})[['datetime', 'mode', 'chrg_temp']].copy()
 
-    # --------------------------------------------------------------
-    # Apply Daylight Savings Time (DST) Shift
-    # --------------------------------------------------------------
-    # In 2006, US DST started April 2 and ended October 29.
-    dst_start = pd.Timestamp(f'{YEAR}-04-02 02:00:00')
-    dst_end   = pd.Timestamp(f'{YEAR}-10-29 02:00:00')
+    # # --------------------------------------------------------------
+    # # Apply Daylight Savings Time (DST) Shift
+    # # --------------------------------------------------------------
+    # # In 2006, US DST started April 2 and ended October 29.
+    # dst_start = pd.Timestamp(f'{YEAR}-04-02 02:00:00')
+    # dst_end   = pd.Timestamp(f'{YEAR}-10-29 02:00:00')
 
-    # Create a boolean mask for dates falling within the DST period
-    is_dst = (dms_subset['datetime'] >= dst_start) & (dms_subset['datetime'] < dst_end)
+    # # Create a boolean mask for dates falling within the DST period
+    # is_dst = (dms_subset['datetime'] >= dst_start) & (dms_subset['datetime'] < dst_end)
 
-    # Shift the datetime 1 hour earlier for DST, as specified
-    # Note: If you find that standard time (PST) needs to jump FORWARD to match local PDT, 
-    # simply change `- pd.Timedelta` to `+ pd.Timedelta` below.
-    dms_subset.loc[is_dst, 'datetime'] -= pd.Timedelta(hours=1)
+    # # Shift the datetime 1 hour earlier for DST, as specified
+    # # Note: If you find that standard time (PST) needs to jump FORWARD to match local PDT, 
+    # # simply change `- pd.Timedelta` to `+ pd.Timedelta` below.
+    # dms_subset.loc[is_dst, 'datetime'] -= pd.Timedelta(hours=1)
 
     # --------------------------------------------------------------
     # Integrate into the Annual Schedule (df)
@@ -780,6 +956,11 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     unavoidable_hours = []
 
     sch = df.loc[(df['datetime'] >= info["start_date"]) & (df['datetime'] <= info["end_date"])]
+    # df comes from preprocess_baseline() with a DatetimeIndex ('datetime' set as the index).
+    # The optimization loop below relies on a plain sequential integer index (e.g. cheap_hour.name + 1
+    # meaning "the next hour", int(cheap_hour.name) casts, etc.), so reset to a RangeIndex here while
+    # keeping 'datetime' available as a regular column for date-based filtering/lookups.
+    sch = sch.reset_index(drop=True)
 
     sch, curr_max_elec = applyDemandCharge(sch, demand_charge_rate, cost='Electricity Rate [$/kWh]', elec = 'Electricity:Facility [kW]', demandWindow='Demand Period', demandCost='Demand Cost', debug=False)
 
@@ -854,7 +1035,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         for idc in range(len(demand_charge_rate)-1):
             # the minimum amount of charging for that hour won't cause new demand charge
             # min amt charging is 15 min (probably shouldn't be hardcoded)
-            h.loc[(h['Demand Charge Schedule']==idc) & ((h['Electricity Consumption']+ info['charge_rate']/4/h['COP_c']) >= curr_max_elec[idc]), 'inc_demand'] += demand_charge_rate[idc]
+            h.loc[(h['Demand Period']==idc) & ((h['Electricity Consumption']+ info['charge_rate']/4/h['COP_c']) >= curr_max_elec[idc]), 'inc_demand'] += demand_charge_rate[idc]
         # if the minimum unit of charging would set a new max electric consumption, set a higher cost
         h.loc[(h['Electricity Consumption']+ info['charge_rate']/15/h['COP_c']) >= curr_max_elec[-1], 'inc_demand'] += demand_charge_rate[-1]
 
@@ -881,7 +1062,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         while (c < len(cheap_hours.index)) and (cheap_hours['inc_cost'].iloc[c] < expensive_hour['inc_cost'].iloc[0]) and (remaining_load_expensive_hour > 0):
             cheap_hour = cheap_hours.iloc[c]
             remaining_chiller_cap = info['design_capacity_kW']*info['num_chillers'] - cheap_hours['Cooling'].iloc[c]
-            remaining_above_hourly_demand_charge = (curr_max_elec[cheap_hours['Demand Charge Schedule'].iloc[c]] - cheap_hours['Electricity Consumption'].iloc[c]) * cheap_hours['COP_c'].iloc[c]
+            remaining_above_hourly_demand_charge = (curr_max_elec[cheap_hours['Demand Period'].iloc[c]] - cheap_hours['Electricity Consumption'].iloc[c]) * cheap_hours['COP_c'].iloc[c]
             remaining_above_overall_demand_charge = (curr_max_elec[-1] - cheap_hours['Electricity Consumption'].iloc[c]) * cheap_hours['COP_c'].iloc[c]
             # Need to check hours between cheap_hour and expensive_hour, because suppose SOC went up and down again
             # between cheap_hours[c] and expensive_hour
@@ -896,14 +1077,14 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             remaining_charge_c = info['charge_rate'] - curr_charge_c
             if debug: print(f"remaining_charge_c = {remaining_charge_c}")
 
-            if demand_charge_rate[cheap_hours['Demand Charge Schedule'].iloc[c]] > demand_charge_rate[expensive_hour['Demand Charge Schedule'].iloc[0]]:
+            if demand_charge_rate[cheap_hours['Demand Period'].iloc[c]] > demand_charge_rate[expensive_hour['Demand Period'].iloc[0]]:
                 amt_to_shift[c] = max(min(remaining_chiller_cap, remaining_above_hourly_demand_charge, remaining_above_overall_demand_charge, remaining_load_expensive_hour, remaining_charge_c, info['discharge_rate'], remaining_TES_cap),0) # added max condition to ensure this isn't negative
             else:
                 amt_to_shift[c] = max(min(remaining_chiller_cap, remaining_load_expensive_hour, remaining_charge_c, info['discharge_rate'], remaining_TES_cap),0)
 
             # Increase cost for future runs if it would set a new demand charge to run more operation at this hour again
             if amt_to_shift[c] >= remaining_above_hourly_demand_charge:
-                cheap_hours['inc_cost'].iloc[c] += demand_charge_rate[cheap_hours['Demand Charge Schedule'].iloc[c]]
+                cheap_hours['inc_cost'].iloc[c] += demand_charge_rate[cheap_hours['Demand Period'].iloc[c]]
             if amt_to_shift[c] >= remaining_above_overall_demand_charge:
                 cheap_hours['inc_cost'].iloc[c] += demand_charge_rate[-1]
             # if cost due to demand charge becomes higher than what was previously next least expensive hour that is available,
@@ -936,7 +1117,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
 
             # increase storage for all subsequent hours - EDIT: only the ones up to the expensive hour!
             sch2.loc[(sch2.index > cheap_hour.name) & (sch2.index < i_expensive_hour), 'Storage'] += amt_to_shift[c]
-            if len(sch2.loc[(sch2.index > cheap_hour.name) & (sch2['Storage']> usable_TES_capacity)].index)>0 : print('Warning: Storage capacity exceeded for:', sch2.loc[(sch2.index > cheap_hour.name) & (sch2['Storage']> usable_TES_capacity), ['datetime', 'Storage']])
+            if len(sch2.loc[(sch2.index > cheap_hour.name) & (sch2['Storage']> info['usable_TES_capacity'])].index)>0 : print('Warning: Storage capacity exceeded for:', sch2.loc[(sch2.index > cheap_hour.name) & (sch2['Storage']> info['usable_TES_capacity']), ['datetime', 'Storage']])
             sch2.loc[sch2.index == cheap_hour.name, 'Cooling'] += amt_to_shift[c]
             sch2.loc[sch2.index == cheap_hour.index.to_list()[0], 'Electricity Consumption'] = sch2.loc[sch2.index == cheap_hour.index.to_list()[0], 'Cooling'] / cheap_hour['COP_c']
             sch2.loc[sch2.index == cheap_hour.index.to_list()[0], 'Cost [kWh]'] = sch2.loc[sch2.index == cheap_hour.index.to_list()[0], rate] * sch2.loc[sch2.index == cheap_hour.index.to_list()[0], 'Electricity Consumption'] 
@@ -1014,7 +1195,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             # remove duplicates from hours_tested
             hours_tested = list(set(hours_tested))
             # if i_expensive_hour in hours_tested: hours_tested.remove(i_expensive_hour) # ADDED 20250930 as attempt to debug issue of moving operation to part peak, see Bakersfiedl_Debug_3-allow-repeat-test
-            # if (i_expensive_hour in hours_tested) & (sch2.loc[sch2.index == i_expensive_hour, 'Demand Charge Schedule'].iloc[0] >= len(demand_charge_rate)-1): hours_tested.remove(i_expensive_hour) # ADDED 20250930 as attempt to debug issue of moving operation to part peak, see Bakersfiedl_Debug_4_Select-repeat-test
+            # if (i_expensive_hour in hours_tested) & (sch2.loc[sch2.index == i_expensive_hour, 'Demand Period'].iloc[0] >= len(demand_charge_rate)-1): hours_tested.remove(i_expensive_hour) # ADDED 20250930 as attempt to debug issue of moving operation to part peak, see Bakersfiedl_Debug_4_Select-repeat-test
             unavoidable_hours = list(set(unavoidable_hours))
             for iex in [1,2,3,4]:
                 if i_expensive_hour + iex in unavoidable_hours: unavoidable_hours.remove(i_expensive_hour + iex)
@@ -1033,14 +1214,14 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     # Second loop to generate schedule for charging and discharging periods and set charging temperatures
     # -------------------------------------------
 
-    dms = sch[['datetime', 'Thermal Load [kW]', rate, 'Dry Bulb Temperature','Demand Charge Schedule', 'COP', 'Cooling','Cost [kWh]', 'Electricity Consumption', 'Storage']]
+    dms = sch[['datetime', 'Thermal Load [kW]', rate, 'Dry Bulb Temperature','Demand Period', 'COP', 'Cooling','Cost [kWh]', 'Electricity Consumption', 'Storage']]
 
     previous_state = 10 # starting at 6.7 can cause spike in first timestep
     timesteps_per_hour = int(3600/info["original_timestep_s"]) # 30 = 2 minutes # MUST BE DIVISIBLE BY 4
     info['timesteps_per_hour'] = timesteps_per_hour
     last_charge_time = datetime.datetime(1987,1,1,0,0) # arbitrary initial value for tracking cooling, must be before start of simulation
 
-    min_operation_increment = min_PLR * design_capacity_kW / timesteps_per_hour
+    min_operation_increment = float(info['min_plr']) * info['design_capacity_kW'] / timesteps_per_hour
     # print('min_operation_increment =', min_operation_increment)
 
     chiller_mode_schedule = [0] * (len(sch.index) * timesteps_per_hour)
@@ -1073,7 +1254,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         # if load <= 0.001: # this might be a bug
         #     i += 1
         #     continue
-        demand_period = dms['Demand Charge Schedule'].iloc[i]
+        demand_period = dms['Demand Period'].iloc[i]
         wsch = []
 
         # figure out infinite loop issue with the fudge factor
@@ -1095,8 +1276,8 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
                 if (load < dms['Thermal Load [kW]'].max()) and (demand_period <= 1):
                     # if next hour will charge
                     if i < (len(sch.index) - 1):
-                        # if (dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > 0) and (dms['Cooling'].iloc[i+1] + min_operation_increment > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Demand Charge Schedule'].iloc[i+1] < len(demand_charge_rate)-2):
-                        if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Charge Schedule'].iloc[i] < len(demand_charge_rate)-2) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
+                        # if (dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > 0) and (dms['Cooling'].iloc[i+1] + min_operation_increment > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Demand Period'].iloc[i+1] < len(demand_charge_rate)-2):
+                        if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Period'].iloc[i] < len(demand_charge_rate)-2) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
                             print(f"begin charge early instead of Discharge: {i}, original cooling {dms['Cooling'].iloc[i]} kWh")
                             # make this hour charge
                             next_hr_diff = dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1]
@@ -1112,8 +1293,8 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
         elif (cooling > load + 0.1) & (cooling>min_operation_increment) & (demand_period < len(demand_charge_rate)-2):
             # ^^^ added condition to not charge in highest demand cost periods
             # charge
-            remaining_chiller_cap = design_capacity_kW*num_chillers - load
-            full_charge_effect = min(remaining_chiller_cap , charge_rate)
+            remaining_chiller_cap = info['design_capacity_kW']*info['num_chillers'] - load
+            full_charge_effect = min(remaining_chiller_cap , info['charge_rate'])
             # print('full_charge_effect =', full_charge_effect)
             charge_amt = cooling - load
             # print('target charge_amt =', charge_amt)
@@ -1129,7 +1310,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             # Look back and ahead to avoid short-term changes in charging temperature
             if (target_T > previous_state) and (i < (len(sch.index) - 1)): # temps are negative, so greater Target T means less cooling req
                 # if next hour would also charge
-                if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Charge Schedule'].iloc[i] == 0) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
+                if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Period'].iloc[i] == 0) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
                     # if that next hour cooling is greater than this hour's
                     if cooling < dms['Cooling'].iloc[i+1]:
                         # don't decrease target_T vs previous_state
@@ -1193,8 +1374,8 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             # if next hour exists
             if i < (len(sch.index) - 1):
                 # if next hour will charge
-                # if (dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > 0) and (dms['Cooling'].iloc[i+1] + min_operation_increment > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Demand Charge Schedule'].iloc[i+1] < len(demand_charge_rate)-2):
-                if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Charge Schedule'].iloc[i] ==0) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
+                # if (dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > 0) and (dms['Cooling'].iloc[i+1] + min_operation_increment > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Demand Period'].iloc[i+1] < len(demand_charge_rate)-2):
+                if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Period'].iloc[i] ==0) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
                     # print(f"fudge factor b active: {i}, original cooling {dms['Cooling'].iloc[i]} kWh")
                     # make this hour charge
                     next_hr_diff = dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1]
@@ -1253,7 +1434,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             .rename(columns={'index': 'datetime'}))
 
     dms1[rate] = dms2[rate]
-    dms1['Demand Charge Schedule'] = dms2['Demand Charge Schedule']
+    dms1['Demand Period'] = dms2['Demand Period']
 
 
     output_path = os.path.join(baseline_run_path, "..", "..", "dynamic_charge_schedule.csv")
