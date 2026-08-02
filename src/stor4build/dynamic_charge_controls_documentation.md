@@ -59,7 +59,19 @@ The optimization relies on being able to obtain the baseline electric and therma
 - baseline loads and performance: from eplusout.csv from the baseline run
 - chiller parameters: from input .idf generated
 
-The only function we call directly is `generate_schedule()`. This 
+The only function we call directly is `generate_schedule()`. This calls other functions as necessary to get the required inputs for the scheduling. 
+
+### Using `generate_schedule()`
+
+Parameters
+- `baseline_run_path`: os.path, to "run" folder where the results from the baseline went
+- `demand_charge_schedule`: list or array, 24-hour demand charge period schedule, with different periods mapped to integers. The lowest cost period should be `0`, then the next highest `1`, `2`, etc. If not provided, will default to a sample schedule. 
+- `demand_charge_rate`: list, rates for different demand periods and overall demand. The indexes map to the numbering in demand_charge_schedule, such that the lowest cost period demand charge is in index `0`, then the next highest in index `1`, etc. The length should be 1 more than the number of different demand_charge_schedule periods. The final entry, index `-1`, is an overall demand charge applied to the highest consumption regardless of time. Any of these may be 0, but all must be included for the code to work correctly. If not provided, will default to a sample tariff rate. 
+- `electric_rate`: list or array, 24-hour electricity rates in $/kWh. If not provided, will default to a sample rate schedule. 
+- `epw_file`: os.path, to the EnergyPlus Weather file (.epw) used to run the simulation. If none, it will default to in.epw (note: current stor4build repo does not create the in.epw, so it will likely crash if not provided)
+
+Returns
+- os.path to the resulting schedule file (.csv) containing the optimized charging schedule and charging temperature, in the format required for the add_pytank_with_schedule measure
 
 ## Impacts on other files/codes in the repo
 1. The OSM file needs some of the `OS:Output:Variable` outputs that were removed since the old s4b repo, as these are inputs to the dynamic charge controls. We added them back to some of the `.osm` files. See the "Add Output:Variable to osm files for dynamic charge controls" commit. 
@@ -75,8 +87,10 @@ __Controls Schedule Issues:__ During testing, periods of up to 1 month in the su
 
 __Python Warnings__: There are a few FutureWarnings that pop up when running the code. We fixed most of them, but a few are still lurking. We tested with Python 3.13 and 3.8. If others using newer versions get an actual error due to these, let us know and we'll figure it out. 
 
-__Modifying/Recompiling__: if anything is changed in the Python scripts, first need to run this command to reflect the changes when running stor4build commands
+__Modifying/Recompiling__: if anything is changed in the Python scripts, first need to run this command to reflect the changes when running stor4build commands. 
 
 ```bash
 pip uninstall stor4build -y && pip install . 
 ```
+
+Changes to measure.rb scripts do not require this.

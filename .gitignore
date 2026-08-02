@@ -166,3 +166,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Temporary folders created for testing the dyanmic charge controls
+results_temp/
+results/

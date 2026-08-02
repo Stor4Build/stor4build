@@ -442,9 +442,9 @@ def generate_electricity_prices(electric_rate, demand_charge_schedule, demand_ch
     NOTE: This function may be replaced later on with something more sophisticated. 
 
     Parameters:
-    - electric_rate: list or array, 24-hour electricity rates
-    - demand_charge_schedule: list or array, 24-hour demand charge period mappings
-    - demand_charge_rate: list, rates for different demand periods and overall demand
+    - electric_rate: list or array, 24-hour electricity rates in $/kWh
+    - demand_charge_schedule: list or array, 24-hour demand charge period schedule, with different periods mapped to integers. The lowest cost period should be `0`, then the next highest `1`, `2`, etc.
+    - demand_charge_rate: list, rates for different demand periods and overall demand. The indexes map to the numbering in demand_charge_schedule, such that the lowest cost period demand charge is in index 0, then the next highest in index 1, etc. The length should be 1 more than the number of different demand_charge_schedule periods. The final entry, index -1, is an overall demand charge applied to the highest consumption regardless of time. Any of these may be 0, but all must be included for the code to work correctly. 
     - info: dict, contains simulation timing information (start_date, end_date, timestep_s)
 
     Returns:
@@ -878,10 +878,14 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     Generates the optimized load shifting schedule using dynamic charge controls. 
 
     Parameters
-    - baseline_run_path: os.path, to run folder where the results from the baseline went
+    - baseline_run_path: os.path, to "run" folder where the results from the baseline went
+    - demand_charge_schedule: list or array, 24-hour demand charge period schedule, with different periods mapped to integers. The lowest cost period should be `0`, then the next highest `1`, `2`, etc. If not provided, will default to a sample schedule. 
+    - demand_charge_rate: list, rates for different demand periods and overall demand. The indexes map to the numbering in demand_charge_schedule, such that the lowest cost period demand charge is in index 0, then the next highest in index 1, etc. The length should be 1 more than the number of different demand_charge_schedule periods. The final entry, index -1, is an overall demand charge applied to the highest consumption regardless of time. Any of these may be 0, but all must be included for the code to work correctly. If not provided, will default to a sample tariff rate. 
+    - electric_rate: list or array, 24-hour electricity rates in $/kWh. If not provided, will default to a sample rate schedule. 
+    - epw_file: os.path, to the EnergyPlus Weather file (.epw) used to run the simulation. If none, it will default to in.epw (note: current stor4build repo does not create the in.epw, so it will likely crash if not provided)
 
     Returns
-    - path to the resulting schedule file
+    - os.path to the resulting schedule file (.csv) containing the optimized charging schedule and charging temperature, in the format required for the add_pytank_with_schedule measure
     """
 
     if debug: print(f"[dynamic_charge_controls] run\ngenerate_schedule({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate}, {epw_file})")
