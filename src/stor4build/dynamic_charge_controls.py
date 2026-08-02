@@ -261,7 +261,7 @@ def get_chiller_design_capacities(eio_path):
     if debug: print(f"[dynamic_charge_controls] run\nget_chiller_design_capacities({eio_path})")
 
     capacities = collections.OrderedDict()
-    target_field = "Initial Design Size Reference Capacity [W]"
+    # target_field = "Initial Design Size Reference Capacity [W]"
     target_object = "Chiller:Electric:EIR"
 
     with open(eio_path, 'r') as f:
@@ -273,10 +273,11 @@ def get_chiller_design_capacities(eio_path):
             if len(parts) >= 5:
                 if parts[0] == "Component Sizing Information" and parts[1] == target_object:
                     chiller_name = parts[2]
-                    field_name = parts[3]
+                    # field_name = parts[3]
                     value = parts[4]
                     
-                    if field_name == target_field:
+                    # if field_name == target_field:
+                    if "Design Size Reference Capacity [W]" in parts[3]:
                         capacities[chiller_name] = float(value)
     # TODO: code a fallback if no valid info found
     return list(capacities.values())
@@ -595,45 +596,35 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
         dfw=a.dataframe
         dfc['Dry Bulb Temperature'] = dfw['Dry Bulb Temperature']
     
-    # target_cols = {
-    #     'ChillerElec': '',
-    # }
-
     dfc["Chiller Electricity [W]"] = 0
     dfc["Thermal Load [W]"] = 0
     dfc["Condenser Heat Transfer [W]"] = 0
 
-    # chiller COP
-    for chiller in range(0,info["num_chillers"]):
+    # chiller_str = f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}"
+    # chiller_str = f" CHILLER {chiller}"
+
+    def get_chiller_data_col(df, chiller, key_str):
         # Use keyterms in col names to find correct data automatically for any number of chillers
-        # could probably be refactored into a function
-        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Electricity Rate [W](TimeStep)"])]
+        chiller_str = f" CHILLER {chiller}"
+        matching_cols = [col for col in df.columns if all(s in col for s in [chiller_str, key_str])]
         if len(matching_cols) != 1:
-            print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} electricity\n{matching_cols}')
-        dfc[f"ChillerElec{chiller}"] = df[matching_cols[0]]
+            print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} {key_str}:\n{matching_cols}')
+        return df[matching_cols[0]]
+
+    # chiller data
+    for chiller in range(0,info["num_chillers"]):
+        dfc[f"ChillerElec{chiller}"] = get_chiller_data_col(df, chiller, ":Chiller Electricity Rate [W](TimeStep)")
         dfc["Chiller Electricity [W]"] += dfc[f"ChillerElec{chiller}"]
 
-        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Condenser Heat Transfer Rate [W](TimeStep)"])]
-        if len(matching_cols) != 1:
-            print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} cond heat transfer \n{matching_cols}')
-        dfc[f"Cond Heat Transfer Chiller{chiller}"] = df[matching_cols[0]]
+        dfc[f"Cond Heat Transfer Chiller{chiller}"] = get_chiller_data_col(df, chiller, ":Chiller Condenser Heat Transfer Rate [W](TimeStep)")
         dfc["Condenser Heat Transfer [W]"] += dfc[f"Cond Heat Transfer Chiller{chiller}"]
 
-        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Evaporator Cooling Rate [W](TimeStep)"])]
-        if len(matching_cols) != 1:
-            print(f'[dynamic_charge_controls] Warning: got wrong number of columns for Chiller {chiller} evap cool rate\n{matching_cols}')
-        dfc[f"Thermal Load Chiller{chiller}"] = df[matching_cols[0]]
+        dfc[f"Thermal Load Chiller{chiller}"] = get_chiller_data_col(df, chiller, ":Chiller Evaporator Cooling Rate [W](TimeStep)")
         dfc["Thermal Load [W]"] += dfc[f"Thermal Load Chiller{chiller}"]
 
-        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller Part Load Ratio [](TimeStep)"])]
-        if len(matching_cols) != 1:
-            print(f'[dynamic_charge_controls] Warning: got wrong number of columns for PLR\n{matching_cols}')
-        dfc[f"PartLoadRatio{chiller}"] = df[matching_cols[0]]
+        dfc[f"PartLoadRatio{chiller}"] = get_chiller_data_col(df, chiller, ":Chiller Part Load Ratio [](TimeStep)")
 
-        matching_cols = [col for col in df.columns if all(s in col for s in [f"WATERCOOLED  CENTRIFUGAL CHILLER {chiller}", ":Chiller COP [W/W](TimeStep)"])]
-        if len(matching_cols) != 1:
-            print(f'[dynamic_charge_controls] Warning: got wrong number of columns for COP\n{matching_cols}')
-        dfc[f"ChillerCOP{chiller}"] = df[matching_cols[0]]
+        dfc[f"ChillerCOP{chiller}"] = get_chiller_data_col(df, chiller, ":Chiller COP [W/W](TimeStep)")
 
     dfc["Electricity:Facility [W]"] = df["Electricity:Facility [J](TimeStep)"] / timestep_s
 
@@ -725,32 +716,25 @@ def consolidate_charging_hours(sch, demand_charge_rate):
         is_isolated = current_charge > 0 and sch['charging'].iloc[i-1] <= 0 and sch['charging'].iloc[i+1] <= 0
         
         if is_isolated:
-            # # 2. Check if adjacent hours are more expensive
-            # # Note: Change > to >= if costs can be equal
-            # adj_more_expensive = (sch['inc_cost'].iloc[i-1] > sch['inc_cost'].iloc[i]) and \
-            #                      (sch['inc_cost'].iloc[i+1] > sch['inc_cost'].iloc[i])
-            
-            # if adj_more_expensive:
-            
-            # 3. Define the 24-hour lookback window
+            # Define 24-hour lookback window
             start_idx = max(1, i - 24) 
             
             target_j_idx = None
             lowest_cost_found = float('inf')
             
-            # Scan the previous 24 hours
+            # Scan previous 24 hours
             for j in range(start_idx, i):
                 # We only want to move the charge to an empty hour
                 if sch['charging'].iloc[j] == 0:
                     
-                    # 4. Check if it is immediately before or after a previous charging period
+                    # Check if it is immediately before or after a previous charging period
                     adjacent_to_charge = sch['charging'].iloc[j-1] > 0 or sch['charging'].iloc[j+1] > 0
 
-                    # manually add fix to prevent it from counting the current hour as adjacent, since we're trying to remove that
+                    # add fix to prevent it from counting the current hour as adjacent, since we're trying to remove that
                     if j == i-1:
                         adjacent_to_charge = sch['charging'].iloc[j-1] > 0
                     
-                    # 5. Check if the cost is below the 50% max threshold
+                    # Check if the cost is below the 50% max threshold
                     below_threshold = (sch['inc_cost'].iloc[j] < cost_threshold)
                     
                     low_demand_charge = True
@@ -763,19 +747,19 @@ def consolidate_charging_hours(sch, demand_charge_rate):
                             lowest_cost_found = sch['inc_cost'].iloc[j]
                             target_j_idx = j
             
-            # 6. If a qualifying earlier hour was found, execute the shift
+            # If a qualifying earlier hour was found, execute the shift
             if target_j_idx is not None:
                 # Copy the charge to the new earlier hour
                 sch.loc[sch.index[target_j_idx], 'charging'] = current_charge
-                sch.loc[sch.index[target_j_idx], 'Cooling'] += current_charge # bw added manually
+                sch.loc[sch.index[target_j_idx], 'Cooling'] += current_charge
                 # Zero out the isolated hour
                 sch.loc[sch.index[i], 'charging'] = 0
-                sch.loc[sch.index[i], 'Cooling'] -= current_charge # bw added manually to fix cooling
+                sch.loc[sch.index[i], 'Cooling'] -= current_charge
                 if debug: print(f"Avoid single-hour operation {sch.loc[sch.index[i], 'datetime']}, shift to hour {sch.loc[sch.index[target_j_idx], 'datetime']}")
             else: # no earlier hour would work
                 if debug: print(f"Could not avoid single-hour operation {sch.loc[sch.index[i], 'datetime']} --> deactivate charging anyway")
                 sch.loc[sch.index[i], 'charging'] = 0
-                sch.loc[sch.index[i], 'Cooling'] -= current_charge # bw added manually to fix cooling
+                sch.loc[sch.index[i], 'Cooling'] -= current_charge
 
     return sch
 
@@ -876,6 +860,11 @@ def generate_schedule_file(dms, info, file_path):
     # Update the blank annual schedule with the values from dms_subset.
     # This strictly updates 'mode' and 'chrg_temp' on matching datetimes 
     # while leaving 'idle_temp' and 'discharge_temp' at their default values.
+    # TODO: fix futurewarning on this line. Tried
+    # update_cols_dtypes = df[dms_subset.columns].dtypes
+    # dms_subset = dms_subset.astype(update_cols_dtypes)
+    # and
+    # dms_subset = dms_subset.astype({col: df[col].dtype for col in dms_subset.columns})
     df.update(dms_subset)
 
     # Reset the index to restore 'datetime' as a standard column
@@ -1151,7 +1140,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
                 print('remaining_load_expensive_hour =', remaining_load_expensive_hour)
                 print('Terminating loop via break')
                 break
-            print('WARNING: Negative cooling at expensive hour: ',  sch2.loc[sch2.index == i_expensive_hour, 'Cooling'].iloc[0], ' -> Rounding error, resetting to 0')
+            if debug: print('WARNING: Negative cooling at expensive hour: ',  sch2.loc[sch2.index == i_expensive_hour, 'Cooling'].iloc[0], ' -> Rounding error, resetting to 0')
             sch2.loc[sch2.index == i_expensive_hour, 'Cooling'] = 0
             
         # recalc COP for expensive hour. T_cw now 10degC for discharging
@@ -1201,15 +1190,24 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             total_cost_log.append(totalcost1)
             n_small += 1
 
+    if debug: 
+        sch['mode_temp'] = np.sign(sch['Cooling'] - sch['Thermal Load [kW]'])
+        print('BEFORE consolidate_charging_hours()')
+        print(sch['mode_temp'].value_counts())
 
     # Consolidate charging hours
     sch = consolidate_charging_hours(sch, demand_charge_rate)
+
+    if debug: 
+        sch['mode_temp'] = np.sign(sch['Cooling'] - sch['Thermal Load [kW]'])
+        print('AFTER consolidate_charging_hours()')
+        print(sch['mode_temp'].value_counts())
 
     # ------------------------------------------
     # Second loop to generate schedule for charging and discharging periods and set charging temperatures
     # -------------------------------------------
 
-    dms = sch[['datetime', 'Thermal Load [kW]', rate, 'Dry Bulb Temperature','Demand Period', 'COP', 'Cooling','Cost [kWh]', 'Electricity Consumption', 'Storage']]
+    dms = sch[['datetime', 'Thermal Load [kW]', rate, 'Dry Bulb Temperature','Demand Period', 'COP', 'Cooling','Cost [kWh]', 'Electricity Consumption', 'Storage']].copy()
 
     previous_state = 10 # starting at 6.7 can cause spike in first timestep
     timesteps_per_hour = int(3600/info["original_timestep_s"]) # 30 = 2 minutes # MUST BE DIVISIBLE BY 4
@@ -1236,7 +1234,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     charge_deramp_rate = 0.10 # degC
 
     load30 = dms['Thermal Load [kW]'].quantile(0.80)
-    dms['Load Rank'] = dms['Thermal Load [kW]'].rank(pct=True)
+    dms.loc[:, 'Load Rank'] = dms['Thermal Load [kW]'].rank(pct=True)
     max_load = dms['Thermal Load [kW]'].max()
 
     i = 2 # if starting at 0, causes mystery consumption spike at timestep 0. This also makes it easier to do a look backward algorithm
@@ -1262,7 +1260,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             repeat_count = 0
         i_prev = i
 
-        if (cooling < load) & (load > 0): # + min_operation_increment:
+        if (cooling < load+2.22) & (load > 2.22): # + min_operation_increment:
             
             # Fudge factor: start charge 1 hour early
             # if next hour exists
@@ -1273,19 +1271,19 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
                     if i < (len(sch.index) - 1):
                         # if (dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > 0) and (dms['Cooling'].iloc[i+1] + min_operation_increment > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Demand Period'].iloc[i+1] < len(demand_charge_rate)-2):
                         if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Period'].iloc[i] < len(demand_charge_rate)-2) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
-                            print(f"begin charge early instead of Discharge: {i}, original cooling {dms['Cooling'].iloc[i]} kWh")
+                            if debug: print(f"begin charge early instead of Discharge: {i}, original cooling {dms['Cooling'].iloc[i]} kWh")
                             # make this hour charge
                             next_hr_diff = dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1]
                             actual_index = dms.index[i]
                             dms.loc[actual_index, 'Cooling'] = load + next_hr_diff #+ min_operation_increment
-                            print(f"Next hour will charge {next_hr_diff} kWh. Set cooling to {dms['Cooling'].iloc[i]} = {load + next_hr_diff} kWh")
+                            if debug: print(f"Next hour will charge {next_hr_diff} kWh. Set cooling to {dms['Cooling'].iloc[i]} = {load + next_hr_diff} kWh")
                             continue # redo this hour
             # else:# discharge # don't need else because of continue statement
             chiller_mode_schedule[i*timesteps_per_hour:(i+1)*timesteps_per_hour] = [-1] * timesteps_per_hour
             previous_state = 10
             
         # elif (cooling > load + min_operation_increment)& (demand_period < len(demand_charge_rate)-2):
-        elif (cooling > load + 0.1) & (cooling>min_operation_increment) & (demand_period < len(demand_charge_rate)-2):
+        elif (cooling > load) & (cooling>min_operation_increment) & (demand_period < len(demand_charge_rate)-2):
             # ^^^ added condition to not charge in highest demand cost periods
             # charge
             remaining_chiller_cap = info['design_capacity_kW']*info['num_chillers'] - load
@@ -1309,7 +1307,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
                     # if that next hour cooling is greater than this hour's
                     if cooling < dms['Cooling'].iloc[i+1]:
                         # don't decrease target_T vs previous_state
-                        print(f"avoid chiller dips override: target_T was = {target_T} °C, previous_state = {previous_state} °C. cooling: [{dms['Cooling'].iloc[i-1]}, {cooling}, {dms['Cooling'].iloc[i+1]}]")
+                        if debug: print(f"avoid chiller dips override: target_T was = {target_T} °C, previous_state = {previous_state} °C. cooling: [{dms['Cooling'].iloc[i-1]}, {cooling}, {dms['Cooling'].iloc[i+1]}]")
                         target_T = min(target_T, previous_state)
             if load > 0.75 * max_load:
                 pct_of_max_load =  load / max_load
@@ -1317,12 +1315,12 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
                 # eg 100% of max load --> reduce to whatever we set as the "min" value 
                 # 0.4 * -2.8 - 1
                 target_T_limit = round(float((pct_of_max_load - 0.60) * (min_charge_temp + 1) - 1), 4) 
-                print(f"limit target_T to smaller of {target_T_limit} or {target_T} °C due to high base load {round(load,2)} kW, {round(pct_of_max_load,3)} %")
+                if debug: print(f"limit target_T to smaller of {target_T_limit} or {target_T} °C due to high base load {round(load,2)} kW, {round(pct_of_max_load,3)} %")
 
 
             # This was an experiment to change charge start sequence based on base load. Didn't help in v15. Trying again with less extreme temp diffs in v16
             if load > load30:
-                print(f"activating high_base_load mode. base_load = {load} kW")
+                if debug: print(f"activating high_base_load mode. base_load = {load} kW")
                 charge_start_sequence = charge_start_sequence_high_base_load
                 if previous_state > 6:
                     chiller_mode_schedule[i*timesteps_per_hour:(i+1)*timesteps_per_hour] = [0] + [1] * (timesteps_per_hour-1)
@@ -1361,7 +1359,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             # might just need to be the most recent temperature
             previous_state = charge_temp[-1]
 
-            print(f"{dms['datetime'].loc[dms.index[0] + i]}\t target charge = {charge_amt} kWh\t target_T = {target_T}\t charge_temp = {charge_temp}")
+            if debug: print(f"{dms['datetime'].loc[dms.index[0] + i]}\t target charge = {charge_amt} kWh\t target_T = {target_T}\t charge_temp = {charge_temp}")
 
         else: #Normal mode. the charge_temperature_schedule is already 0 by default, so just need to reset previous_state
             
@@ -1370,23 +1368,23 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             if i < (len(sch.index) - 1):
                 # if next hour will charge
                 # if (dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > 0) and (dms['Cooling'].iloc[i+1] + min_operation_increment > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Demand Period'].iloc[i+1] < len(demand_charge_rate)-2):
-                if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Period'].iloc[i] ==0) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
+                if (dms['Cooling'].iloc[i+1] > dms['Thermal Load [kW]'].iloc[i+1]) and (dms['Cooling'].iloc[i+1] > min_operation_increment) and (dms['Demand Period'].iloc[i] ==0) and (load + dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1] > min_operation_increment):
                     # print(f"fudge factor b active: {i}, original cooling {dms['Cooling'].iloc[i]} kWh")
                     # make this hour charge
                     next_hr_diff = dms['Cooling'].iloc[i+1] - dms['Thermal Load [kW]'].iloc[i+1]
-                    print(f"begin charge early instead of Normal mode: {i}, original cooling {dms['Cooling'].iloc[i]} kWh, next_hr_diff = {next_hr_diff}")
+                    if debug: print(f"begin charge early instead of Normal mode: {i}, original cooling {dms['Cooling'].iloc[i]} kWh, next_hr_diff = {next_hr_diff}")
                     # dms['Cooling'].iloc[i] = dms['Thermal Load [kW]'].iloc[i] + next_hr_diff
                     # dms.at[i, 'Cooling'] = load + next_hr_diff
                     # FIX: Assign using .loc with the actual index label of the i-th row
                     actual_index = dms.index[i]
                     dms.loc[actual_index, 'Cooling'] = load + next_hr_diff # + min_operation_increment
                     # cooling = dms.at[i, 'Cooling']
-                    print(f"Next hour will charge {next_hr_diff} kWh. Set cooling to {dms['Cooling'].iloc[i]} = {load + next_hr_diff} kWh")
+                    if debug: print(f"Next hour will charge {next_hr_diff} kWh. Set cooling to {dms['Cooling'].iloc[i]} = {load + next_hr_diff} kWh")
                     # continue # redo this hour
                     i -= 1 # sloppier way to redo this hour to try to fix infinite loop issues
                 
                 # If hours before and after are discharge, keep this one at discharge
-                elif (previous_state == 10) and (dms['Cooling'].iloc[i+1] < dms['Thermal Load [kW]'].iloc[i+1] + 0.1) and (dms['Thermal Load [kW]'].iloc[i+1] > 0):
+                elif (previous_state == 10) and (dms['Cooling'].iloc[i+1] < dms['Thermal Load [kW]'].iloc[i+1] + 2.22) and (dms['Thermal Load [kW]'].iloc[i+1] > 2.22):
                     # discharge
                     chiller_mode_schedule[i*timesteps_per_hour:(i+1)*timesteps_per_hour] = [-1] * timesteps_per_hour
                     previous_state = 10
@@ -1410,7 +1408,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             .reindex(pd.date_range(dms['datetime'].min(),
                                     dms['datetime'].max() +
                                     pd.Timedelta(minutes=60-(60/timesteps_per_hour)),
-                                    freq=f"{int(60/timesteps_per_hour)}T"))
+                                    freq=f"{int(60/timesteps_per_hour)}min"))
             .interpolate('linear')
             .reset_index()
             .rename(columns={'index': 'datetime'}))
@@ -1423,7 +1421,7 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
             .reindex(pd.date_range(dms['datetime'].min(),
                                     dms['datetime'].max() +
                                     pd.Timedelta(minutes=60-(60/timesteps_per_hour)),
-                                    freq=f"{int(60/timesteps_per_hour)}T"))
+                                    freq=f"{int(60/timesteps_per_hour)}min"))
             .ffill()
             .reset_index()
             .rename(columns={'index': 'datetime'}))
@@ -1431,6 +1429,9 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     dms1[rate] = dms2[rate]
     dms1['Demand Period'] = dms2['Demand Period']
 
+    if debug: 
+        print(dms.shape)
+        print(dms1['mode'].value_counts())
 
     output_path = os.path.join(baseline_run_path, "..", "..", "dynamic_charge_schedule.csv")
 
