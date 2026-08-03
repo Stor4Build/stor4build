@@ -789,7 +789,7 @@ def generate_schedule_file(dms, info, file_path):
         )
 
     minutes_per_step = 60 // timesteps_per_hour
-    freq_str = f"{minutes_per_step}T"      # 'T' = minute frequency
+    freq_str = f"{minutes_per_step}min"      # 'T' = minute frequency
 
     # --------------------------------------------------------------
     # Build the datetime range covering the whole year
