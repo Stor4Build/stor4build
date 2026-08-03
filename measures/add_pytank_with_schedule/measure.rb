@@ -196,6 +196,14 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     tes_type.setDescription('Options are ice or chw')
     args << tes_type
 
+    # create argument for custom site packages
+    custom_site = OpenStudio::Measure::OSArgument.makeStringArgument(
+      'custom_site_packages',
+      false
+    )
+    custom_site.setDefaultValue('')
+    args << custom_site
+
     return args
   end
 
@@ -220,6 +228,7 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
     ctrl_type = runner.getStringArgumentValue('ctrl_type', usr_args)
     size_frac = runner.getDoubleArgumentValue('size_frac', usr_args)
     strg_medium = runner.getStringArgumentValue('strg_medium', usr_args)
+    custom_site_packages = runner.getStringArgumentValue('custom_site_packages', usr_args).strip()
     timestep_min = runner.getIntegerArgumentValue('timestep_min', usr_args)
     timesteps_per_hour = (60 / timestep_min).to_i # Untested
     chrg_temp_sch_file = runner.getStringArgumentValue('chrg_temp_sch_file', usr_args)
@@ -599,24 +608,9 @@ class AddPyTankWithSchedule < OpenStudio::Measure::EnergyPlusMeasure
       no.setString(1, 'Yes')
       no.setString(2, 'Yes')
       no.setString(3, 'No')
-      if (RUBY_PLATFORM =~ /linux/) != nil
-        no.setString(
-          4,
-          '/usr/local/lib/python3.8/dist-packages'
-        )
-      elsif (RUBY_PLATFORM =~ /darwin/) != nil
-        no.setString(
-          4,
-          '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages'
-        )
-      elsif (RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/) != nil
-        h = ENV['USERPROFILE'].to_s.gsub('\\', '/')
-        no.setString(
-          4,
-          "#{h}/AppData/Local/Programs/Python/Python38/Lib/site-packages"
-        )
-      end
-      no.setString(5, File.join(p, 'resources'))
+      no.setString(4, custom_site_packages)
+      no.setString(5, File.join(p, 'plugins', 'thermaltank'))
+      no.setString(6, File.join(p, 'plugins', 'controls'))
       ws.addObject(no)
     end
 

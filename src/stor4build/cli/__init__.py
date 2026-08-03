@@ -375,9 +375,9 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
         measures_only = False
 
     # Run the ice tank
-    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
+    post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
-        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+        post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
     
     # =========================================================
     # STEP 1: Run First Simulation (No Charging / Baseline)

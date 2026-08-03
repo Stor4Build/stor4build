@@ -77,6 +77,8 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
                           ('*', 'Chiller Evaporator Outlet Temperature'),
                           ('*', 'Chiller Evaporator Mass Flow Rate'),
                           ('*', 'Chiller Evaporator Cooling Energy')]
+
+        timestep_outputs = [('Environment', 'Site Outdoor Air Drybulb Temperature')]
         
         # add more variables to the list if needed            
         if not baseline:
@@ -87,7 +89,13 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
             ov = openstudio.model.OutputVariable(var, model)
             ov.setReportingFrequency('Hourly')
             ov.setKeyValue(key)
-            runner.registerInfo(f'Added {var} output variable.')
+            runner.registerInfo(f'Added {var} hourly output variable.')
+
+        for key, var in timestep_outputs:
+                    ov = openstudio.model.OutputVariable(var, model)
+                    ov.setReportingFrequency('Timestep')
+                    ov.setKeyValue(key)
+                    runner.registerInfo(f'Added {var} timestep output variable.')
 
         # report final condition of model
         runner.registerFinalCondition(f"The model finished with {len(model.getOutputVariables())} output variables.")

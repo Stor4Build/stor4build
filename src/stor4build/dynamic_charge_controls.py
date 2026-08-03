@@ -9,7 +9,6 @@ import traceback
 import os
 import re
 import collections
-from epw import epw
 import sys
 
 debug = False
