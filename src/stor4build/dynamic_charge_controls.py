@@ -569,7 +569,7 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
 
     # init smaller processed dataframe
     dfc = pd.DataFrame()
-    dfc['datetime'] = pd.to_datetime(df['Date/Time']).copy(deep=True)
+    dfc['datetime'] = pd.to_datetime(df['Date/Time'], format='ISO8601').copy(deep=True)
 
     timestep_s = (dfc['datetime'].iloc[1] - dfc['datetime'].iloc[0]).total_seconds()
     info["timestep_s"] = timestep_s
