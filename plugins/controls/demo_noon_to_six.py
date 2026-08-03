@@ -8,14 +8,14 @@ from case_details import MODE_SCHEDULE_TYPE, MODE_SCHEDULE_NAME, Mode
 class NoonToSix(EnergyPlusPlugin):
 
     def actuate(self, state, x):
-        self.api.exchange.set_actuator_value(state, self.data['mode_schedule'], x)
+        self.api.exchange.set_actuator_value(state, self.data['mode_actuator'], x)
 
-    def on_begin_timestep_before_predictor(self, state) -> int:
-        if 'mode_schedule' not in self.data:
-            self.data['mode_schedule'] = self.api.exchange.get_actuator_handle(
+    def on_begin_zone_timestep_before_init_heat_balance(self, state) -> int:
+        if 'mode_actuator' not in self.data:
+            self.data['mode_actuator'] = self.api.exchange.get_actuator_handle(
                 state, MODE_SCHEDULE_TYPE, "Schedule Value", MODE_SCHEDULE_NAME
             )
-            if self.data['mode_schedule'] == -1:
+            if self.data['mode_actuator'] == -1:
                 self.api.runtime.issue_severe(state, "Could not get handle to TES mode schedule")
                 return 1
 

@@ -9,7 +9,7 @@ import json
 #results_dir = os.path.join(this_dir, '..', 'resources', 'LargeOfficeCSV')
     
 def test_step():
-    step = s4b.Step("Add CSV Output", "add_csv_output")
+    step = s4b.ModelMeasure("Add CSV Output", "add_csv_output")
     assert step.name == "Add CSV Output"
     assert step.measure_dir_name == "add_csv_output"
     assert len(step.arguments) == 0

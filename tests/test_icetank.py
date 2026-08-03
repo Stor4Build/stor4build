@@ -42,7 +42,7 @@ def test_100pct_sizing():
     assert len(osw['steps'][0]) == 3
     assert osw['steps'][1]['name'] == 'Add Python Tank'
     assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 10
+    assert len(osw['steps'][1]['arguments']) == 11
     assert 'chrg_start' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
     assert 'chrg_end' in osw['steps'][1]['arguments']
@@ -60,6 +60,7 @@ def test_100pct_sizing():
     assert 'strg_type' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['strg_type'] == 'ice'
     assert osw['steps'][1]['arguments']['strg_medium'] == 'water'
+    assert 'custom_site_packages' in osw['steps'][1]['arguments']
     assert len(osw['steps'][1]) == 3
     
 def test_100pct_sizing_cooling():
@@ -91,7 +92,7 @@ def test_100pct_sizing_cooling():
     assert len(osw['steps'][0]) == 3
     assert osw['steps'][1]['name'] == 'Add Python Tank'
     assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 10
+    assert len(osw['steps'][1]['arguments']) == 11
     assert 'chrg_start' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
     assert 'chrg_end' in osw['steps'][1]['arguments']
@@ -109,10 +110,11 @@ def test_100pct_sizing_cooling():
     assert 'strg_type' in osw['steps'][1]['arguments']
     assert osw['steps'][1]['arguments']['strg_type'] == 'ice'
     assert osw['steps'][1]['arguments']['strg_medium'] == 'water'
-    assert len(osw['steps'][1]) == 3
+    assert 'custom_site_packages' in osw['steps'][1]['arguments']
+    assert len(osw['steps'][0]) == 3
     
 def test_50pct_sizing():
-    post = [s4b.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+    post = [s4b.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only')]
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=50.0, post_steps=post, csv='full-year-baseline.csv')
     assert icetank.size_fraction == 1
     assert icetank.sizing['peak_reduction'] == 50.0
@@ -139,34 +141,35 @@ def test_50pct_sizing():
     assert osw['steps'][0]['measure_dir_name'] == 'add_csv_output'
     assert osw['steps'][0]['arguments'] == {}
     assert len(osw['steps'][0]) == 3
-    assert osw['steps'][1]['name'] == 'Add Python Tank'
-    assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 10
-    assert 'chrg_start' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
-    assert 'chrg_end' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_end'] == s4b.IceTank.default_charge_end
-    assert 'dchrg_start' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['dchrg_start'] == s4b.IceTank.default_discharge_start
-    assert 'dchrg_end' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
-    assert 'chrg_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_temp'] == -4.0
-    assert 'num_tanks' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['num_tanks'] == 9
-    assert 'trim_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['trim_temp'] == 8.629440537564381
-    assert 'strg_type' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['strg_type'] == 'ice'
-    assert osw['steps'][1]['arguments']['strg_medium'] == 'water'
+    assert osw['steps'][2]['name'] == 'Add Python Tank'
+    assert osw['steps'][2]['measure_dir_name'] == 'add_pytank'
+    assert len(osw['steps'][2]['arguments']) == 11
+    assert 'chrg_start' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
+    assert 'chrg_end' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_end'] == s4b.IceTank.default_charge_end
+    assert 'dchrg_start' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['dchrg_start'] == s4b.IceTank.default_discharge_start
+    assert 'dchrg_end' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
+    assert 'chrg_temp' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_temp'] == -4.0
+    assert 'num_tanks' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['num_tanks'] == 9
+    assert 'trim_temp' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['trim_temp'] == 8.629440537564381
+    assert 'strg_type' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['strg_type'] == 'ice'
+    assert osw['steps'][2]['arguments']['strg_medium'] == 'water'
+    assert 'custom_site_packages' in osw['steps'][2]['arguments']
     assert len(osw['steps'][1]) == 3
-    assert osw['steps'][2]['name'] == 'Run Cooling Season Only'
-    assert osw['steps'][2]['measure_dir_name'] == 'run_cooling_season_only'
-    assert osw['steps'][2]['arguments'] == {}
-    assert len(osw['steps'][2]) == 3
+    assert osw['steps'][1]['name'] == 'Run Cooling Season Only'
+    assert osw['steps'][1]['measure_dir_name'] == 'run_cooling_season_only'
+    assert osw['steps'][1]['arguments'] == {}
+    assert len(osw['steps'][1]) == 3
     
 def test_50pct_sizing_simplewater():
-    post = [s4b.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+    post = [s4b.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only')]
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=50.0, post_steps=post, csv='full-year-baseline.csv', storage_medium='simplewater')
     assert icetank.size_fraction == 1
     assert icetank.sizing['peak_reduction'] == 50.0
@@ -193,34 +196,34 @@ def test_50pct_sizing_simplewater():
     assert osw['steps'][0]['measure_dir_name'] == 'add_csv_output'
     assert osw['steps'][0]['arguments'] == {}
     assert len(osw['steps'][0]) == 3
-    assert osw['steps'][1]['name'] == 'Add Python Tank'
-    assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 10
-    assert 'chrg_start' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
-    assert 'chrg_end' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_end'] == s4b.IceTank.default_charge_end
-    assert 'dchrg_start' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['dchrg_start'] == s4b.IceTank.default_discharge_start
-    assert 'dchrg_end' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
-    assert 'chrg_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_temp'] == -4.0
-    assert 'num_tanks' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['num_tanks'] == 9
-    assert 'trim_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['trim_temp'] == 8.627595948140323
-    assert 'strg_type' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['strg_type'] == 'ice'
-    assert osw['steps'][1]['arguments']['strg_medium'] == 'simplewater'
+    assert osw['steps'][2]['name'] == 'Add Python Tank'
+    assert osw['steps'][2]['measure_dir_name'] == 'add_pytank'
+    assert len(osw['steps'][2]['arguments']) == 11
+    assert 'chrg_start' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
+    assert 'chrg_end' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_end'] == s4b.IceTank.default_charge_end
+    assert 'dchrg_start' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['dchrg_start'] == s4b.IceTank.default_discharge_start
+    assert 'dchrg_end' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
+    assert 'chrg_temp' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_temp'] == -4.0
+    assert 'num_tanks' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['num_tanks'] == 9
+    assert 'trim_temp' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['trim_temp'] == 8.627595948140323
+    assert 'strg_type' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['strg_type'] == 'ice'
+    assert osw['steps'][2]['arguments']['strg_medium'] == 'simplewater'
+    assert 'custom_site_packages' in osw['steps'][2]['arguments']
     assert len(osw['steps'][1]) == 3
-    assert osw['steps'][2]['name'] == 'Run Cooling Season Only'
-    assert osw['steps'][2]['measure_dir_name'] == 'run_cooling_season_only'
-    assert osw['steps'][2]['arguments'] == {}
-    assert len(osw['steps'][2]) == 3
+    assert osw['steps'][1]['name'] == 'Run Cooling Season Only'
+    assert osw['steps'][1]['measure_dir_name'] == 'run_cooling_season_only'
+    assert osw['steps'][1]['arguments'] == {}
     
 def test_50pct_sizing_pcm2x2a():
-    post = [s4b.Step('Run Cooling Season Only', 'run_cooling_season_only')]
+    post = [s4b.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only')]
     icetank = s4b.IceTank.size('icetank', results_dir, peak_reduction=50.0, post_steps=post, csv='full-year-baseline.csv', storage_medium='pcm2x2a')
     assert icetank.size_fraction == 1
     assert icetank.sizing['peak_reduction'] == 50.0
@@ -247,29 +250,30 @@ def test_50pct_sizing_pcm2x2a():
     assert osw['steps'][0]['measure_dir_name'] == 'add_csv_output'
     assert osw['steps'][0]['arguments'] == {}
     assert len(osw['steps'][0]) == 3
-    assert osw['steps'][1]['name'] == 'Add Python Tank'
-    assert osw['steps'][1]['measure_dir_name'] == 'add_pytank'
-    assert len(osw['steps'][1]['arguments']) == 10
-    assert 'chrg_start' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
-    assert 'chrg_end' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_end'] == s4b.IceTank.default_charge_end
-    assert 'dchrg_start' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['dchrg_start'] == s4b.IceTank.default_discharge_start
-    assert 'dchrg_end' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
-    assert 'chrg_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['chrg_temp'] == -2.0
-    assert 'num_tanks' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['num_tanks'] == 9
-    assert 'trim_temp' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['trim_temp'] == 10.732530723509557
-    assert 'strg_type' in osw['steps'][1]['arguments']
-    assert osw['steps'][1]['arguments']['strg_type'] == 'ice'
-    assert osw['steps'][1]['arguments']['strg_medium'] == 'pcm2x2a'
+    assert osw['steps'][2]['name'] == 'Add Python Tank'
+    assert osw['steps'][2]['measure_dir_name'] == 'add_pytank'
+    assert len(osw['steps'][2]['arguments']) == 11
+    assert 'chrg_start' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_start'] == s4b.IceTank.default_charge_start
+    assert 'chrg_end' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_end'] == s4b.IceTank.default_charge_end
+    assert 'dchrg_start' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['dchrg_start'] == s4b.IceTank.default_discharge_start
+    assert 'dchrg_end' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['dchrg_end'] == s4b.IceTank.default_discharge_end
+    assert 'chrg_temp' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['chrg_temp'] == -2.0
+    assert 'num_tanks' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['num_tanks'] == 9
+    assert 'trim_temp' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['trim_temp'] == 10.732530723509557
+    assert 'strg_type' in osw['steps'][2]['arguments']
+    assert osw['steps'][2]['arguments']['strg_type'] == 'ice'
+    assert osw['steps'][2]['arguments']['strg_medium'] == 'pcm2x2a'
+    assert 'custom_site_packages' in osw['steps'][2]['arguments']
     assert len(osw['steps'][1]) == 3
-    assert osw['steps'][2]['name'] == 'Run Cooling Season Only'
-    assert osw['steps'][2]['measure_dir_name'] == 'run_cooling_season_only'
-    assert osw['steps'][2]['arguments'] == {}
-    assert len(osw['steps'][2]) == 3
+    assert osw['steps'][1]['name'] == 'Run Cooling Season Only'
+    assert osw['steps'][1]['measure_dir_name'] == 'run_cooling_season_only'
+    assert osw['steps'][1]['arguments'] == {}
+
 

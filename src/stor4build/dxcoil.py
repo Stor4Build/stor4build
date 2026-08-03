@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: 2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors
 #
 # SPDX-License-Identifier: BSD-3-Clause
-from .system import Simulation
-from .osmeasures import Step
+from .system import Simulation, EnergyPlusMeasure
 from dataclasses import dataclass, field
 from typing import List
 
@@ -33,7 +32,7 @@ class DxCoil(Simulation):
             args['discharge_start'] = self.discharge_start
         if self.discharge_end is not None:
             args['discharge_end'] = self.discharge_end
-        return [Step("Add Packaged Ice Storage", "add_packaged_ice_storage", arguments=args)]
+        return [EnergyPlusMeasure("Add Packaged Ice Storage", "add_packaged_ice_storage", arguments=args)]
     
     @classmethod
     def size(cls, name, baseline_results, **kwargs):

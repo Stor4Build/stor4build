@@ -1,7 +1,7 @@
 
 OS:Version,
-  {8b17fd4c-cf02-4209-871b-a0d16207631a}, !- Handle
-  3.7.0;                                  !- Version Identifier
+  {5b324eca-c505-4530-a7f8-7a4abb09c6b4}, !- Handle
+  3.11.0;                                 !- Version Identifier
 
 OS:Schedule:Constant,
   {dde93998-ba9b-47be-8cf8-c6a09b2e59f1}, !- Handle
@@ -329,7 +329,7 @@ OS:Schedule:Day,
   {fc0ce763-19cc-4faa-b547-07ca4f081a1c}, !- Handle
   DataCenter Lighting_SCH Default,        !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -353,7 +353,7 @@ OS:Schedule:Day,
   {cee34f3d-6771-48e1-801e-dd6f3cbb6001}, !- Handle
   DataCenter Equipment_SCH Default,       !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -362,7 +362,7 @@ OS:Schedule:Day,
   {54425da0-f6d8-4327-97e8-745eadaeef57}, !- Handle
   DataCenter Equipment_SCH Winter Design Day, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -371,7 +371,7 @@ OS:Schedule:Day,
   {d4c11efc-cdd5-4a7b-a0cd-1cabe55a6389}, !- Handle
   DataCenter Equipment_SCH Summer Design Day, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -399,7 +399,7 @@ OS:Schedule:Day,
   {3b3719ed-b750-4998-974c-3528b6c2d13f}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -427,7 +427,7 @@ OS:Schedule:Day,
   {83a7b954-5820-4bb7-ac48-9c3cc96e0a37}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 1, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -455,7 +455,7 @@ OS:Schedule:Day,
   {87ad54d1-1da9-4f7a-b6af-b781a1433104}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 2, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.75;                                   !- Value Until Time 1
@@ -483,7 +483,7 @@ OS:Schedule:Day,
   {135ab1ae-8117-4079-abd5-2fd1fe9eb473}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 3, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -511,7 +511,7 @@ OS:Schedule:Day,
   {82bf542a-de7f-4f9e-b6eb-f180aaba6887}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 4, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -539,7 +539,7 @@ OS:Schedule:Day,
   {de15e8b4-29c7-41a6-88f6-37eb6404c0e8}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 5, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -567,7 +567,7 @@ OS:Schedule:Day,
   {5681a3b8-2ca4-4866-864f-fdd94482fc72}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 6, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.75;                                   !- Value Until Time 1
@@ -595,7 +595,7 @@ OS:Schedule:Day,
   {cb30586d-24e2-422c-8cd4-f8cdeb66d97b}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 7, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -623,7 +623,7 @@ OS:Schedule:Day,
   {712465b5-138d-4fc6-bf15-7686ea2ed960}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 8, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -651,7 +651,7 @@ OS:Schedule:Day,
   {e23cd197-367d-42e1-a941-140019fbf617}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 9, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -679,7 +679,7 @@ OS:Schedule:Day,
   {9f47f384-a5b1-416d-a566-e782f42038aa}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 10, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.75;                                   !- Value Until Time 1
@@ -707,7 +707,7 @@ OS:Schedule:Day,
   {0b473163-93fc-401c-8511-ecd80f02fe71}, !- Handle
   DataCenter Equipment_SCH Wknd|Wkdy Day 11, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -730,7 +730,7 @@ OS:Schedule:Day,
   {19de0f0b-bcdb-4ab5-b87a-18bc184a9644}, !- Handle
   DataCenter HTGSETP_SCH Default,         !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   15;                                     !- Value Until Time 1
@@ -739,7 +739,7 @@ OS:Schedule:Day,
   {3a2b0b36-b3eb-436a-8742-fbd8db137c1e}, !- Handle
   DataCenter HTGSETP_SCH Winter Design Day, !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   15;                                     !- Value Until Time 1
@@ -748,7 +748,7 @@ OS:Schedule:Day,
   {62237047-1a1e-499b-9949-21b73cbfba93}, !- Handle
   DataCenter HTGSETP_SCH Summer Design Day, !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   15;                                     !- Value Until Time 1
@@ -773,7 +773,7 @@ OS:Schedule:Day,
   {c438f6ac-a972-43b7-b07f-2797e80c1113}, !- Handle
   DataCenter CLGSETP_SCH Default,         !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   35;                                     !- Value Until Time 1
@@ -782,7 +782,7 @@ OS:Schedule:Day,
   {971ea574-ff91-46eb-a2a8-9df9dd0bebed}, !- Handle
   DataCenter CLGSETP_SCH Winter Design Day, !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   35;                                     !- Value Until Time 1
@@ -791,7 +791,7 @@ OS:Schedule:Day,
   {2ce05fa2-37c2-4497-bf12-bf661dc22434}, !- Handle
   DataCenter CLGSETP_SCH Summer Design Day, !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   35;                                     !- Value Until Time 1
@@ -888,7 +888,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {6ee89b9b-f36d-470f-8cbc-8a68558984bf}, !- Handle
@@ -928,7 +937,9 @@ OS:Site:WaterMainsTemperature,
   Correlation,                            !- Calculation Method
   ,                                       !- Temperature Schedule Name
   8.96666666666667,                       !- Annual Average Outdoor Air Temperature {C}
-  26.2;                                   !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+  26.2,                                   !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+  1,                                      !- Temperature Multiplier {dimensionless}
+  0;                                      !- Temperature Offset {deltaC}
 
 OS:SizingPeriod:DesignDay,
   {c2ad0a3f-7d8b-4e91-9d52-c0a2997c1fe5}, !- Handle
@@ -1608,7 +1619,7 @@ OS:Schedule:Day,
   {a60954a9-dbd1-41fb-9fc0-b037d8b992de}, !- Handle
   Chilled Water Loop Temp - 44F Default,  !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   6.66666666666669;                       !- Value Until Time 1
@@ -1757,7 +1768,13 @@ OS:Chiller:Electric:EIR,
   1,                                      !- Condenser Heat Recovery Relative Capacity Fraction
   ,                                       !- Heat Recovery Inlet High Temperature Limit Schedule Name
   ,                                       !- Heat Recovery Leaving Temperature Setpoint Node Name
-  General;                                !- End-Use Subcategory
+  General,                                !- End-Use Subcategory
+  ConstantFlow,                           !- Condenser Flow Control
+  ,                                       !- Condenser Loop Flow Rate Fraction Function of Loop Part Load Ratio Curve Name
+  ,                                       !- Temperature Difference Across Condenser Schedule Name
+  0.2,                                    !- Condenser Minimum Flow Fraction
+  ,                                       !- Thermosiphon Capacity Fraction Curve Name
+  0;                                      !- Thermosiphon Minimum Temperature Difference
 
 OS:Node,
   {d4befebc-b02c-4989-9805-4b698711e693}, !- Handle
@@ -2016,7 +2033,7 @@ OS:Schedule:Day,
   {7843e22f-9b31-4b72-afa9-8e5811616433}, !- Handle
   DataCenter HVACOperationSchd Default,   !- Name
   {d9872ea2-ff29-4e20-a2f4-624e57ca9959}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -2025,7 +2042,7 @@ OS:Schedule:Day,
   {2f6a3f23-82a5-487b-a233-0c8c23fe8ffb}, !- Handle
   DataCenter HVACOperationSchd Winter Design Day, !- Name
   {d9872ea2-ff29-4e20-a2f4-624e57ca9959}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -2034,7 +2051,7 @@ OS:Schedule:Day,
   {74fd4395-3c76-449a-b2ac-5e0afb1433e9}, !- Handle
   DataCenter HVACOperationSchd Summer Design Day, !- Name
   {d9872ea2-ff29-4e20-a2f4-624e57ca9959}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -2043,7 +2060,7 @@ OS:Schedule:Day,
   {2307c370-1c3e-48e7-a623-14386f7fd804}, !- Handle
   DataCenter MinOA_MotorizedDamper_Sched Default, !- Name
   {248ec8e6-8db7-400d-aa9d-8e94fc4d4328}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -2193,7 +2210,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {d47b20de-4e9b-4f75-8cb7-d30b1af9b3a7}, !- Handle
@@ -2209,7 +2228,7 @@ OS:Schedule:Day,
   {6ef2e2b8-1d1c-41f7-a2c3-5aae36788087}, !- Handle
   AHU Supply Temp Sch Default,            !- Name
   {e4529c59-8f39-43ba-9b6e-274ebffafbf2}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   12.7777777777778;                       !- Value Until Time 1
@@ -2405,8 +2424,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -2572,7 +2591,7 @@ OS:Schedule:Day,
   {20048017-e34d-424f-bcce-fe6716949c4c}, !- Handle
   DataCenter Humidity Setpoint Schedule Default, !- Name
   {1dd52a80-cad2-4db9-877a-0ba33de78d9d}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   8;                                      !- Value Until Time 1
@@ -2581,7 +2600,7 @@ OS:Schedule:Day,
   {8f035610-f575-489d-b8c9-2b660ce2866f}, !- Handle
   DataCenter Humidity Setpoint Schedule Winter Design Day, !- Name
   {1dd52a80-cad2-4db9-877a-0ba33de78d9d}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   8;                                      !- Value Until Time 1
@@ -2590,7 +2609,7 @@ OS:Schedule:Day,
   {0f5c4a6f-46b6-4241-a229-919abccba328}, !- Handle
   DataCenter Humidity Setpoint Schedule Summer Design Day, !- Name
   {1dd52a80-cad2-4db9-877a-0ba33de78d9d}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   8;                                      !- Value Until Time 1
@@ -2925,7 +2944,7 @@ OS:ElectricEquipment:ITE:AirCooled:Definition,
   FlowControlWithApproachTemperatures,    !- Air Flow Calculation Method
   Watts/Area,                             !- Design Power Input Calculation Method
   0,                                      !- Watts per Unit {W}
-  1076.39104167097,                       !- Watts per Zone Floor Area {W/m2}
+  1076.39104167097,                       !- Watts per Space Floor Area {W/m2}
   {d2af3d55-d74d-466b-a0df-0e1d249ef7e1}, !- CPU Power Input Function of Loading and Air Temperature Curve Name
   0.285714285714286,                      !- Design Fan Power Input Fraction
   0.0001,                                 !- Design Fan Air Flow Rate per Power Input {m3/s-W}
@@ -2993,7 +3012,7 @@ OS:Schedule:Day,
   {1054942b-d5f1-4c5f-9453-349d6f61884c}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Default, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   9.67;                                   !- Value Until Time 1
@@ -3002,7 +3021,7 @@ OS:Schedule:Day,
   {1cb12b78-e300-4716-897f-9618681ccb4d}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Winter Design Day, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   9.67;                                   !- Value Until Time 1
@@ -3011,7 +3030,7 @@ OS:Schedule:Day,
   {7c723ad4-c6ab-4026-a0c3-0957e6cc0354}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Summer Design Day, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   9.67;                                   !- Value Until Time 1
@@ -3039,7 +3058,7 @@ OS:Schedule:Day,
   {afe2fca5-b41d-4404-b600-a7b7656a0871}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.89;                                  !- Value Until Time 1
@@ -3067,7 +3086,7 @@ OS:Schedule:Day,
   {fe8fe89c-8271-4903-9e55-fc1d653eab1d}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 1, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.48;                                  !- Value Until Time 1
@@ -3095,7 +3114,7 @@ OS:Schedule:Day,
   {6afcc4a2-47ea-4a37-b32a-5b0cebc8fd72}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 2, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.08;                                  !- Value Until Time 1
@@ -3123,7 +3142,7 @@ OS:Schedule:Day,
   {2ed39f9d-6910-46c6-9a06-5466ee3065c3}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 3, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   9.67;                                   !- Value Until Time 1
@@ -3151,7 +3170,7 @@ OS:Schedule:Day,
   {8bfa3805-d0ac-44bc-98a3-2e214148897c}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 4, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.89;                                  !- Value Until Time 1
@@ -3179,7 +3198,7 @@ OS:Schedule:Day,
   {48d3ca02-79f3-4953-b489-cfdaeab468aa}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 5, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.48;                                  !- Value Until Time 1
@@ -3207,7 +3226,7 @@ OS:Schedule:Day,
   {9051f2eb-444c-4a78-a29c-272f3a674c87}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 6, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.08;                                  !- Value Until Time 1
@@ -3235,7 +3254,7 @@ OS:Schedule:Day,
   {22170437-3092-4966-865c-088ed14cbcf8}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 7, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   9.67;                                   !- Value Until Time 1
@@ -3263,7 +3282,7 @@ OS:Schedule:Day,
   {8e3d7f79-c12a-480a-8a2f-390cd87fa409}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 8, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.89;                                  !- Value Until Time 1
@@ -3291,7 +3310,7 @@ OS:Schedule:Day,
   {aa70a001-73bd-4a13-a517-fd71cedb4a78}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 9, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.48;                                  !- Value Until Time 1
@@ -3319,7 +3338,7 @@ OS:Schedule:Day,
   {df60c58c-a687-41ef-9387-5e18309de6e7}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 10, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   10.08;                                  !- Value Until Time 1
@@ -3347,7 +3366,7 @@ OS:Schedule:Day,
   {aec8a964-f1d4-4301-a3b4-e4048909cf0f}, !- Handle
   LargeDataCenterLowITE SupplyApproachTemp_SCH Wknd|Wkdy Day 11, !- Name
   {6582db08-6770-4aac-8d6a-f2d6d95e571e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   9.67;                                   !- Value Until Time 1
@@ -3372,7 +3391,7 @@ OS:Schedule:Day,
   {c90f4b6b-1d93-4059-af96-ad75ad60b001}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Default, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.36;                                  !- Value Until Time 1
@@ -3381,7 +3400,7 @@ OS:Schedule:Day,
   {463aaa59-60c5-48c9-aa44-9f6df3e91775}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Winter Design Day, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.36;                                  !- Value Until Time 1
@@ -3390,7 +3409,7 @@ OS:Schedule:Day,
   {bc1cfcca-575f-444c-932d-26b7dfbcaf37}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Summer Design Day, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.36;                                  !- Value Until Time 1
@@ -3418,7 +3437,7 @@ OS:Schedule:Day,
   {e1b927f6-52fb-4a94-9d1e-86a71fa7ee53}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.03;                                  !- Value Until Time 1
@@ -3446,7 +3465,7 @@ OS:Schedule:Day,
   {56efeec3-6990-4795-9d47-e92c45c70c52}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 1, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.14;                                  !- Value Until Time 1
@@ -3474,7 +3493,7 @@ OS:Schedule:Day,
   {8b37128b-ae13-4738-9de9-a1c0d0c3060d}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 2, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.25;                                  !- Value Until Time 1
@@ -3502,7 +3521,7 @@ OS:Schedule:Day,
   {ab59b6e7-d345-4f41-b66a-6f4445ee098d}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 3, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.36;                                  !- Value Until Time 1
@@ -3530,7 +3549,7 @@ OS:Schedule:Day,
   {2140f0f0-1f55-4108-a573-7fd3d125a62f}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 4, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.03;                                  !- Value Until Time 1
@@ -3558,7 +3577,7 @@ OS:Schedule:Day,
   {e53d2c7d-8dca-4227-9a5c-341362f61b9d}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 5, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.14;                                  !- Value Until Time 1
@@ -3586,7 +3605,7 @@ OS:Schedule:Day,
   {4fcb0810-97f4-4bb1-833d-3d889e862629}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 6, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.25;                                  !- Value Until Time 1
@@ -3614,7 +3633,7 @@ OS:Schedule:Day,
   {457913ca-609d-47ba-a117-8e8d7fa7226e}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 7, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.36;                                  !- Value Until Time 1
@@ -3642,7 +3661,7 @@ OS:Schedule:Day,
   {af75a40d-9942-458e-ad2a-308a71a6fe0a}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 8, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.03;                                  !- Value Until Time 1
@@ -3670,7 +3689,7 @@ OS:Schedule:Day,
   {d6e0baa3-b61d-4eaa-84b4-1a9334c3242a}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 9, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.14;                                  !- Value Until Time 1
@@ -3698,7 +3717,7 @@ OS:Schedule:Day,
   {36dee1d4-4bc6-41f1-ae94-5d4457f315df}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 10, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.25;                                  !- Value Until Time 1
@@ -3726,7 +3745,7 @@ OS:Schedule:Day,
   {a85b3ce4-d079-4502-9403-11b76df8b40a}, !- Handle
   LargeDataCenterLowITE ReturnApproachTemp_SCH Wknd|Wkdy Day 11, !- Name
   {ae4e21b1-0808-4e17-b412-b559d7460ea1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   -7.36;                                  !- Value Until Time 1
@@ -3783,7 +3802,7 @@ OS:Schedule:Day,
   {197f3d49-e5bd-4f80-ac1f-d8000b5b2f20}, !- Handle
   Economizer Max OA Fraction 70 pct Default, !- Name
   ,                                       !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.7;                                    !- Value Until Time 1

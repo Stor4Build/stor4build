@@ -49,6 +49,7 @@ stor4build = "stor4build.cli:s4b"
 path = "src/stor4build/__about__.py"
 
 [tool.hatch.envs.default]
+python = "3.12"
 dependencies = [
   "pytest",
   "pytest-cov",

@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
-from .system import Simulation
+from site import getsitepackages
+from .system import Simulation, EnergyPlusMeasure
 import pandas as pd
 import math
 import datetime
 from .util import convert_string_time_interval
-from .osmeasures import Step
 
 # Fluid properties
 freezing_temp = {'water': 0.0,
@@ -53,41 +53,39 @@ class IceTank(Simulation):
         else:
             self.charge_temp = freezing_temp[self.storage_medium] + charge_temp_delta[self.store_ice]
         self.sizing = kwargs.get('sizing', {})
+        # The plug-in needs some packages, let's find where they SHOULD be
+        for possible in getsitepackages():
+            if os.path.exists(os.path.join(possible, 'numpy')):
+                self.custom_site_packages = possible
+                break
+        else:
+            print(getsitepackages())
+            raise FileNotFoundError('Site packages directory not found')
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
-        # if we're using a chrg_temp_sch_file, construct this differently
+        measure_name = 'Add Python Tank'
+        measure_dir = 'add_pytank'
+        measure_args = {
+                        "chrg_start": self.charge_start,
+                        "chrg_end": self.charge_end,
+                        "dchrg_start": self.discharge_start,
+                        "dchrg_end": self.discharge_end,
+                        "chrg_temp": self.charge_temp,
+                        "num_tanks": self.num_tanks,
+                        "trim_temp": self.trim_temp,
+                        "size_frac": self.size_fraction,
+                        "strg_type": {True: "ice", False: "chw"}[self.store_ice],
+                        "strg_medium": self.storage_medium,
+                        "custom_site_packages": self.custom_site_packages
+                    }
+        # if we're using a chrg_temp_sch_file, add it
         if self.chrg_temp_sch_file is not None:
-            measure_args = {
-                "chrg_start": self.charge_start,
-                "chrg_end": self.charge_end,
-                "dchrg_start": self.discharge_start,
-                "dchrg_end": self.discharge_end,
-                "chrg_temp": self.charge_temp,
-                "num_tanks": self.num_tanks,
-                "trim_temp": self.trim_temp,
-                "size_frac": self.size_fraction,
-                "strg_type": {True: "ice", False: "chw"}[self.store_ice],
-                "strg_medium": self.storage_medium
-            }
-            measure_name = 'add_pytank_with_schedule'
+            measure_dir = 'add_pytank_with_schedule'
             measure_args["chrg_temp_sch_file"] = self.chrg_temp_sch_file
             if self.timestep_min is not None:
                 measure_args["timestep_min"] = self.timestep_min
-            return [Step('Add Python Tank', measure_name, arguments=measure_args)]
-        else: # original code
-            return [Step('Add Python Tank', 'add_pytank',
-                        arguments={
-                            "chrg_start": self.charge_start,
-                            "chrg_end": self.charge_end,
-                            "dchrg_start": self.discharge_start,
-                            "dchrg_end": self.discharge_end,
-                            "chrg_temp": self.charge_temp,
-                            "num_tanks": self.num_tanks,
-                            "trim_temp": self.trim_temp,
-                            "size_frac": self.size_fraction,
-                            "strg_type": {True: "ice", False: "chw"}[self.store_ice],
-                            "strg_medium": self.storage_medium
-                        })]
+        return [EnergyPlusMeasure(measure_name, measure_dir, arguments=measure_args)]
+
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
         joules_to_kwh = 1.0e-5/36.0
