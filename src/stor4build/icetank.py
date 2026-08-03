@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import os
-from .system import Simulation
+from site import getsitepackages
+from .system import Simulation, EnergyPlusMeasure
 import pandas as pd
 import math
 import datetime
 from .util import convert_string_time_interval
-from .osmeasures import Step
 
 # Fluid properties
 freezing_temp = {'water': 0.0,
@@ -50,9 +50,17 @@ class IceTank(Simulation):
         else:
             self.charge_temp = freezing_temp[self.storage_medium] + charge_temp_delta[self.store_ice]
         self.sizing = kwargs.get('sizing', {})
+        # The plug-in needs some packages, let's find where they SHOULD be
+        for possible in getsitepackages():
+            if os.path.exists(os.path.join(possible, 'numpy')):
+                self.custom_site_packages = possible
+                break
+        else:
+            print(getsitepackages())
+            raise FileNotFoundError('Site packages directory not found')
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
-        return [Step('Add Python Tank', 'add_pytank',
+        return [EnergyPlusMeasure('Add Python Tank', 'add_pytank',
                      arguments={
                          "chrg_start": self.charge_start,
                          "chrg_end": self.charge_end,
@@ -63,7 +71,8 @@ class IceTank(Simulation):
                          "trim_temp": self.trim_temp,
                          "size_frac": self.size_fraction,
                          "strg_type": {True: "ice", False: "chw"}[self.store_ice],
-                         "strg_medium": self.storage_medium
+                         "strg_medium": self.storage_medium,
+                         "custom_site_packages": self.custom_site_packages
                      })]
     @classmethod
     def size(cls, name, baseline_results, **kwargs):

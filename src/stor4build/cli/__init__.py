@@ -7,6 +7,7 @@ import stor4build
 import warnings
 from matplotlib import pyplot as plt
 import pandas as pd
+import numpy as np
 
 from ..__about__ import __version__
 
@@ -149,6 +150,9 @@ def process(csvfile, date, legend_loc): #osm, epw, openstudio, measures_dir, mea
     if hilight_start and hilight_end:
         plt.axvspan(hilight_start-1, hilight_end-1, color='red', alpha=0.5) # default was 11 to 17
     ax0.set_xlabel('Hour of Day [h]')
+    ax0.grid()
+    ax0.set_xlim(0,24)
+    ax0.set_xticks(np.arange(0, 24, 2))
     #ax0.legend(['one', 'two', 'three'],loc='center left')
     lines0, labels0 = ax0.get_legend_handles_labels()
     lines1, labels1 = ax1.get_legend_handles_labels()
@@ -232,9 +236,9 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         measures_only = False
 
     # Run the ice tank
-    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
+    post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
-        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+        post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
     if control == 'default':
         pass
     else:
@@ -245,9 +249,9 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
         if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
             # Found it!
-            post.append(stor4build.Step(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
+            post.append(stor4build.EnergyPlusMeasure(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
                                                                                                'plugin_directory': os.path.join(run_dir, 'icetank')}))
-            post.append(stor4build.Step('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
+            post.append(stor4build.EnergyPlusMeasure('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
         else:
             warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
         
@@ -257,9 +261,9 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     
     # Run the baseline if requested
     if run_baseline:
-        post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
+        post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
         if cooling_season_only:
-            post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+            post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
         baseline = stor4build.Simulation('baseline', post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
         stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
@@ -304,10 +308,12 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               help='Set the storage medium to use.')
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
+@click.option('--control', metavar='NAME', show_default=True,
+              default='default', help='Specify a built-in control scheme (default | demo12to6 | demo_ambient_soc) or a measure that implements the scheme.')
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
-                 cooling_season_only, medium, size_fraction, sensible_only):
+                 cooling_season_only, medium, size_fraction, control, sensible_only):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -330,7 +336,9 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     }
 
     # Handle storage details
+    tes_type = 'ThermalTank-Ice'
     if sensible_only:
+        tes_type = 'ThermalTank-ChilledWater'
         arguments['store_ice'] = False
         if charge_temp is None:
             arguments['charge_temp'] = sensible_only_charge_temp[medium]
@@ -340,9 +348,9 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
             arguments['charge_temp'] = sensible_and_latent_charge_temp[medium]
     
     # Run the baseline
-    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
+    post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
     if cooling_season_only:
-        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+        post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
     baseline = stor4build.Simulation('baseline', post_steps=post)
     osw = baseline.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
@@ -352,9 +360,28 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     stor4build.fix_csv(baseline_csv)
 
     # Size and run the ice tank
-    post = [stor4build.Step('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
+    post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
-        post.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+        post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
+
+    if control == 'default':
+        pass
+    else:
+        measure_name = control
+        if control == 'demo12to6':
+            measure_name = 'add_demo_noon_to_six'
+        elif control == 'demo_ambient_soc':
+            measure_name = 'add_demo_ambient_soc'
+        # For this to work, the measure will need to be in the measures directory
+        control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
+        if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
+            # Found it!
+            post.append(stor4build.EnergyPlusMeasure(measure_name.replace('_', ' ').title(), measure_name, {'tes_type': tes_type, 
+                                                                                               'plugin_directory': os.path.join(run_path, 'sized_icetank')}))
+            post.append(stor4build.EnergyPlusMeasure('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_path, 'sized_icetank')}))
+        else:
+            warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
+
     icetank = stor4build.IceTank.size('sized_icetank', baseline_path, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=False)
@@ -402,21 +429,21 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
     pre = []
     #post = []
     if cooling_season_only:
-        pre.append(stor4build.Step('Run Cooling Season Only', 'run_cooling_season_only'))
+        pre.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
         
     arguments = {}
 
     # Run the baseline if requested
     if run_baseline:
-        post=[stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments={'baseline': True})]
+        post=[stor4build.ModelMeasure('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments={'baseline': True})]
         baseline = stor4build.Simulation('baseline', pre_steps=pre, post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
         stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
 
     # Run the DX coil model
-    post=[stor4build.Step('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments={'baseline': False})]
+    post=[stor4build.ModelMeasure('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments={'baseline': False})]
     if show_sizing or output:
-        post.append(stor4build.Step('Get DX Coil Sizes', 'get_dx_coil_sizes'))
+        post.append(stor4build.ReportingMeasure('Get DX Coil Sizes', 'get_dx_coil_sizes'))
     dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre, hourly=False, post_steps=post)
     osw = dxcoil.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)

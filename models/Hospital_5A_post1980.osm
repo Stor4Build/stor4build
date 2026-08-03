@@ -1,7 +1,7 @@
 
 OS:Version,
-  {6f515d09-d1a8-4c9d-b75e-c639bda59504}, !- Handle
-  3.7.0;                                  !- Version Identifier
+  {c7abab9e-e1b5-45f7-86a5-f22f17069ad1}, !- Handle
+  3.11.0;                                 !- Version Identifier
 
 OS:Schedule:Constant,
   {5a9a6e94-2a99-46fb-ad47-7849d0f2f1c2}, !- Handle
@@ -12332,6 +12332,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -12346,7 +12348,7 @@ OS:Schedule:Day,
   {7ef884c5-7251-490b-aff0-4338ed0a3cc5}, !- Handle
   Clothing Schedule Default Winter Clothes, !- Name
   {cfd1289f-60da-4c70-9e18-6982a3f6df44}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -12374,7 +12376,7 @@ OS:Schedule:Day,
   {5baddc8f-d50e-4d3b-9606-2beba9d5f93e}, !- Handle
   Clothing Schedule Summer Clothes,       !- Name
   {cfd1289f-60da-4c70-9e18-6982a3f6df44}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.5;                                    !- Value Until Time 1
@@ -12397,7 +12399,7 @@ OS:Schedule:Day,
   {5ab40a14-8210-47e2-b895-766cc219a503}, !- Handle
   Air Velocity Schedule Default,          !- Name
   {9e4ca261-e61e-4681-8fda-06d379aaa6e1}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.2;                                    !- Value Until Time 1
@@ -12420,7 +12422,7 @@ OS:Schedule:Day,
   {056411ed-d46b-4769-ab2e-c396eed17dfe}, !- Handle
   Work Efficiency Schedule Default,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -12503,7 +12505,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {1af01774-a3b0-4bef-9af9-45cc8d41f310}, !- Handle
@@ -12531,7 +12534,7 @@ OS:Schedule:Day,
   {a1c8470b-fe8d-405d-9c6e-281ed13b74db}, !- Handle
   Hospital BLDG_OCC_SCH Default,          !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -12565,7 +12568,7 @@ OS:Schedule:Day,
   {98263c82-eba4-443a-95e1-6365f36b312d}, !- Handle
   Hospital BLDG_OCC_SCH Sat Day,          !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -12589,7 +12592,7 @@ OS:Schedule:Day,
   {340edf09-4724-4c11-95bb-901cb86a244d}, !- Handle
   Hospital BLDG_OCC_SCH Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -12617,7 +12620,7 @@ OS:Schedule:Day,
   {f51ed240-59f3-4254-bd24-d626254bff20}, !- Handle
   Hospital BLDG_OCC_SCH Wkdy Day,         !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -12647,7 +12650,7 @@ OS:Schedule:Day,
   {c4086cf0-56a4-4be2-bd31-878ad1220016}, !- Handle
   Hospital BLDG_OCC_SCH Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -12664,7 +12667,7 @@ OS:Schedule:Day,
   {dc3eda08-c18b-44a6-8a4d-46bfaa7bc32c}, !- Handle
   Hospital ACTIVITY_SCH Default,          !- Name
   {b31dc267-7d68-4e70-a736-0d968de0d9c5}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -12673,7 +12676,7 @@ OS:Schedule:Day,
   {1b38890c-de65-4026-841d-279d1d526dd1}, !- Handle
   Hospital ACTIVITY_SCH Winter Design Day, !- Name
   {b31dc267-7d68-4e70-a736-0d968de0d9c5}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -12682,7 +12685,7 @@ OS:Schedule:Day,
   {a2628167-3a0e-4ac1-957e-9cfdf0ceaa28}, !- Handle
   Hospital ACTIVITY_SCH Summer Design Day, !- Name
   {b31dc267-7d68-4e70-a736-0d968de0d9c5}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -12707,7 +12710,7 @@ OS:Schedule:Day,
   {89b507dc-94c1-4a64-976d-22df87e220d8}, !- Handle
   Hospital Admin Light Default,           !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -12734,7 +12737,7 @@ OS:Schedule:Day,
   {f6318a9e-f73f-4f2a-9b1d-7bc1e783c820}, !- Handle
   Hospital Admin Light Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -12761,7 +12764,7 @@ OS:Schedule:Day,
   {0c13c94f-704d-4e57-a1dd-12c454dcd078}, !- Handle
   Hospital Admin Light Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -12807,7 +12810,7 @@ OS:Schedule:Day,
   {98b5209c-fe96-49de-8e88-4499922e1f11}, !- Handle
   Hospital Admin Light Default|WntrDsn|SmrDsn|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -12853,7 +12856,7 @@ OS:Schedule:Day,
   {dc69575f-de62-4875-8f71-cf1826285387}, !- Handle
   Hospital Admin Light Sat Day,           !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -12893,7 +12896,7 @@ OS:Schedule:Day,
   {83b54baf-c449-4857-b9ea-0e733b54a257}, !- Handle
   Hospital Admin Light Sun Day,           !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -12916,7 +12919,7 @@ OS:Schedule:Day,
   {a2b9bee2-dcfd-4022-82bf-2f085b49c943}, !- Handle
   Hospital Admin Equipment Default,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -12937,7 +12940,7 @@ OS:Schedule:Day,
   {42e79a8a-38db-4d4b-82cb-7783f629d482}, !- Handle
   Hospital Admin Equipment Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -12958,7 +12961,7 @@ OS:Schedule:Day,
   {f459f634-bd41-4357-9dd5-7344d1e4a3f5}, !- Handle
   Hospital Admin Equipment Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -12998,7 +13001,7 @@ OS:Schedule:Day,
   {dcf66869-8f34-40ca-9e68-0c0e2a906efe}, !- Handle
   Hospital Admin Equipment Default|WntrDsn|SmrDsn|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -13038,7 +13041,7 @@ OS:Schedule:Day,
   {e7cf3dac-f3b9-4d71-9976-e15104ee6c93}, !- Handle
   Hospital Admin Equipment Sat Day,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -13078,7 +13081,7 @@ OS:Schedule:Day,
   {7f7fe259-e1ac-48ff-9584-935b324ec61e}, !- Handle
   Hospital Admin Equipment Sun Day,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0.3,                                    !- Value Until Time 1
@@ -13101,7 +13104,7 @@ OS:Schedule:Day,
   {8e214e03-9cfe-4b28-bd71-fcea02dfdbf5}, !- Handle
   Hospital Infil Quarter On Default,      !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -13129,7 +13132,7 @@ OS:Schedule:Day,
   {c288fd75-89cf-46c6-8e36-41b4446cfc2c}, !- Handle
   Hospital Infil Quarter On Default|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -13138,7 +13141,7 @@ OS:Schedule:Day,
   {25dc5d17-644e-4b35-b203-f3f62caf9650}, !- Handle
   Hospital Infil Quarter On Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -13147,7 +13150,7 @@ OS:Schedule:Day,
   {5efcb48f-5b8a-43cf-b911-2e014ddc3e8f}, !- Handle
   Hospital Infil Quarter On Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -13170,7 +13173,7 @@ OS:Schedule:Day,
   {2c84e36f-0735-42a6-846d-3fd1c5e5d8e4}, !- Handle
   Hospital Bldg HtgSetp Default,          !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   18.3,                                   !- Value Until Time 1
@@ -13185,7 +13188,7 @@ OS:Schedule:Day,
   {cada1f37-b9c6-48ca-9900-e2193a83e0d3}, !- Handle
   Hospital Bldg HtgSetp Summer Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   18.3,                                   !- Value Until Time 1
@@ -13219,7 +13222,7 @@ OS:Schedule:Day,
   {4661aa25-523a-44f5-824b-9f74550cbd71}, !- Handle
   Hospital Bldg HtgSetp Wknd Day,         !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   18.3;                                   !- Value Until Time 1
@@ -13228,7 +13231,7 @@ OS:Schedule:Day,
   {118baf1f-251c-4ed6-b0dd-8bd45d30eaf9}, !- Handle
   Hospital Bldg HtgSetp Winter Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   18.3,                                   !- Value Until Time 1
@@ -13259,7 +13262,7 @@ OS:Schedule:Day,
   {5a782f6c-0cdf-4fb4-978a-a48afc98561a}, !- Handle
   Hospital Bldg ClgSetp Default,          !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   25,                                     !- Value Until Time 1
@@ -13274,7 +13277,7 @@ OS:Schedule:Day,
   {9e0a55f6-9058-4ddf-b2ff-3ad62608b3a7}, !- Handle
   Hospital Bldg ClgSetp Summer Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   25,                                     !- Value Until Time 1
@@ -13308,7 +13311,7 @@ OS:Schedule:Day,
   {84c1721b-dfd8-4c2b-b848-91a394533611}, !- Handle
   Hospital Bldg ClgSetp Wknd Day,         !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   25;                                     !- Value Until Time 1
@@ -13317,7 +13320,7 @@ OS:Schedule:Day,
   {6c8da0c6-ad96-4722-90fe-554c98083066}, !- Handle
   Hospital Bldg ClgSetp Winter Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   25,                                     !- Value Until Time 1
@@ -13353,6 +13356,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -13408,7 +13413,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {8c515d84-f949-45c8-bded-e3ec47f7b88f}, !- Handle
@@ -13436,7 +13442,7 @@ OS:Schedule:Day,
   {1c437362-fc36-4020-8ee6-a8f23c6deff4}, !- Handle
   Hospital Critical Occ Default,          !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.4,                                    !- Value Until Time 1
@@ -13457,7 +13463,7 @@ OS:Schedule:Day,
   {a21f0e6e-f18e-441e-b5a6-f538bb7b3d4c}, !- Handle
   Hospital Critical Occ Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.4,                                    !- Value Until Time 1
@@ -13478,7 +13484,7 @@ OS:Schedule:Day,
   {c17d6e3d-7194-4e08-b49e-e975c7437ecc}, !- Handle
   Hospital Critical Occ Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.4,                                    !- Value Until Time 1
@@ -13518,7 +13524,7 @@ OS:Schedule:Day,
   {a3f1fdbb-5ec1-4d93-9443-ceafe58c0cd0}, !- Handle
   Hospital Critical Occ Default|WntrDsn|SmrDsn|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.4,                                    !- Value Until Time 1
@@ -13547,7 +13553,7 @@ OS:Schedule:Day,
   {e66ad4bf-7016-4935-9290-673c32f4c354}, !- Handle
   Hospital Activity Default,              !- Name
   {b31dc267-7d68-4e70-a736-0d968de0d9c5}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -13556,7 +13562,7 @@ OS:Schedule:Day,
   {af548cd6-a742-4aa1-8278-0b7e5e15798e}, !- Handle
   Hospital Activity Winter Design Day,    !- Name
   {b31dc267-7d68-4e70-a736-0d968de0d9c5}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -13565,7 +13571,7 @@ OS:Schedule:Day,
   {26087e9d-cdb9-4f21-895e-bf1a5a27b076}, !- Handle
   Hospital Activity Summer Design Day,    !- Name
   {b31dc267-7d68-4e70-a736-0d968de0d9c5}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   120;                                    !- Value Until Time 1
@@ -13601,6 +13607,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -13676,7 +13684,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {267fb33b-452e-4b3c-bd8a-535e69b15345}, !- Handle
@@ -13723,6 +13732,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -13798,7 +13809,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {04e9c694-b090-4c73-9406-dd6d904b8797}, !- Handle
@@ -13826,7 +13838,7 @@ OS:Schedule:Day,
   {5951a374-f4c5-4370-86f7-748ab566c071}, !- Handle
   Hospital Critical Light Default,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -13847,7 +13859,7 @@ OS:Schedule:Day,
   {646c1ba5-45e9-45ae-bf7c-d87c92da4684}, !- Handle
   Hospital Critical Light Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -13868,7 +13880,7 @@ OS:Schedule:Day,
   {ea87c21a-4624-4dfc-95e4-daf1814fd009}, !- Handle
   Hospital Critical Light Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -13908,7 +13920,7 @@ OS:Schedule:Day,
   {120c38d0-7c6a-4fd4-8910-306c87b1107d}, !- Handle
   Hospital Critical Light Default|WntrDsn|SmrDsn|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -13943,7 +13955,7 @@ OS:Schedule:Day,
   {22c37e1d-91bd-4ee9-9634-ea6f98a514c4}, !- Handle
   Hospital Critical HtgSetp Default,      !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   21.1;                                   !- Value Until Time 1
@@ -13952,7 +13964,7 @@ OS:Schedule:Day,
   {7457a4cc-42eb-4f2a-b333-b2e25cb2cab6}, !- Handle
   Hospital Critical HtgSetp Winter Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   21.1;                                   !- Value Until Time 1
@@ -13961,7 +13973,7 @@ OS:Schedule:Day,
   {f1ed6f43-5b17-488e-80ef-a7bcca962785}, !- Handle
   Hospital Critical HtgSetp Summer Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   21.1;                                   !- Value Until Time 1
@@ -13991,6 +14003,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14066,7 +14080,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {1db725dc-45ca-4c0f-ade2-9b729b1e2ae6}, !- Handle
@@ -14094,7 +14109,7 @@ OS:Schedule:Day,
   {663e718a-3877-4063-9a7f-6230b6641900}, !- Handle
   Hospital Critical Equip Default,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -14112,7 +14127,7 @@ OS:Schedule:Day,
   {105cefca-0dfe-4e0f-8838-2a09b1bdb92a}, !- Handle
   Hospital Critical Equip Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -14149,7 +14164,7 @@ OS:Schedule:Day,
   {065cca70-4069-411f-9eab-27cce021a456}, !- Handle
   Hospital Critical Equip Default|SmrDsn|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.5,                                    !- Value Until Time 1
@@ -14167,7 +14182,7 @@ OS:Schedule:Day,
   {d1462530-a7f8-4fb5-a397-43c85d9267d1}, !- Handle
   Hospital Critical Equip Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.3;                                    !- Value Until Time 1
@@ -14203,6 +14218,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14278,7 +14295,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {563b369e-6c75-4817-96ff-7d0ff0aed3be}, !- Handle
@@ -14325,6 +14343,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14380,7 +14400,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {04c68bac-31cd-41b8-a45f-bdba7b2ca78b}, !- Handle
@@ -14427,6 +14448,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14502,7 +14525,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {b2ba1c53-d175-452c-8011-efb16f591498}, !- Handle
@@ -14549,6 +14573,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14624,7 +14650,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {6cb1144d-ac57-4b12-9414-741c44a46904}, !- Handle
@@ -14671,6 +14698,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14746,7 +14775,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {38c58150-168e-4167-bb1e-757a5f73addf}, !- Handle
@@ -14793,6 +14823,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -14888,7 +14920,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {d1e6e6de-5003-4df6-b00e-858c41e52ac1}, !- Handle
@@ -14916,7 +14949,7 @@ OS:Schedule:Day,
   {90d9033a-8ad6-49e9-acfd-a17b40820c18}, !- Handle
   Hospital Bldg Occ Default,              !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -14943,7 +14976,7 @@ OS:Schedule:Day,
   {6ba8b301-dfc9-4bef-be13-e365a52bdfb6}, !- Handle
   Hospital Bldg Occ Summer Design Day,    !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -14989,7 +15022,7 @@ OS:Schedule:Day,
   {5b5860e0-ab70-4176-96a7-1878123e1c6c}, !- Handle
   Hospital Bldg Occ Sun Day,              !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -15004,7 +15037,7 @@ OS:Schedule:Day,
   {506e7ad5-67e6-4058-8b2d-e6382fdba075}, !- Handle
   Hospital Bldg Occ Winter Design Day,    !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -15044,7 +15077,7 @@ OS:Schedule:Day,
   {0dd70037-c2c5-4052-b1e9-06a9a925e341}, !- Handle
   Hospital Bldg Occ WntrDsn|Sat Day,      !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -15073,7 +15106,7 @@ OS:Schedule:Day,
   {c736f5d4-ad35-4a40-99b5-8f2eaab10e4b}, !- Handle
   Hospital Kitchen_Elec_Equip_SCH Default, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -15103,7 +15136,7 @@ OS:Schedule:Day,
   {de8cfc26-ffcf-4fea-9b94-3d189b25b7f3}, !- Handle
   Hospital Kitchen_Elec_Equip_SCH Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -15133,7 +15166,7 @@ OS:Schedule:Day,
   {5d7458e6-26ef-458f-a072-3a937f81d8d0}, !- Handle
   Hospital Kitchen_Elec_Equip_SCH Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -15182,7 +15215,7 @@ OS:Schedule:Day,
   {4fed6c4e-e669-4596-befe-55051cf2581b}, !- Handle
   Hospital Kitchen_Elec_Equip_SCH Default|WntrDsn|SmrDsn|Sun|Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -15220,7 +15253,7 @@ OS:Schedule:Day,
   {682b913b-a8a1-414e-adff-33c763017656}, !- Handle
   Hospital Kitchen Gas Default,           !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   0.02,                                   !- Value Until Time 1
@@ -15290,7 +15323,7 @@ OS:Schedule:Day,
   {257c0197-8e27-4338-85be-dc9efa77d709}, !- Handle
   Hospital Kitchen Gas Default|Sun Day,   !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   5,                                      !- Hour 1
   0,                                      !- Minute 1
   0.02,                                   !- Value Until Time 1
@@ -15341,7 +15374,7 @@ OS:Schedule:Day,
   {bdf3fe87-eb26-4f36-8744-2394664bb2ed}, !- Handle
   Hospital Kitchen Gas Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.25;                                   !- Value Until Time 1
@@ -15350,7 +15383,7 @@ OS:Schedule:Day,
   {f4a16820-2d7e-4975-ac07-815379c154c7}, !- Handle
   Hospital Kitchen Gas Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -15386,6 +15419,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -15461,7 +15496,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {4f8539ef-489f-4961-87f8-c619bc157e18}, !- Handle
@@ -15508,6 +15544,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -15583,7 +15621,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {1c749c2b-e303-49a2-a459-d239e1c73849}, !- Handle
@@ -15630,6 +15669,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -15705,7 +15746,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {fcca14de-7a8e-44c2-8485-547880a5fdbb}, !- Handle
@@ -15752,6 +15794,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -15827,7 +15871,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {56041de3-cfce-4616-b940-25e85662cb9e}, !- Handle
@@ -15874,6 +15919,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -15949,7 +15996,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {f2a68b55-cc77-44bf-a5dc-be65b0991775}, !- Handle
@@ -15983,7 +16031,7 @@ OS:Schedule:Day,
   {2acbd385-1f17-49e2-81b7-b583722efe5f}, !- Handle
   Hospital Critical ClgSetp Default,      !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22.2;                                   !- Value Until Time 1
@@ -15992,7 +16040,7 @@ OS:Schedule:Day,
   {55a70557-bfcc-4626-b34f-fab105454041}, !- Handle
   Hospital Critical ClgSetp Winter Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22.2;                                   !- Value Until Time 1
@@ -16001,7 +16049,7 @@ OS:Schedule:Day,
   {527d309b-1877-4200-8afc-266c20f43228}, !- Handle
   Hospital Critical ClgSetp Summer Design Day, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22.2;                                   !- Value Until Time 1
@@ -16031,6 +16079,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -16106,7 +16156,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {682aa365-3101-4005-a809-33e577e0ada3}, !- Handle
@@ -16153,6 +16204,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -16228,7 +16281,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {d4ce94fe-871b-4f76-8066-2548a79eebbb}, !- Handle
@@ -16275,6 +16329,8 @@ OS:People,
   ,                                       !- Activity Level Schedule Name
   ,                                       !- Surface Name/Angle Factor List Name
   {5976dfab-9c65-4808-91b2-dba15446e079}, !- Work Efficiency Schedule Name
+  ClothingInsulationSchedule,             !- Clothing Insulation Calculation Method
+  ,                                       !- Clothing Insulation Calculation Method Schedule Name
   {40d8c149-10e1-4ca4-993c-b35ad64b4ffc}, !- Clothing Insulation Schedule Name
   {3fe45756-a4fe-4769-b03e-d06f65825ecb}, !- Air Velocity Schedule Name
   1;                                      !- Multiplier
@@ -16350,7 +16406,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:DefaultScheduleSet,
   {d0ccb588-322f-4e55-8005-bbf573fee198}, !- Handle
@@ -16385,7 +16442,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {75a4327c-8999-4aae-8cae-9d68a1b6e878}, !- Handle
@@ -16400,7 +16458,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ef1690ee-5657-45a4-8dc3-c7c4ed62a53d}, !- Handle
@@ -16415,7 +16474,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {7aa17815-07fd-490c-b302-33d6681ed9ec}, !- Handle
@@ -16430,7 +16490,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {792efd5d-c8e5-49e5-adf5-954e1b87398f}, !- Handle
@@ -16445,7 +16506,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {56b92ba2-5504-4a08-8d1a-08c2b2eb6cda}, !- Handle
@@ -16460,7 +16522,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ec65ecb9-7821-4502-8ace-a496dd111ac8}, !- Handle
@@ -16475,7 +16538,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {b897328a-45de-47b7-8a6f-1b4089622d8b}, !- Handle
@@ -16490,7 +16554,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {288e6ec6-b33e-40ea-98df-2e9a5222050f}, !- Handle
@@ -16505,7 +16570,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {4405c0b1-4177-4253-b515-9ec81f102bcf}, !- Handle
@@ -16520,7 +16586,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {486af660-49c4-4783-a01f-9dc2197d355e}, !- Handle
@@ -16535,7 +16602,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {eadb518e-bee4-4d10-85e0-2374ed812d99}, !- Handle
@@ -16550,7 +16618,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ab66f5e8-73f8-40e9-a043-ee512ca9d84b}, !- Handle
@@ -16565,7 +16634,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {da18c0a1-d092-4cdd-9141-aea230a49be5}, !- Handle
@@ -16580,7 +16650,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {d66f2c4f-25b1-4d89-a9ad-5fc6c8f4f955}, !- Handle
@@ -16595,7 +16666,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {7f657253-b4df-4a64-9f66-e24e183cecad}, !- Handle
@@ -16610,7 +16682,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {c77e9a02-9b6a-444e-867e-a3e4de7785be}, !- Handle
@@ -16625,7 +16698,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {93d4da2d-6599-4f0b-b103-63a3706b9871}, !- Handle
@@ -16640,7 +16714,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {33d29ef2-39d0-46a0-91c6-125c6a21e438}, !- Handle
@@ -16655,7 +16730,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {1bda396a-fcdc-4671-b904-94e18c8e2cdd}, !- Handle
@@ -16670,7 +16746,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ebaa7df7-f1d0-451b-bf1f-e8d4c66d9b60}, !- Handle
@@ -16685,7 +16762,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {f1014e51-fe69-4c8b-89ab-5f3e692ad99d}, !- Handle
@@ -16700,7 +16778,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {b0414840-4ffc-4383-b67e-8d829aea3912}, !- Handle
@@ -16715,7 +16794,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {58fc6410-208a-451c-86d8-7ae2e2a8f02e}, !- Handle
@@ -16730,7 +16810,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {0076de75-1790-4d7b-bfd0-8189b5cf6621}, !- Handle
@@ -16745,7 +16826,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {64cf8dcb-ae18-46bf-8409-6d32272d7731}, !- Handle
@@ -16760,7 +16842,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {84a91a32-b156-40ff-a3ab-8415edfd1d22}, !- Handle
@@ -16775,7 +16858,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {378495f5-51b8-4555-a846-0d2daa1ae491}, !- Handle
@@ -16790,7 +16874,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ba881266-b353-4ddc-bbf4-d05e336e2c2c}, !- Handle
@@ -16805,7 +16890,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {66d5a2cd-5630-4270-830c-3309549b76b1}, !- Handle
@@ -16820,7 +16906,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ff4551a3-7be4-4e16-bbfb-6910cdeecbb1}, !- Handle
@@ -16835,7 +16922,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {80eb9a65-1941-4cc3-99ff-78aeb6fc101c}, !- Handle
@@ -16850,7 +16938,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {cfc316b6-ff74-435b-ad4a-4199259b9702}, !- Handle
@@ -16865,7 +16954,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {a82faee9-c969-4d8a-bc3d-af0d71c056cd}, !- Handle
@@ -16880,7 +16970,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {57ed06d8-2e26-4e46-b455-fa585b1f34ef}, !- Handle
@@ -16895,7 +16986,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {57aa24b8-8731-454f-baaf-11d6d1f697e1}, !- Handle
@@ -16910,7 +17002,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {ebcde032-5daf-4a78-8817-a7f0f5fc2618}, !- Handle
@@ -16925,7 +17018,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {4960466a-3a8e-49d2-bcec-6de46e58eb31}, !- Handle
@@ -16940,7 +17034,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {b8ef468a-aa00-4b71-83dc-a4adb265fe14}, !- Handle
@@ -16955,7 +17050,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {d19aa6c0-a1ea-467b-836c-b3e89582b0a2}, !- Handle
@@ -16970,7 +17066,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {c119f3ae-4f3f-4d56-ad07-85046258335a}, !- Handle
@@ -16985,7 +17082,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {747633b6-f21e-4b1c-a3af-48a4a88ca78c}, !- Handle
@@ -17000,7 +17098,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {f486bd3a-7809-4c92-9d5d-ecf47820e8f4}, !- Handle
@@ -17015,7 +17114,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {6e1568a3-9ccd-4c2f-969d-2dd655c752b5}, !- Handle
@@ -17030,7 +17130,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {8d353a5d-edea-47b7-b6a2-bb7b59f2c93f}, !- Handle
@@ -17045,7 +17146,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {8a261ae5-da89-4120-9035-b31871903a75}, !- Handle
@@ -17060,7 +17162,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:SpaceInfiltration:DesignFlowRate,
   {71e90349-f938-4753-a89e-415276b90834}, !- Handle
@@ -17075,7 +17178,8 @@ OS:SpaceInfiltration:DesignFlowRate,
   1,                                      !- Constant Term Coefficient
   0,                                      !- Temperature Term Coefficient
   0,                                      !- Velocity Term Coefficient
-  0;                                      !- Velocity Squared Term Coefficient
+  0,                                      !- Velocity Squared Term Coefficient
+  Outdoor;                                !- Density Basis
 
 OS:Site,
   {0646b2eb-0db9-4b4b-bcf6-be1150a775ff}, !- Handle
@@ -17175,7 +17279,16 @@ OS:Sizing:Zone,
   0.005,                                  !- Zone Cooling Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
   HumidityRatioDifference,                !- Zone Latent Heating Design Supply Air Humidity Ratio Input Method
   ,                                       !- Zone Humidification Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-  0.005;                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  0.005,                                  !- Zone Humidification Design Supply Air Humidity Ratio Difference {kgWater/kgDryAir}
+  ,                                       !- Zone Humidistat Dehumidification Set Point Schedule Name
+  ,                                       !- Zone Humidistat Humidification Set Point Schedule Name
+  ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
+  ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
+  ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
+  ,                                       !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {92f462ef-9797-4591-87ec-7127f39b3900}, !- Handle
@@ -17277,7 +17390,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {e21b1604-67b7-4db4-bd63-b617a9b8ffac}, !- Handle
@@ -17385,7 +17501,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {38c893ae-559b-47dc-bc6a-d8db198ef84d}, !- Handle
@@ -17493,7 +17612,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {3743cb9e-066a-4238-9dd0-f777d8241404}, !- Handle
@@ -17601,7 +17723,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {cd3bba0c-5c28-4db6-8eb2-dc67131ce4ed}, !- Handle
@@ -17709,7 +17834,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {8a849519-d03c-462f-b669-d84291fd9e9a}, !- Handle
@@ -17817,7 +17945,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {8fdc123a-6f1c-4678-9ffd-a9eb4c6bd0e9}, !- Handle
@@ -17925,7 +18056,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {059926c4-8741-42b3-b428-03bbfac55029}, !- Handle
@@ -18034,7 +18168,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {e6d7a80d-2892-4b7d-b026-e61ed37a93d5}, !- Handle
@@ -18147,7 +18284,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {ab303a62-9a43-4b5f-afda-dce180becc20}, !- Handle
@@ -18256,7 +18396,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {2223817d-bb2d-4c80-8f18-ceb604ebc56d}, !- Handle
@@ -18364,7 +18507,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {dc0faf6b-3f4f-4c27-9529-a99dd345749b}, !- Handle
@@ -18472,7 +18618,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {50fc76a6-0a85-4dd6-8a8f-56920abd5a25}, !- Handle
@@ -18580,7 +18729,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {462a7eaf-abc9-46ac-a743-f6ace177a65a}, !- Handle
@@ -18688,7 +18840,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {5b5133e0-5fa1-4607-9635-1ecf4518dc03}, !- Handle
@@ -18796,7 +18951,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {eb22c07f-f358-4bbb-8dd0-583d8793ee27}, !- Handle
@@ -18904,7 +19062,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {b24a7cec-8baa-40cb-a980-9e23accc0518}, !- Handle
@@ -19012,7 +19173,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {8f747e83-788c-4469-aefc-0b681542be58}, !- Handle
@@ -19120,7 +19284,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {d7561bf8-eb3c-4866-8c1f-f0fb671f63d1}, !- Handle
@@ -19228,7 +19395,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {43b8ba9e-dc4a-4555-a4bf-d35554a1e056}, !- Handle
@@ -19337,7 +19507,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {12c44e74-d39b-422f-bbc5-573981b4f234}, !- Handle
@@ -19450,7 +19623,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {1c910297-5ded-45fd-b0f9-7fb4dfa20aa1}, !- Handle
@@ -19558,7 +19734,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {1c01e686-e194-4492-a112-987feb5b5dbb}, !- Handle
@@ -19666,7 +19845,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {dbe95698-0936-4770-8570-e33e962f7235}, !- Handle
@@ -19774,7 +19956,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {836844b0-9548-4ca0-ac4b-69cc28dbfc39}, !- Handle
@@ -19882,7 +20067,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {b59c3b7b-a432-46bf-850a-28baff43dbec}, !- Handle
@@ -19990,7 +20178,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {3acc82a5-215d-4e54-a2c5-536ae5dfc593}, !- Handle
@@ -20098,7 +20289,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {e054aebc-1324-4c8b-ba50-114295528ff2}, !- Handle
@@ -20206,7 +20400,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {f9201f0f-e765-49e0-b5b0-7212628f3854}, !- Handle
@@ -20314,7 +20511,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {55459964-2573-4710-85fd-62e07432e1f3}, !- Handle
@@ -20422,7 +20622,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {42ac6090-ce1e-4fe4-b589-646a0bb5db6a}, !- Handle
@@ -20530,7 +20733,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {32a3a723-45cc-487f-b30d-479cb79ecbcc}, !- Handle
@@ -20638,7 +20844,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {3ca6f40c-53aa-4170-91c5-ad39cfd7b8e4}, !- Handle
@@ -20747,7 +20956,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {f773b1aa-9ea2-4a60-9db4-dc8f9475039b}, !- Handle
@@ -20855,7 +21067,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {f9b95b29-15d0-48f8-835a-ad1e8569e2cb}, !- Handle
@@ -20963,7 +21178,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {3faf54a4-ad8c-4049-9897-1f28375f7909}, !- Handle
@@ -21071,7 +21289,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {04f8176c-48ac-487d-afad-3ae2eb25630c}, !- Handle
@@ -21179,7 +21400,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {3b19e222-0f5e-44ab-b77d-52f441b78e60}, !- Handle
@@ -21287,7 +21511,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {5ecbfb9d-29d9-48c1-bf0d-453bad8d05dc}, !- Handle
@@ -21395,7 +21622,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {ca57b7e8-b81f-4c2b-b03d-4820b5d8a83a}, !- Handle
@@ -21503,7 +21733,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {27ac664f-9c02-49ec-a9a1-fcf9bb06a2d4}, !- Handle
@@ -21611,7 +21844,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {bf72d72f-2ce7-4ff3-9a29-49851a7a4b56}, !- Handle
@@ -21719,7 +21955,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {0d13b521-0263-4b6c-a1c2-0d2192650e52}, !- Handle
@@ -21827,7 +22066,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {106da24f-8a89-4333-8e22-ddcf6a1ca009}, !- Handle
@@ -21935,7 +22177,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {b45a9898-08f9-4e8c-9566-feef0a955347}, !- Handle
@@ -22043,7 +22288,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {0d23441b-227a-4e42-ba2c-818a5661064c}, !- Handle
@@ -22151,7 +22399,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {c49a47ae-f0fb-41ec-98d7-ff039e487b57}, !- Handle
@@ -22259,7 +22510,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {5cf5d687-b28c-47e4-bd28-3203eb804970}, !- Handle
@@ -22367,7 +22621,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {99106dd5-4c58-4d9f-a6ba-31e66513b5af}, !- Handle
@@ -22475,7 +22732,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {b3278808-8ced-4cee-957e-95c356d50850}, !- Handle
@@ -22583,7 +22843,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {7863c697-9f20-4af7-81bf-99ecaa527238}, !- Handle
@@ -22691,7 +22954,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {c1fda92c-5af9-4a23-87de-bca4757a6e05}, !- Handle
@@ -22799,7 +23065,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {6551ff9e-1585-4fa0-b960-c2cd51bf77a1}, !- Handle
@@ -22907,7 +23176,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {2a850e6f-4532-4548-8d57-1bcda35a832d}, !- Handle
@@ -23015,7 +23287,10 @@ OS:Sizing:Zone,
   ,                                       !- Design Zone Air Distribution Effectiveness in Cooling Mode
   ,                                       !- Design Zone Air Distribution Effectiveness in Heating Mode
   ,                                       !- Design Zone Secondary Recirculation Fraction {dimensionless}
-  0;                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  0,                                      !- Design Minimum Zone Ventilation Efficiency {dimensionless}
+  Coincident,                             !- Sizing Option
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Load Sizing Ratio {W/W}
 
 OS:ZoneHVAC:EquipmentList,
   {79bcfbbf-2002-43f0-9c07-ccc6cab33712}, !- Handle
@@ -23055,7 +23330,9 @@ OS:Site:WaterMainsTemperature,
   Correlation,                            !- Calculation Method
   ,                                       !- Temperature Schedule Name
   8.96666666666667,                       !- Annual Average Outdoor Air Temperature {C}
-  26.2;                                   !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+  26.2,                                   !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+  1,                                      !- Temperature Multiplier {dimensionless}
+  0;                                      !- Temperature Offset {deltaC}
 
 OS:SizingPeriod:DesignDay,
   {8b3138ac-de9c-4a74-983e-687563d965b7}, !- Handle
@@ -23389,7 +23666,7 @@ OS:Schedule:Day,
   {29d68d58-0e7c-40b3-a7b5-8d42f6162061}, !- Handle
   Hot Water Loop Temp - 180F Default,     !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   82.2222222222223;                       !- Value Until Time 1
@@ -24323,7 +24600,7 @@ OS:Schedule:Day,
   {01230f75-b7de-456b-aeef-58b6d5be2452}, !- Handle
   Chilled Water Loop Temp - 44F Default,  !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   6.66666666666669;                       !- Value Until Time 1
@@ -24430,7 +24707,13 @@ OS:Chiller:Electric:EIR,
   1,                                      !- Condenser Heat Recovery Relative Capacity Fraction
   ,                                       !- Heat Recovery Inlet High Temperature Limit Schedule Name
   ,                                       !- Heat Recovery Leaving Temperature Setpoint Node Name
-  General;                                !- End-Use Subcategory
+  General,                                !- End-Use Subcategory
+  ConstantFlow,                           !- Condenser Flow Control
+  ,                                       !- Condenser Loop Flow Rate Fraction Function of Loop Part Load Ratio Curve Name
+  ,                                       !- Temperature Difference Across Condenser Schedule Name
+  0.2,                                    !- Condenser Minimum Flow Fraction
+  ,                                       !- Thermosiphon Capacity Fraction Curve Name
+  0;                                      !- Thermosiphon Minimum Temperature Difference
 
 OS:Node,
   {c87e9ef9-660b-45fd-ba7b-cb5b07669c95}, !- Handle
@@ -24846,7 +25129,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {924b93bf-adad-4b94-afa2-dbda350e93d1}, !- Handle
@@ -24865,7 +25150,7 @@ OS:Schedule:Day,
   {342c16d7-b86b-4296-951f-404a5294fc8a}, !- Handle
   Hospital HVACOperationSchd Default,     !- Name
   {dfc505bd-9332-40c0-8668-807b87425774}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -24874,7 +25159,7 @@ OS:Schedule:Day,
   {f5adf649-603e-43d8-bb62-7f0c6064a6a9}, !- Handle
   Hospital HVACOperationSchd Winter Design Day, !- Name
   {dfc505bd-9332-40c0-8668-807b87425774}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -24883,7 +25168,7 @@ OS:Schedule:Day,
   {ab4af868-3396-40f7-b975-79f1925517c1}, !- Handle
   Hospital HVACOperationSchd Summer Design Day, !- Name
   {dfc505bd-9332-40c0-8668-807b87425774}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -24900,7 +25185,7 @@ OS:Schedule:Day,
   {f38d87f0-cb77-45ad-afc2-84fcff4f3651}, !- Handle
   Hospital BLDG_OA_FRAC_SCH Default,      !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -24909,7 +25194,7 @@ OS:Schedule:Day,
   {87b99ce1-14ec-4aa8-b00e-32ec64a8469d}, !- Handle
   Hospital BLDG_OA_FRAC_SCH Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -24924,7 +25209,7 @@ OS:Schedule:Day,
   {10ecf380-640b-4d24-a2e3-575c1a767074}, !- Handle
   Hospital BLDG_OA_FRAC_SCH Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -24958,7 +25243,7 @@ OS:Schedule:Day,
   {7aca36d0-fc17-43c5-a116-e248583e0c33}, !- Handle
   Hospital BLDG_OA_FRAC_SCH WntrDsn|SmrDsn|Sat|Wkdy Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -24979,7 +25264,7 @@ OS:Schedule:Day,
   {4e97d989-cb72-455c-907c-14db39c20fbe}, !- Handle
   Supply Air Temp - 55.0F Default,        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   12.7777777777778;                       !- Value Until Time 1
@@ -25219,8 +25504,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -27456,7 +27741,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {1aa3e1ee-e425-4c07-b114-5fba39007850}, !- Handle
@@ -27698,8 +27985,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -29333,7 +29620,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {7d1b57c1-c9d0-4256-9514-d087a6bbf3b5}, !- Handle
@@ -29582,8 +29871,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -31689,7 +31978,9 @@ OS:Sizing:System,
   157,                                    !- Heating Design Capacity Per Floor Area {W/m2}
   1,                                      !- Fraction of Autosized Heating Design Capacity
   OnOff,                                  !- Central Cooling Capacity Control Method
-  autosize;                               !- Occupant Diversity
+  autosize,                               !- Occupant Diversity
+  None,                                   !- Heating Coil Sizing Method
+  1;                                      !- Maximum Heating Capacity To Cooling Capacity Sizing Ratio {W/W}
 
 OS:AvailabilityManagerAssignmentList,
   {a733c841-0e57-4b92-ac6c-36ac5d760829}, !- Handle
@@ -31938,8 +32229,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Time of Day Economizer Control Schedule Name
   No,                                     !- High Humidity Control
   ,                                       !- Humidistat Control Zone Name
-  ,                                       !- High Humidity Outdoor Air Flow Ratio
-  ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
+  1,                                      !- High Humidity Outdoor Air Flow Ratio
+  Yes,                                    !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
   InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
@@ -35483,7 +35774,7 @@ OS:Schedule:Day,
   {3ba93f63-2195-4ec0-8a40-df2d96425b7b}, !- Handle
   Hospital BLDG_LIGHT_SCH Default,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0.05,                                   !- Value Until Time 1
@@ -35517,7 +35808,7 @@ OS:Schedule:Day,
   {1c19f741-ab68-41bd-a90e-eb45bd65573b}, !- Handle
   Hospital BLDG_LIGHT_SCH Sat Day,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -35535,7 +35826,7 @@ OS:Schedule:Day,
   {95ddd879-9767-413f-ad33-f6e72e845295}, !- Handle
   Hospital BLDG_LIGHT_SCH Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -35563,7 +35854,7 @@ OS:Schedule:Day,
   {af09ca8c-df00-4ad7-93fa-3a2cf16a9691}, !- Handle
   Hospital BLDG_LIGHT_SCH Wkdy Day,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.1,                                    !- Value Until Time 1
@@ -35584,7 +35875,7 @@ OS:Schedule:Day,
   {baab538f-fe21-4bf0-9629-092f64eadde7}, !- Handle
   Hospital BLDG_LIGHT_SCH Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0;                                      !- Value Until Time 1
@@ -35648,7 +35939,7 @@ OS:Schedule:Day,
   {d44aa735-c332-445d-a741-97fe32d19715}, !- Handle
   Hospital Kitchen_Flr_5_Case:2_SELFCONTAINEDDISPLAYCASE_CaseStockingSched Default, !- Name
   {131e28c7-1da5-4713-b951-ba6e6594b8c4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35684,7 +35975,7 @@ OS:Schedule:Day,
   {845e6d51-c8f6-440d-9ea3-40d9ea62bb2a}, !- Handle
   Hospital Kitchen_Flr_5_Case:2_SELFCONTAINEDDISPLAYCASE_CaseStockingSched Winter Design Day, !- Name
   {131e28c7-1da5-4713-b951-ba6e6594b8c4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35720,7 +36011,7 @@ OS:Schedule:Day,
   {5f876be2-82ac-4e5f-a6cd-ed1bbb0bd0fb}, !- Handle
   Hospital Kitchen_Flr_5_Case:2_SELFCONTAINEDDISPLAYCASE_CaseStockingSched Summer Design Day, !- Name
   {131e28c7-1da5-4713-b951-ba6e6594b8c4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35777,7 +36068,7 @@ OS:Schedule:Day,
   {8a2b149c-da38-4c15-a281-1c76a1ddff39}, !- Handle
   Refrigeration Defrost Schedule Default, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   0,                                      !- Hour 1
   59,                                     !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35795,7 +36086,7 @@ OS:Schedule:Day,
   {d5e4e9bf-b3bb-47a9-a8b1-f6c86f6e4b27}, !- Handle
   Refrigeration Defrost Schedule Default 1, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   0,                                      !- Hour 1
   59,                                     !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35813,7 +36104,7 @@ OS:Schedule:Day,
   {23c2915b-2fd2-4bb5-9314-13cc04afba7d}, !- Handle
   Refrigeration Case Credit Schedule Default, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -35878,7 +36169,7 @@ OS:Schedule:Day,
   {1381b910-3b4f-41db-bacc-e5d9573c934b}, !- Handle
   Hospital Kitchen_Flr_5_Case:1_WALKINFREEZER_WalkInStockingSched Default, !- Name
   {5238fd01-b1dd-4ecc-b0e3-b1726f34ab51}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35899,7 +36190,7 @@ OS:Schedule:Day,
   {1343b52c-b05b-468a-8329-66411a97edc6}, !- Handle
   Hospital Kitchen_Flr_5_Case:1_WALKINFREEZER_WalkInStockingSched Winter Design Day, !- Name
   {5238fd01-b1dd-4ecc-b0e3-b1726f34ab51}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35932,7 +36223,7 @@ OS:Schedule:Day,
   {0d5e97ad-833c-47b3-80b5-3421ea760033}, !- Handle
   Hospital Kitchen_Flr_5_Case:1_WALKINFREEZER_WalkInStockingSched Summer Design Day, !- Name
   {5238fd01-b1dd-4ecc-b0e3-b1726f34ab51}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -35984,7 +36275,7 @@ OS:Schedule:Day,
   {3853d1d8-bd96-48a0-8d78-187fd13796fc}, !- Handle
   Hospital Kitchen_Flr_5_Case:1_WALKINFREEZER_WalkInStockingSched WntrDsn|SmrDsn|Wknd|Mon|Wed|Thu Day, !- Name
   {5238fd01-b1dd-4ecc-b0e3-b1726f34ab51}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   4,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -36031,7 +36322,7 @@ OS:Schedule:Day,
   {4c67b2fa-4189-422b-90ee-7b5cb27abd69}, !- Handle
   door_wi_sched Default,                  !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   6,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -36059,7 +36350,7 @@ OS:Schedule:Day,
   {cde71515-4973-4a7a-a2d4-d37927624324}, !- Handle
   Refrigeration Defrost Schedule Default 2, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   0,                                      !- Hour 1
   59,                                     !- Minute 1
   1,                                      !- Value Until Time 1
@@ -36083,7 +36374,7 @@ OS:Schedule:Day,
   {633af843-6b65-47eb-92dc-5c7e9d98052c}, !- Handle
   Refrigeration Defrost Schedule Default 3, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   0,                                      !- Hour 1
   59,                                     !- Minute 1
   1,                                      !- Value Until Time 1
@@ -36900,7 +37191,7 @@ OS:Schedule:Day,
   {3f8293bd-15a3-4d8e-aaec-8537aec5e6a6}, !- Handle
   Hospital MinRelHumSetSch Default,       !- Name
   {9624e12f-bb41-4de9-b930-e61e8a3309a4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   40;                                     !- Value Until Time 1
@@ -36909,7 +37200,7 @@ OS:Schedule:Day,
   {4d111c05-24c9-454b-9c8a-883213c011aa}, !- Handle
   Hospital MinRelHumSetSch Winter Design Day, !- Name
   {9624e12f-bb41-4de9-b930-e61e8a3309a4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   40;                                     !- Value Until Time 1
@@ -36918,7 +37209,7 @@ OS:Schedule:Day,
   {9748aa15-4d13-4c03-9189-49f08d545af2}, !- Handle
   Hospital MinRelHumSetSch Summer Design Day, !- Name
   {9624e12f-bb41-4de9-b930-e61e8a3309a4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   40;                                     !- Value Until Time 1
@@ -36943,7 +37234,7 @@ OS:Schedule:Day,
   {0802d503-5453-41fd-90b7-3b7be3b7a5c0}, !- Handle
   Hospital MaxRelHumSetSch Default,       !- Name
   {9624e12f-bb41-4de9-b930-e61e8a3309a4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -36952,7 +37243,7 @@ OS:Schedule:Day,
   {bd341070-710e-4f15-88c9-df80582fface}, !- Handle
   Hospital MaxRelHumSetSch Winter Design Day, !- Name
   {9624e12f-bb41-4de9-b930-e61e8a3309a4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -36961,7 +37252,7 @@ OS:Schedule:Day,
   {5ed93759-4fa1-469f-aaf9-cad86b883910}, !- Handle
   Hospital MaxRelHumSetSch Summer Design Day, !- Name
   {9624e12f-bb41-4de9-b930-e61e8a3309a4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -37659,7 +37950,7 @@ OS:Schedule:Day,
   {318c8bb0-c5f2-456b-b144-c7ee22d601fb}, !- Handle
   Service Water Loop Temp - 140F Default, !- Name
   {a9a35ffc-d11f-428f-8518-cb469679571a}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60.0000000000001;                       !- Value Until Time 1
@@ -37769,7 +38060,7 @@ OS:Schedule:Day,
   {fcb7685d-389e-4c73-b2f1-91ae96ce276a}, !- Handle
   Schedule Day 47,                        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22;                                     !- Value Until Time 1
@@ -37778,7 +38069,7 @@ OS:Schedule:Day,
   {f19a3bf6-fb13-452e-8b2c-e8e4875ac126}, !- Handle
   Schedule Day 48,                        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -37996,7 +38287,7 @@ OS:Schedule:Day,
   {988b1f09-e4df-4a1c-b437-4bcba2a2051b}, !- Handle
   Fraction Sensible - 0.2 Default,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.2;                                    !- Value Until Time 1
@@ -38011,7 +38302,7 @@ OS:Schedule:Day,
   {12901b8b-4eca-4c76-8349-a55bf4348028}, !- Handle
   Fraction Latent - 0.05 Default,         !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.05;                                   !- Value Until Time 1
@@ -38026,7 +38317,7 @@ OS:Schedule:Day,
   {f42158bc-852e-4ce9-b1b2-30051b399598}, !- Handle
   Mixed Water At Faucet Temp - 140F Default, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60.0000000000001;                       !- Value Until Time 1
@@ -38050,7 +38341,7 @@ OS:Schedule:Day,
   {dbfb4f5d-095e-4a41-8fa0-feb4adb513e2}, !- Handle
   Hospital BLDG_SWH_SCH Default,          !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -38065,7 +38356,7 @@ OS:Schedule:Day,
   {a27ad98e-72fa-4497-b6ed-7aa55d2ed3a1}, !- Handle
   Hospital BLDG_SWH_SCH Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -38135,7 +38426,7 @@ OS:Schedule:Day,
   {364422e5-1469-44e7-b48a-08665a7375af}, !- Handle
   Hospital BLDG_SWH_SCH SmrDsn|Wkdy Day,  !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -38186,7 +38477,7 @@ OS:Schedule:Day,
   {9ca620bd-f5d1-4572-bdbb-e4830f4bfd8f}, !- Handle
   Hospital BLDG_SWH_SCH Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -38238,7 +38529,7 @@ OS:Schedule:Day,
   {92d71cf5-07b7-4adb-b0bb-76185649c742}, !- Handle
   Hospital BLDG_SWH_SCH WntrDsn|Sat Day,  !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -38481,7 +38772,7 @@ OS:Schedule:Day,
   {50b6da70-736b-4c33-9bd6-5f9c72626d54}, !- Handle
   Service Water Booster Temp - 180.00000000000006F Default, !- Name
   {ae1731ba-10a1-4057-8ac4-8a45d9779d95}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   82.2222222222223;                       !- Value Until Time 1
@@ -38595,7 +38886,7 @@ OS:Schedule:Day,
   {2f3a7c3e-d6ad-4276-a699-dc2eafa8ec6c}, !- Handle
   Schedule Day 51,                        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22;                                     !- Value Until Time 1
@@ -38604,7 +38895,7 @@ OS:Schedule:Day,
   {239e063b-2ecf-41c4-81c2-db29c2b2356c}, !- Handle
   Schedule Day 52,                        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -38621,7 +38912,7 @@ OS:Schedule:Day,
   {e153dd50-ca8f-4c74-b859-cc2f6730e01b}, !- Handle
   Water Heater Ambient Temp Schedule - 70.0 Default, !- Name
   {ae1731ba-10a1-4057-8ac4-8a45d9779d95}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   21.1111111111111;                       !- Value Until Time 1
@@ -39013,7 +39304,7 @@ OS:Schedule:Day,
   {0c8d26b2-af27-4997-81a8-8d7e72f2a6ae}, !- Handle
   Mixed Water At Faucet Temp - 180F Default, !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   82.2222222222223;                       !- Value Until Time 1
@@ -39246,7 +39537,7 @@ OS:Schedule:Day,
   {520c8509-e9f6-43b7-be2d-e12cec4ecdfe}, !- Handle
   Service Water Loop Temp - 180F Default, !- Name
   {d3c95433-3211-45d7-946f-4252da426a4c}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   82.2222222222223;                       !- Value Until Time 1
@@ -39375,7 +39666,7 @@ OS:Schedule:Day,
   {2a8e347d-14e6-4147-86f3-dc05b3826a9e}, !- Handle
   Schedule Day 53,                        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   22;                                     !- Value Until Time 1
@@ -39384,7 +39675,7 @@ OS:Schedule:Day,
   {9acbafce-a4ce-48ec-9156-f7036b907972}, !- Handle
   Schedule Day 54,                        !- Name
   {7f5a644e-b0a4-4f23-a4e6-a37302eea4a3}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   60;                                     !- Value Until Time 1
@@ -39401,7 +39692,7 @@ OS:Schedule:Day,
   {3f45eab0-ebce-4a51-8de5-294db935e5c2}, !- Handle
   Water Heater Ambient Temp Schedule - 70.0f Default, !- Name
   {79682228-9f69-4740-bcf2-c1a5c97052c4}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   21.1111111111111;                       !- Value Until Time 1
@@ -39620,7 +39911,7 @@ OS:Schedule:Day,
   {2b6af561-859c-44eb-a9bb-6fdb874d6e15}, !- Handle
   Hospital LAUNDRY_SWH_SCH Default,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -39635,7 +39926,7 @@ OS:Schedule:Day,
   {8146cfbf-78b6-4ffe-96cd-ac521d124092}, !- Handle
   Hospital LAUNDRY_SWH_SCH Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -39650,7 +39941,7 @@ OS:Schedule:Day,
   {f9297abb-9d89-4e18-a87a-672274ed41bf}, !- Handle
   Hospital LAUNDRY_SWH_SCH Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0,                                      !- Value Until Time 1
@@ -39718,7 +40009,7 @@ OS:Schedule:Day,
   {1c3dc7c2-70a3-4a67-9fe6-576aeaec7c36}, !- Handle
   Hospital Exterior_Lgt_ALWAYS_ON Default, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -39727,7 +40018,7 @@ OS:Schedule:Day,
   {7f86faf0-82a8-4aad-b58d-894384968461}, !- Handle
   Hospital Exterior_Lgt_ALWAYS_ON Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -39736,7 +40027,7 @@ OS:Schedule:Day,
   {d96f91dc-2227-4d09-9f30-dac9c252a299}, !- Handle
   Hospital Exterior_Lgt_ALWAYS_ON Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -39767,7 +40058,7 @@ OS:Schedule:Day,
   {e6d68ac8-30ec-4f89-9aed-658e57583373}, !- Handle
   Hospital BLDG_ELEVATORS Default,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -39801,7 +40092,7 @@ OS:Schedule:Day,
   {97fbb3b3-e9d1-4aad-86da-dce3ec1b953a}, !- Handle
   Hospital BLDG_ELEVATORS Sat Day,        !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -39828,7 +40119,7 @@ OS:Schedule:Day,
   {fce94dfc-ccaa-4312-a52d-c81d5800e015}, !- Handle
   Hospital BLDG_ELEVATORS Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -39856,7 +40147,7 @@ OS:Schedule:Day,
   {06ffb091-d4db-4446-b1d1-9aaa174d959b}, !- Handle
   Hospital BLDG_ELEVATORS Wkdy Day,       !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -39889,7 +40180,7 @@ OS:Schedule:Day,
   {b1b8b680-584f-4a17-a559-5fd24491a0fc}, !- Handle
   Hospital BLDG_ELEVATORS Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.2;                                    !- Value Until Time 1
@@ -39920,7 +40211,7 @@ OS:Schedule:Day,
   {52058ba3-3284-4a05-bd72-84229aa9cda1}, !- Handle
   Hospital ELEV_LIGHT_FAN_SCH_ADD_DF Default, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   8,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -39954,7 +40245,7 @@ OS:Schedule:Day,
   {b07325ad-d6f1-4c54-a54c-0908a5764627}, !- Handle
   Hospital ELEV_LIGHT_FAN_SCH_ADD_DF Sat Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -39981,7 +40272,7 @@ OS:Schedule:Day,
   {924af8d4-2a40-4810-8ca6-9f15569f4ba3}, !- Handle
   Hospital ELEV_LIGHT_FAN_SCH_ADD_DF Summer Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   1;                                      !- Value Until Time 1
@@ -40009,7 +40300,7 @@ OS:Schedule:Day,
   {4c2333f0-bab4-419b-be74-f0836404b1b0}, !- Handle
   Hospital ELEV_LIGHT_FAN_SCH_ADD_DF Wkdy Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   7,                                      !- Hour 1
   0,                                      !- Minute 1
   0.2,                                    !- Value Until Time 1
@@ -40033,7 +40324,7 @@ OS:Schedule:Day,
   {cc934db7-e4b5-46c8-8abf-fd0d9b1e63ca}, !- Handle
   Hospital ELEV_LIGHT_FAN_SCH_ADD_DF Winter Design Day, !- Name
   {1c0e8abb-07cf-45f7-a700-512cc3e9c88e}, !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.2;                                    !- Value Until Time 1
@@ -40086,7 +40377,7 @@ OS:Schedule:Day,
   {81ef1073-d4e6-4ce4-af05-bad34b9c87c0}, !- Handle
   Economizer Max OA Fraction 70 pct Default, !- Name
   ,                                       !- Schedule Type Limits Name
-  ,                                       !- Interpolate to Timestep
+  No,                                     !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
   0.7;                                    !- Value Until Time 1
