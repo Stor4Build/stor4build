@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>add_py_tank</name>
+  <uid>26791029-4af7-4b3d-8cec-9737104ed42f</uid>
+  <version_id>acfd127a-49e3-4368-8936-f5cb5bfc6d99</version_id>
+  <version_modified>2024-09-25T16:04:26Z</version_modified>
+  <xml_checksum>C9E2315D</xml_checksum>
+  <class_name>AddPyTank</class_name>
+  <display_name>Add Python Tank</display_name>
+  <description>This measure will add the Python tank model.</description>
+  <modeler_description>This measure will add the python tank model.</modeler_description>
+  <arguments>
+    <argument>
+      <name>chrg_start</name>
+      <display_name>chrg_start</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>21:00</default_value>
+    </argument>
+    <argument>
+      <name>chrg_end</name>
+      <display_name>chrg_end</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>07:00</default_value>
+    </argument>
+    <argument>
+      <name>dchrg_start</name>
+      <display_name>dchrg_start</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>12:00</default_value>
+    </argument>
+    <argument>
+      <name>dchrg_end</name>
+      <display_name>dchrg_end</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>18:00</default_value>
+    </argument>
+    <argument>
+      <name>chrg_temp</name>
+      <display_name>chrg_temp</display_name>
+      <type>Double</type>
+      <units>C</units>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>-3.8</default_value>
+    </argument>
+    <argument>
+      <name>num_tanks</name>
+      <display_name>num_tanks</display_name>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>1</default_value>
+    </argument>
+    <argument>
+      <name>trim_temp</name>
+      <display_name>trim_temp</display_name>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>10</default_value>
+    </argument>
+    <argument>
+      <name>strg_type</name>
+      <display_name>strg_type</display_name>
+      <description>Options are ice or chw</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>ice</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.3.0</identifier>
+        <min_compatible>2.3.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>78B67CE1</checksum>
+    </file>
+  </files>
+</measure>
