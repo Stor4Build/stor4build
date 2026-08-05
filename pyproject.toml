@@ -66,6 +66,10 @@ test-api = "pytest regression_tests -m api_regression --run-api-regression {args
 [[tool.hatch.envs.test.matrix]]
 python = ["38", "39", "310", "311", "312", "313"]
 
+[tool.pytest.ini_options]
+addopts = "-p regression_tests.pytest_plugin"
+pythonpath = ["."]
+
 [tool.coverage.run]
 branch = true
 parallel = true
