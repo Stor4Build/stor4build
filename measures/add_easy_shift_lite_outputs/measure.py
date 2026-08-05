@@ -7,7 +7,7 @@ import typing
 import openstudio
 
 
-class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
+class AddEasyShiftLiteOutputs(openstudio.measure.ModelMeasure):
     """A ModelMeasure."""
 
     def name(self):
@@ -20,7 +20,7 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
         As such, measure names should clearly describe the measure's function,
         while remaining general in nature
         """
-        return "Add ThermalTank Outputs"
+        return "Add EASY-SHIFT Lite Outputs"
 
     def description(self):
         """Human readable description.
@@ -28,7 +28,7 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
         The measure description is intended for a general audience and should not assume
         that the reader is familiar with the design and construction practices suggested by the measure.
         """
-        return "Add the variables needed for the ThermalTank"
+        return "Add the variables needed for the EASY-SHIFT Lite"
 
     def modeler_description(self):
         """Human readable description of modeling approach.
@@ -38,7 +38,7 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
         how the baseline model must be set up, major assumptions made by the measure,
         and relevant citations or references to applicable modeling resources
         """
-        return "Add the variables needed for the ThermalTank"
+        return "Add the variables needed for the EASY-SHIFT Lite"
 
     def arguments(self, model: typing.Optional[openstudio.model.Model] = None):
         """Prepares user arguments for the measure.
@@ -47,11 +47,12 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
         """
         args = openstudio.measure.OSArgumentVector()
 
-        baseline = openstudio.measure.OSArgument.makeBoolArgument("baseline", False)
-        baseline.setDisplayName("Add variables for baseline simulation")
-        baseline.setDescription("Setting this to false will add hourly variables for simulations with the ThermalTank implemented.")
-        baseline.setDefaultValue(True)
-        args.append(baseline)
+        # Leave this in place in case we need something different for the baseline
+        #baseline = openstudio.measure.OSArgument.makeBoolArgument("baseline", False)
+        #baseline.setDisplayName("Add variables for baseline simulation")
+        #baseline.setDescription("Setting this to false will add hourly variables for simulations with the ThermalTank implemented.")
+        #baseline.setDefaultValue(True)
+        #args.append(baseline)
 
         return args
 
@@ -64,26 +65,27 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
             return False
 
         # assign the user inputs to variables
-        baseline = runner.getBoolArgumentValue("baseline", user_arguments)
+        #baseline = runner.getBoolArgumentValue("baseline", user_arguments)
 
         # report initial condition of model
         runner.registerInitialCondition(f"The model started with {len(model.getOutputVariables())} output variables.")
 
         # add hourly output variables
         # these are always added
-        hourly_outputs = [('*', 'Chiller Electricity Rate'),
-                          ('*', 'Chiller Electricity Energy'),
-                          ('*', 'Chiller Evaporator Inlet Temperature'),
-                          ('*', 'Chiller Evaporator Outlet Temperature'),
-                          ('*', 'Chiller Evaporator Mass Flow Rate'),
-                          ('*', 'Chiller Evaporator Cooling Energy')]
+        hourly_outputs = []
 
-        timestep_outputs = []
+        timestep_outputs = [('Environment', 'Site Outdoor Air Drybulb Temperature'),
+                            ('*', 'Chiller Electricity Rate'),
+                            ('*', 'Chiller Condenser Heat Transfer Rate'),
+                            ('*', 'Chiller Evaporator Cooling Rate'),
+                            ('*', 'Chiller Part Load Ratio'),
+                            ('*', 'Chiller COP')]
+                            #"Electricity:Facility [J](TimeStep)"
         
         # add more variables to the list if needed            
-        if not baseline:
-            hourly_outputs.append(('*', 'PythonPlugin:OutputVariable'))
-            hourly_outputs.append(('Charge Sch', 'Schedule Value'))
+        #if not baseline:
+        #    hourly_outputs.append(('*', 'PythonPlugin:OutputVariable'))
+        #    hourly_outputs.append(('Charge Sch', 'Schedule Value'))
         
         for key, var in hourly_outputs:
             ov = openstudio.model.OutputVariable(var, model)
@@ -104,4 +106,4 @@ class AddThermalTankOutputs(openstudio.measure.ModelMeasure):
 
 
 # register the measure to be used by the application
-AddThermalTankOutputs().registerWithApplication()
+AddEasyShiftLiteOutputs().registerWithApplication()
