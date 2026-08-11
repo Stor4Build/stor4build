@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import pytest
 
-from .regression import compare_outputs, iter_cases, run_api_case, select_case
+from .regression import compare_outputs, format_regression_context, iter_cases, run_api_case, select_case
 
 
 API_CASES = list(iter_cases("api"))
@@ -20,6 +20,7 @@ def test_api_regression(case, regression_case_dir, request):
         pytest.skip(f"approved API golden is missing: {case.expected.name}")
 
     output = regression_case_dir / case.expected.name
+    print(format_regression_context(case, output))
     run_api_case(
         case,
         output,

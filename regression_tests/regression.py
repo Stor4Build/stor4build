@@ -7,8 +7,12 @@ import csv
 import io
 import json
 import math
+import platform
+import re
+import shutil
 import subprocess
 import sys
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -23,8 +27,10 @@ from stor4build import __version__
 REGRESSION_DIR = Path(__file__).resolve().parent
 REPO_DIR = REGRESSION_DIR.parent
 CASES_FILE = REGRESSION_DIR / "cases.json"
+TOOLCHAIN_FILE = REGRESSION_DIR / "toolchain.json"
 DEFAULT_RTOL = 1.0e-6
 DEFAULT_ATOL = 1.0e-6
+VERSION_PATTERN = re.compile(r"(?<!\d)(\d+\.\d+\.\d+)(?!\d)")
 
 
 @dataclass(frozen=True)
@@ -37,12 +43,129 @@ class RegressionCase:
     reason: str | None = None
 
 
+@dataclass(frozen=True)
+class OpenStudioToolchain:
+    executable: str
+    expected_version: str
+    detected_version: str
+    version_output: str
+
+
 def load_manifest() -> dict[str, dict[str, Any]]:
     with CASES_FILE.open(encoding="utf-8") as fp:
         manifest = json.load(fp)
     if not isinstance(manifest, dict) or not manifest:
         raise ValueError(f"{CASES_FILE} must contain a non-empty JSON object")
     return manifest
+
+
+def load_toolchain() -> dict[str, Any]:
+    with TOOLCHAIN_FILE.open(encoding="utf-8") as fp:
+        toolchain = json.load(fp)
+    if not isinstance(toolchain, dict) or not toolchain:
+        raise ValueError(f"{TOOLCHAIN_FILE} must contain a non-empty JSON object")
+    return toolchain
+
+
+def validate_toolchain() -> list[str]:
+    problems: list[str] = []
+    toolchain = load_toolchain()
+    openstudio = toolchain.get("openstudio")
+    energyplus = toolchain.get("energyplus")
+    if not isinstance(openstudio, dict):
+        problems.append("toolchain.openstudio must be a JSON object")
+    else:
+        for key in ("version", "build"):
+            if not isinstance(openstudio.get(key), str) or not openstudio[key].strip():
+                problems.append(f"toolchain.openstudio.{key} must be a non-empty string")
+        version = openstudio.get("version")
+        if isinstance(version, str) and VERSION_PATTERN.fullmatch(version) is None:
+            problems.append("toolchain.openstudio.version must use MAJOR.MINOR.PATCH format")
+    if not isinstance(energyplus, dict):
+        problems.append("toolchain.energyplus must be a JSON object")
+    else:
+        for key in ("version", "embedded_python"):
+            if not isinstance(energyplus.get(key), str) or not energyplus[key].strip():
+                problems.append(f"toolchain.energyplus.{key} must be a non-empty string")
+        version = energyplus.get("version")
+        if isinstance(version, str) and VERSION_PATTERN.fullmatch(version) is None:
+            problems.append("toolchain.energyplus.version must use MAJOR.MINOR.PATCH format")
+        embedded_python = energyplus.get("embedded_python")
+        if isinstance(embedded_python, str) and re.fullmatch(r"\d+\.\d+", embedded_python) is None:
+            problems.append("toolchain.energyplus.embedded_python must use MAJOR.MINOR format")
+    if not isinstance(toolchain.get("canonical_platform"), str) or not toolchain["canonical_platform"].strip():
+        problems.append("toolchain.canonical_platform must be a non-empty string")
+    return problems
+
+
+def resolve_openstudio_executable(openstudio: str) -> str:
+    resolved = shutil.which(openstudio)
+    if resolved is None and Path(openstudio).is_file():
+        resolved = str(Path(openstudio).resolve())
+    if resolved is None:
+        raise FileNotFoundError(f'Cannot find OpenStudio executable "{openstudio}"')
+    return resolved
+
+
+def check_openstudio_toolchain(
+    openstudio: str,
+    *,
+    allow_mismatch: bool = False,
+) -> OpenStudioToolchain:
+    toolchain = load_toolchain()
+    expected_version = toolchain["openstudio"]["version"]
+    executable = resolve_openstudio_executable(openstudio)
+    result = subprocess.run(
+        [executable, "openstudio_version"],
+        cwd=REPO_DIR,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    version_output = "\n".join(part.strip() for part in (result.stdout, result.stderr) if part.strip())
+    match = VERSION_PATTERN.search(version_output)
+    if match is None:
+        raise RuntimeError(
+            f"Could not determine the OpenStudio version from {executable!r}. "
+            f"Command output: {version_output!r}"
+        )
+    detected_version = match.group(1)
+    if detected_version != expected_version:
+        message = (
+            f"OpenStudio {detected_version} was detected at {executable!r}; "
+            f"the canonical regression toolchain requires {expected_version}."
+        )
+        if not allow_mismatch:
+            raise RuntimeError(message + " Use --allow-toolchain-mismatch only for exploratory runs.")
+        warnings.warn(message + " Continuing because --allow-toolchain-mismatch was supplied.", stacklevel=2)
+    return OpenStudioToolchain(executable, expected_version, detected_version, version_output)
+
+
+def format_regression_context(
+    case: RegressionCase,
+    output: Path,
+    openstudio: OpenStudioToolchain | None = None,
+) -> str:
+    toolchain = load_toolchain()
+    lines = [
+        f"case: {case.name}",
+        f"adapter: {case.adapter}",
+        f"host Python: {platform.python_version()}",
+        f"expected output: {case.expected}",
+        f"generated output: {output}",
+        f"comparison tolerances: rtol={DEFAULT_RTOL}, atol={DEFAULT_ATOL}",
+        f"expected EnergyPlus: {toolchain['energyplus']['version']}",
+        f"expected embedded Python: {toolchain['energyplus']['embedded_python']}",
+    ]
+    if openstudio is not None:
+        lines.extend(
+            [
+                f"OpenStudio executable: {openstudio.executable}",
+                f"expected OpenStudio: {openstudio.expected_version}",
+                f"detected OpenStudio: {openstudio.detected_version}",
+            ]
+        )
+    return "\n".join(lines)
 
 
 def _cli_expected(config: dict[str, Any], name: str) -> Path:

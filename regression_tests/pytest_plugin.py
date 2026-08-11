@@ -37,6 +37,11 @@ def pytest_addoption(parser):
         default=7200.0,
         help="Per-case timeout in seconds",
     )
+    group.addoption(
+        "--allow-toolchain-mismatch",
+        action="store_true",
+        help="Allow a non-canonical OpenStudio version for an exploratory CLI regression run",
+    )
 
 
 def pytest_configure(config):

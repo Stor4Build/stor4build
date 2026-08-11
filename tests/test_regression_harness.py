@@ -9,6 +9,7 @@ import pytest
 
 from regression_tests.regression import (
     RegressionCase,
+    check_openstudio_toolchain,
     compare_outputs,
     prepare_cli_arguments,
     run_api_case,
@@ -58,6 +59,44 @@ def test_prepare_cli_arguments_redirects_outputs(scratch_dir):
 
     assert arguments[:5] == ["size-icetank", "--openstudio", "openstudio-3.11", "-r", str(scratch_dir / "run")]
     assert arguments[arguments.index("-o") + 1] == str(scratch_dir / "actual.csv")
+
+
+def test_check_openstudio_toolchain_accepts_canonical_version(monkeypatch):
+    monkeypatch.setattr("regression_tests.regression.shutil.which", lambda executable: "/opt/openstudio")
+    monkeypatch.setattr(
+        "regression_tests.regression.subprocess.run",
+        lambda command, **kwargs: subprocess.CompletedProcess(command, 0, "3.11.0\n", ""),
+    )
+
+    toolchain = check_openstudio_toolchain("openstudio")
+
+    assert toolchain.executable == "/opt/openstudio"
+    assert toolchain.expected_version == "3.11.0"
+    assert toolchain.detected_version == "3.11.0"
+
+
+def test_check_openstudio_toolchain_rejects_mismatch(monkeypatch):
+    monkeypatch.setattr("regression_tests.regression.shutil.which", lambda executable: "/opt/openstudio")
+    monkeypatch.setattr(
+        "regression_tests.regression.subprocess.run",
+        lambda command, **kwargs: subprocess.CompletedProcess(command, 0, "3.10.0\n", ""),
+    )
+
+    with pytest.raises(RuntimeError, match="canonical regression toolchain requires 3.11.0"):
+        check_openstudio_toolchain("openstudio")
+
+
+def test_check_openstudio_toolchain_allows_explicit_override(monkeypatch):
+    monkeypatch.setattr("regression_tests.regression.shutil.which", lambda executable: "/opt/openstudio")
+    monkeypatch.setattr(
+        "regression_tests.regression.subprocess.run",
+        lambda command, **kwargs: subprocess.CompletedProcess(command, 0, "OpenStudio 3.10.0\n", ""),
+    )
+
+    with pytest.warns(UserWarning, match="Continuing"):
+        toolchain = check_openstudio_toolchain("openstudio", allow_mismatch=True)
+
+    assert toolchain.detected_version == "3.10.0"
 
 
 def test_run_cli_case_uses_package_entry_point(monkeypatch, scratch_dir):

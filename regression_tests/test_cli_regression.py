@@ -3,7 +3,14 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import pytest
 
-from .regression import compare_outputs, iter_cases, run_cli_case, select_case
+from .regression import (
+    check_openstudio_toolchain,
+    compare_outputs,
+    format_regression_context,
+    iter_cases,
+    run_cli_case,
+    select_case,
+)
 
 
 CLI_CASES = list(iter_cases("cli"))
@@ -21,11 +28,16 @@ def test_cli_regression(case, regression_case_dir, request):
 
     output = regression_case_dir / case.expected.name
     run_dir = regression_case_dir / "run"
+    openstudio = check_openstudio_toolchain(
+        request.config.getoption("--openstudio"),
+        allow_mismatch=request.config.getoption("--allow-toolchain-mismatch"),
+    )
+    print(format_regression_context(case, output, openstudio))
     run_cli_case(
         case,
         output,
         run_dir,
-        request.config.getoption("--openstudio"),
+        openstudio.executable,
         request.config.getoption("--regression-timeout"),
     )
     compare_outputs(case.expected, output)
