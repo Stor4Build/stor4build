@@ -6,7 +6,7 @@ import os
 
 # Make some assumptions
 this_dir = os.path.abspath(os.path.dirname(__file__))
-stand_alone_retail = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'StandAloneRetail-5A-2004.osm'))
+stand_alone_retail = os.path.abspath(os.path.join(this_dir, '..', 'models', 'RetailStandAlone_5A_2016.osm'))
 measures_dir = os.path.abspath(os.path.join(this_dir, '..', 'measures'))
 epw = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw'))
 
