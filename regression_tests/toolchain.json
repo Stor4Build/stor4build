@@ -1,0 +1,11 @@
+{
+  "openstudio": {
+    "version": "3.11.0",
+    "build": "241b8abb4d"
+  },
+  "energyplus": {
+    "version": "25.2.0",
+    "embedded_python": "3.12"
+  },
+  "canonical_platform": "Ubuntu 24.04 x86_64"
+}
