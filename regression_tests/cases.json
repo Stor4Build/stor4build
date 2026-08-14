@@ -57,6 +57,28 @@
         }
     },
     "LargeOffice_5A_pre1980_thermaltank_specified_defaults": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m",
+                "measures",
+                "-o",
+                "LargeOffice_5A_pre1980_thermaltank_specified_defaults_cli.csv",
+                "--peak-reduction",
+                "100",
+                "--charge-start",
+                "21:00",
+                "--charge-end",
+                "07:00",
+                "--discharge-start",
+                "12:00",
+                "--discharge-end",
+                "18:00",
+                "-s",
+                "models/LargeOffice_5A_pre1980.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        },
         "api": {
             "enabled": true,
             "request": {
@@ -74,7 +96,29 @@
             }
         }
     },
-    "LargeOffice_3A_2011_thermaltank_utility": {
+    "LargeOffice_3A_2013_thermaltank_utility": {
+        "cli": {
+            "arguments": [
+                "size-icetank",
+                "-m",
+                "measures",
+                "-o",
+                "LargeOffice_3A_2013_thermaltank_utility_cli.csv",
+                "--peak-reduction",
+                "100",
+                "--charge-start",
+                "18:00",
+                "--charge-end",
+                "11:00",
+                "--discharge-start",
+                "12:00",
+                "--discharge-end",
+                "17:00",
+                "-s",
+                "models/LargeOffice_3A_2013.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        },
         "api": {
             "enabled": true,
             "request": {
@@ -84,7 +128,7 @@
               },
               "baseline": {
                 "climate": "3A",
-                "vintage": 2011,
+                "vintage": 2013,
                 "type": "LargeOffice"
               },
               "demand": {
