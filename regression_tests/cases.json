@@ -56,27 +56,27 @@
             }
         }
     },
-    "LargeOffice_5A_pre1980_thermaltank_specified_defaults": {
+    "LargeOffice_4A_2019_thermaltank_specified_schedule": {
         "cli": {
             "arguments": [
                 "size-icetank",
                 "-m",
                 "measures",
                 "-o",
-                "LargeOffice_5A_pre1980_thermaltank_specified_defaults_cli.csv",
+                "LargeOffice_4A_2019_thermaltank_specified_schedule_cli.csv",
                 "--peak-reduction",
-                "100",
+                "80",
                 "--charge-start",
-                "21:00",
+                "20:00",
                 "--charge-end",
-                "07:00",
+                "06:00",
                 "--discharge-start",
-                "12:00",
+                "11:00",
                 "--discharge-end",
-                "18:00",
+                "17:00",
                 "-s",
-                "models/LargeOffice_5A_pre1980.osm",
-                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+                "models/LargeOffice_4A_2019.osm",
+                "weather/USA_NY_New.York-John.F.Kennedy.Intl_.AP_.744860_TMY3.epw"
             ]
         },
         "api": {
@@ -84,16 +84,39 @@
             "request": {
                 "storage": {
                     "type": "ThermalTank-Ice",
-                    "capacity": 100,
-                    "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 18}},
-                    "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 7}}
+                    "capacity": 80,
+                    "discharge_interval": {"begin": {"hour": 11}, "end": {"hour": 17}},
+                    "charge_interval": {"begin": {"hour": 20}, "end": {"hour": 6}}
                 },
                 "baseline": {
-                    "climate": "5A",
-                    "vintage": 1979,
+                    "climate": "4A",
+                    "vintage": 2019,
                     "type": "LargeOffice"
                 }
             }
+        }
+    },
+    "FullServiceRestaurant_3A_2010_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil",
+                "-m",
+                "measures",
+                "-o",
+                "FullServiceRestaurant_3A_2010_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start",
+                "18:00",
+                "--charge-end",
+                "08:00",
+                "--discharge-start",
+                "11:00",
+                "--discharge-end",
+                "17:00",
+                "-s",
+                "-b",
+                "models/FullServiceRestaurant_3A_2010.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
         }
     },
     "LargeOffice_3A_2013_thermaltank_utility": {
@@ -220,14 +243,22 @@
             ]
         }
     },
-    "Hospital_5A_post1980_thermaltank_defaults": {
+    "Hospital_5A_post1980_thermaltank_specified_schedule": {
         "cli": {
             "arguments": [
                 "size-icetank",
                 "-m",
                 "measures",
                 "-o",
-                "Hospital_5A_post1980_thermaltank_defaults_cli.csv",
+                "Hospital_5A_post1980_thermaltank_specified_schedule_cli.csv",
+                "--charge-start",
+                "20:00",
+                "--charge-end",
+                "06:00",
+                "--discharge-start",
+                "11:00",
+                "--discharge-end",
+                "17:00",
                 "-s",
                 "models/Hospital_5A_post1980.osm",
                 "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
@@ -238,7 +269,9 @@
             "reason": "API regression is not enabled for this case on the current configured test systems.",
             "request": {
             "storage": {
-                "type": "ThermalTank-Ice"
+                "type": "ThermalTank-Ice",
+                "charge_interval": {"begin": {"hour": 20}, "end": {"hour": 6}},
+                "discharge_interval": {"begin": {"hour": 11}, "end": {"hour": 17}}
             },
             "baseline": {
                 "climate": "5A",
@@ -293,14 +326,22 @@
             ]
         }        
     },
-    "LargeHotel_5A_2016_thermaltank_defaults": {
+    "LargeHotel_5A_2016_thermaltank_specified_schedule": {
         "cli": {
             "arguments": [
                 "size-icetank",
                 "-m",
                 "measures",
                 "-o",
-                "LargeHotel_5A_2016_thermaltank_defaults_cli.csv",
+                "LargeHotel_5A_2016_thermaltank_specified_schedule_cli.csv",
+                "--charge-start",
+                "19:00",
+                "--charge-end",
+                "07:00",
+                "--discharge-start",
+                "12:00",
+                "--discharge-end",
+                "17:00",
                 "-s",
                 "models/LargeHotel_5A_2016.osm",
                 "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
@@ -311,7 +352,9 @@
             "reason": "API regression is not enabled for this case on the current configured test systems.",
             "request": {
             "storage": {
-                "type": "ThermalTank-Ice"
+                "type": "ThermalTank-Ice",
+                "charge_interval": {"begin": {"hour": 19}, "end": {"hour": 7}},
+                "discharge_interval": {"begin": {"hour": 12}, "end": {"hour": 17}}
             },
             "baseline": {
                 "climate": "5A",
@@ -377,14 +420,22 @@
             }
         }
     },
-    "College_3A_2007_thermaltank_defaults": {
+    "College_3A_2007_thermaltank_specified_schedule": {
         "cli": {
             "arguments": [
                 "size-icetank",
                 "-m",
                 "measures",
                 "-o",
-                "College_3A_2007_thermaltank_defaults_cli.csv",
+                "College_3A_2007_thermaltank_specified_schedule_cli.csv",
+                "--charge-start",
+                "21:00",
+                "--charge-end",
+                "08:00",
+                "--discharge-start",
+                "13:00",
+                "--discharge-end",
+                "18:00",
                 "-s",
                 "models/College_3A_2007.osm",
                 "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
@@ -395,7 +446,9 @@
             "reason": "API regression is not enabled for this case on the current configured test systems.",
             "request": {
             "storage": {
-                "type": "ThermalTank-Ice"
+                "type": "ThermalTank-Ice",
+                "charge_interval": {"begin": {"hour": 21}, "end": {"hour": 8}},
+                "discharge_interval": {"begin": {"hour": 13}, "end": {"hour": 18}}
             },
             "baseline": {
                 "climate": "3A",
@@ -444,6 +497,78 @@
                 "-s",
                 "-b",
                 "models/Laboratory_5A_2004.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        }
+    },
+    "RetailStandalone_3A_2007_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil", "-m", "measures", "-o",
+                "RetailStandalone_3A_2007_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start", "19:00", "--charge-end", "07:00",
+                "--discharge-start", "12:00", "--discharge-end", "18:00",
+                "-s", "-b", "models/RetailStandalone_3A_2007.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }
+    },
+    "RetailStandalone_4A_2004_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil", "-m", "measures", "-o",
+                "RetailStandalone_4A_2004_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start", "20:00", "--charge-end", "08:00",
+                "--discharge-start", "13:00", "--discharge-end", "19:00",
+                "-s", "-b", "models/RetailStandalone_4A_2004.osm",
+                "weather/USA_NY_New.York-John.F.Kennedy.Intl_.AP_.744860_TMY3.epw"
+            ]
+        }
+    },
+    "RetailStandalone_5A_2016_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil", "-m", "measures", "-o",
+                "RetailStandalone_5A_2016_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start", "21:00", "--charge-end", "07:00",
+                "--discharge-start", "12:00", "--discharge-end", "18:00",
+                "-s", "-b", "models/RetailStandalone_5A_2016.osm",
+                "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+            ]
+        }
+    },
+    "SecondarySchool_3A_2010_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil", "-m", "measures", "-o",
+                "SecondarySchool_3A_2010_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start", "18:00", "--charge-end", "06:00",
+                "--discharge-start", "10:00", "--discharge-end", "16:00",
+                "-s", "-b", "models/SecondarySchool_3A_2010.osm",
+                "weather/USA_GA_Atlanta-Hartsfield.Jackson.Intl_.AP_.722190_TMY3.epw"
+            ]
+        }
+    },
+    "SmallOffice_4A_post1980_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil", "-m", "measures", "-o",
+                "SmallOffice_4A_post1980_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start", "20:00", "--charge-end", "06:00",
+                "--discharge-start", "11:00", "--discharge-end", "17:00",
+                "-s", "-b", "models/SmallOffice_4A_post1980.osm",
+                "weather/USA_NY_New.York-John.F.Kennedy.Intl_.AP_.744860_TMY3.epw"
+            ]
+        }
+    },
+    "SmallOffice_5A_2019_packaged_ice_specified_schedule": {
+        "cli": {
+            "arguments": [
+                "run-dxcoil", "-m", "measures", "-o",
+                "SmallOffice_5A_2019_packaged_ice_specified_schedule_cli.csv",
+                "--charge-start", "19:00", "--charge-end", "07:00",
+                "--discharge-start", "13:00", "--discharge-end", "18:00",
+                "-s", "-b", "models/SmallOffice_5A_2019.osm",
                 "weather/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
             ]
         }

@@ -3,12 +3,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import stor4build as s4b
 import os
+from click.testing import CliRunner
+
+from stor4build.cli import run_dxcoil
 
 # Make some assumptions
 this_dir = os.path.abspath(os.path.dirname(__file__))
 stand_alone_retail = os.path.abspath(os.path.join(this_dir, '..', 'models', 'RetailStandalone_5A_2016.osm'))
 measures_dir = os.path.abspath(os.path.join(this_dir, '..', 'measures'))
-epw = os.path.abspath(os.path.join(this_dir, '..', 'resources', 'USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw'))
+epw = os.path.abspath(os.path.join(this_dir, '..', 'weather', 'USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw'))
 
 def test_dxcoil_init():
     dxcoil = s4b.DxCoil('dxcoil')
@@ -52,3 +55,41 @@ def test_dxcoil_size():
                                             'size_mult': '1',
                                             'wknd': False}
     assert len(osw['steps'][2]) == 3
+
+
+def test_dxcoil_cli_intervals(monkeypatch):
+    observed = {}
+
+    def observe_workflow(openstudio, run_dir, osw, measures_only=False):
+        observed["osw"] = osw
+        observed["measures_only"] = measures_only
+
+    monkeypatch.setattr(s4b, "run_workflow", observe_workflow)
+    result = CliRunner().invoke(
+        run_dxcoil,
+        [
+            "--measures-only",
+            "--measures-dir",
+            measures_dir,
+            "--charge-start",
+            "19:00",
+            "--charge-end",
+            "07:00",
+            "--discharge-start",
+            "11:00",
+            "--discharge-end",
+            "17:00",
+            stand_alone_retail,
+            epw,
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    packaged_ice = next(
+        step for step in observed["osw"]["steps"] if step["measure_dir_name"] == "add_packaged_ice_storage"
+    )
+    assert packaged_ice["arguments"]["charge_start"] == "19:00"
+    assert packaged_ice["arguments"]["charge_end"] == "07:00"
+    assert packaged_ice["arguments"]["discharge_start"] == "11:00"
+    assert packaged_ice["arguments"]["discharge_end"] == "17:00"
+    assert observed["measures_only"] is True

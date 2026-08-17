@@ -409,11 +409,16 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
+@click.option('--charge-start', metavar='HH:MM', default=None, help='Time to start charging packaged ice storage.')
+@click.option('--charge-end', metavar='HH:MM', default=None, help='Time to end charging packaged ice storage.')
+@click.option('--discharge-start', metavar='HH:MM', default=None, help='Time to start discharging packaged ice storage.')
+@click.option('--discharge-end', metavar='HH:MM', default=None, help='Time to end discharging packaged ice storage.')
 @click.option('-b', '--run-baseline', is_flag=True, show_default=True, default=False, help='Run the baseline.')
 @click.option('-c', '--cooling_season_only', is_flag=True, show_default=True, default=False, help='Run only in cooling season.')
 @click.option('-s', '--show-sizing', is_flag=True, show_default=True, default=False, help='Show sizing results.')
 def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
-               run_baseline, cooling_season_only, show_sizing):
+               charge_start, charge_end, discharge_start, discharge_end, run_baseline,
+               cooling_season_only, show_sizing):
     """
     Add an DX coil TES system to an OpenStudio model and run it.
     """
@@ -431,7 +436,12 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
     if cooling_season_only:
         pre.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
         
-    arguments = {}
+    arguments = {
+        "charge_start": charge_start,
+        "charge_end": charge_end,
+        "discharge_start": discharge_start,
+        "discharge_end": discharge_end,
+    }
 
     # Run the baseline if requested
     if run_baseline:
@@ -444,7 +454,7 @@ def run_dxcoil(osm, epw, openstudio, run_dir, measures_dir, output, measures_onl
     post=[stor4build.ModelMeasure('Add DX Coil Outputs', 'add_dx_coil_outputs', arguments={'baseline': False})]
     if show_sizing or output:
         post.append(stor4build.ReportingMeasure('Get DX Coil Sizes', 'get_dx_coil_sizes'))
-    dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre, hourly=False, post_steps=post)
+    dxcoil = stor4build.DxCoil('dxcoil', pre_steps=pre, hourly=False, post_steps=post, **arguments)
     osw = dxcoil.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, dxcoil.tag()), osw, measures_only=measures_only)
     
