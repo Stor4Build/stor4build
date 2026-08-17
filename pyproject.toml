@@ -62,6 +62,7 @@ no-cov = "cov --no-cov {args}"
 test = "pytest {args}"
 test-cli = "pytest regression_tests -m cli_regression --run-cli-regression {args}"
 test-api = "pytest regression_tests -m api_regression --run-api-regression {args}"
+generate-goldens = "python -m regression_tests.generate_goldens {args}"
 
 [[tool.hatch.envs.test.matrix]]
 python = ["38", "39", "310", "311", "312", "313"]

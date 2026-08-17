@@ -51,6 +51,27 @@ hatch run test-api --api-url http://localhost:5000
 
 `STOR4BUILD_API_URL` may be used instead of `--api-url`. Both regression scripts also accept `--case`, `--regression-timeout`, and `--regression-output`. Without `--regression-output`, generated files use pytest temporary directories. With it, each case is retained in its own directory for diagnosis. The harness never overwrites approved files in `regression_tests`.
 
+## Generating candidate goldens
+
+Golden generation runs exclusively through the CLI and requires the canonical OpenStudio version declared in `toolchain.json`. Generate all candidates into a new or empty directory outside `regression_tests`:
+
+```console
+hatch run generate-goldens --output ../stor4build-candidate-goldens --openstudio /path/to/openstudio
+```
+
+`STOR4BUILD_OPENSTUDIO` may be used instead of `--openstudio`. Select cases with one or more shell-style patterns and adjust the per-case timeout when needed:
+
+```console
+hatch run generate-goldens \
+  --output ../stor4build-candidate-goldens \
+  --case "*packaged_ice*" \
+  --timeout 10800
+```
+
+The generator refuses to write anywhere inside `regression_tests` and refuses a non-empty candidate directory. It never modifies approved goldens. Each successful candidate is classified as `match`, `changed`, or `new`; execution failures are recorded as `failed`, and generation continues with the remaining cases. `generation.json` records the canonical and detected toolchain, host environment, original case arguments, per-case status, and comparison details. The command exits nonzero if any case fails to execute.
+
+Review candidate files and `generation.json` before replacing approved goldens. Promotion is deliberately a separate manual action.
+
 ## Comparisons
 
 Generated CSV output must have the expected metadata, columns in the same order, timestamps, row count, and finite numeric data. The historical package version recorded in an approved golden is informational; newly generated output must report the current package version. Numeric values use `rtol=1e-6` and `atol=1e-6`.
