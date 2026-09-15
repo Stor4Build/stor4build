@@ -20,6 +20,7 @@ outputs
 :caption: Reference
 
 reference/cli
+reference/controls
 reference/python-api
 reference/rest-api
 reference/input-schema

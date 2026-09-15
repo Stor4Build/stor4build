@@ -14,8 +14,8 @@ about: dict[str, str] = {}
 exec((SRC / "stor4build" / "__about__.py").read_text(encoding="utf-8"), about)
 
 project = "stor4build"
-author = "Oak Ridge National Laboratory and contributors"
-copyright = "2024-present, Oak Ridge National Laboratory and contributors"
+author = "Multi-Laboratory Stor4Build Modeling Team"
+copyright = "2024-present Oak Ridge National Laboratory, managed by UT-Battelle, Alliance for Energy Innovation, LLC, and contributors"
 release = about["__version__"]
 version = release
 
