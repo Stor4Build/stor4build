@@ -11,6 +11,7 @@ This documentation is organized around stable user workflows first, with generat
 about
 installation
 quickstart
+hvac-resizing
 examples
 outputs
 ```
