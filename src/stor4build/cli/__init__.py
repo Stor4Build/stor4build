@@ -455,7 +455,7 @@ def run_icetank_dynamic(osm, epw, openstudio, run_dir, measures_dir, output, mea
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
 @click.option('--control', metavar='NAME', show_default=True,
-              default='default', help='Specify a built-in control scheme (default | demo12to6 | demo_ambient_soc) or a measure that implements the scheme.')
+              default='default', help='Specify a built-in control scheme (default | demo12to6 | demo_ambient_soc | dynamic) or a measure that implements the scheme.')
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
@@ -494,24 +494,52 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
             arguments['charge_temp'] = sensible_and_latent_charge_temp[medium]
     
     # Run the baseline
+    pre = []
     post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
     if cooling_season_only:
         post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
-    baseline = stor4build.Simulation('baseline', post_steps=post)
+    if control == 'dynamic':
+        # Do we really need to run at a higher timestep? Can't we just interpolate what's needed?
+        pre.extend([stor4build.ModelMeasure('Set Timestep', 'set_timestep', {'timesteps_per_hour': 4}),
+                    stor4build.ModelMeasure('Add EASY-SHIFT Lite Outputs', 'add_easy_shift_lite_outputs')])
+    baseline = stor4build.Simulation('baseline', pre_steps=pre, post_steps=post)
     osw = baseline.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=False)
     baseline_path = os.path.join(run_dir, 'baseline', 'run')
     baseline_csv = os.path.join(baseline_path, 'eplusout.csv')
+
+    demand_charge_schedule = ''
+    demand_charge_rate = ''
+    electric_rate = ''
+
+    if control == 'dynamic':
+        # Parse rate options if provided
+        dcs = [float(x) for x in demand_charge_schedule.split(',')] if demand_charge_schedule else None
+        dcr = [float(x) for x in demand_charge_rate.split(',')] if demand_charge_rate else None
+        er = [float(x) for x in electric_rate.split(',')] if electric_rate else None
+
+        # Generate the new schedule using the output directory from Step 1.
+        # We point to the 'run' subfolder because that's where OpenStudio saves the IDF and E+ output files.
+        new_schedule_file = stor4build.generate_dynamic_schedule(baseline_path,
+                                                                 demand_charge_schedule=dcs,
+                                                                 demand_charge_rate=dcr,
+                                                                 electric_rate=er)
+
+
     # Repair the output CSV
-    stor4build.fix_csv(baseline_csv)
+    hourly_baseline_csv = os.path.join(baseline_path, 'eplusout_hourly.csv')
+    #stor4build.fix_csv(baseline_csv)
+
+
 
     # Size and run the ice tank
     post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
-
     if control == 'default':
         pass
+    elif control == 'dynamic':
+        raise 'STOPSTOPSTOP'
     else:
         measure_name = control
         if control == 'demo12to6':

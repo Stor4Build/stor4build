@@ -9,4 +9,5 @@ from .system import Simulation, ModelMeasure, EnergyPlusMeasure, ReportingMeasur
 from .icetank import IceTank
 from .dxcoil import DxCoil
 from .schema import InputData
+from .dynamic_charge_controls import generate_dynamic_schedule
 from .__about__ import __version__

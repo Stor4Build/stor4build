@@ -11,6 +11,9 @@ import re
 import collections
 import sys
 
+class DynamicChargeControlError(Exception):
+    pass
+
 debug = False
 
 def read_eplusout_skip_sizing(file_path, date_column = 'Date/Time'):
@@ -536,7 +539,7 @@ def applyDemandCharge(df_in, demand_charge_rate, cost='Electricity Rate [$/kWh]'
     return df, curr_max_elec
 
 
-def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None, epw_file=None):
+def preprocess_baseline(baseline_run_path, num_tanks, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None):
     """
     Process baseline simulation results to set up baseline data dataframes and info dictionary.
 
@@ -545,14 +548,13 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     - demand_charge_schedule: array, optional custom demand charge schedule
     - demand_charge_rate: list, optional custom demand charge rates
     - electric_rate: list, optional custom electricity rates
-    - epw_file: str, optional path to weather file for fallback OAT data
 
     Returns:
     - tuple (pd.DataFrame, dict), processed baseline dataframe and a dictionary of system specifications
     """
 
     print(f'[dynamic_charge_controls] Processing baseline from: {baseline_run_path}')
-    if debug: print(f"[dynamic_charge_controls] run\npreprocess_baseline({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate}, {epw_file})")
+    if debug: print(f"[dynamic_charge_controls] run\npreprocess_baseline({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate})")
 
     info = get_idf_info(os.path.join(baseline_run_path, "in.idf"))
 
@@ -575,25 +577,17 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
 
     info["year"] = dfc['datetime'].iloc[0].year
 
-    num_tanks = df["NUM TANKS:Schedule Value [](TimeStep)"].iloc[0]
+    #num_tanks = df["NUM TANKS:Schedule Value [](TimeStep)"].iloc[0]
     info["num_tanks"] = num_tanks
 
     icetank_specs = get_icetank_specs(num_tanks)
     info = {**info, **icetank_specs} #info | icetank_specs # merge dicts. Using syntax that works for older Python versions just in case
 
-    # attempt to get weather data, if not, fallback to epw file
+    # attempt to get weather data
     try:
         dfc['Dry Bulb Temperature'] = df['Environment:Site Outdoor Air Drybulb Temperature [C](TimeStep)']
     except KeyError:
-        # Try explicitly provided epw_file first, then fallback to in.epw in baseline_run_path
-        epw_path = epw_file if epw_file else os.path.join(baseline_run_path, "in.epw")
-
-        print(f'[dynamic_charge_controls] Warning: No OAT data available in the output file, using epw file: {epw_path}')
-        
-        a=epw()
-        a.read(epw_path)
-        dfw=a.dataframe
-        dfc['Dry Bulb Temperature'] = dfw['Dry Bulb Temperature']
+        raise DynamicChargeControlError('[dynamic_charge_controls] Error: No OAT data available in the output file')
     
     dfc["Chiller Electricity [W]"] = 0
     dfc["Thermal Load [W]"] = 0
@@ -677,11 +671,11 @@ def preprocess_baseline(baseline_run_path, demand_charge_schedule=None, demand_c
     dfh['Cooling'] = dfh['Thermal Load [kW]'] # Do NOT change all instances of 'Cooling' to 'Thermal Load [kW]' -- they will mean different things later on, 'Cooling' is how much cooling it will do in that hour (using storage to make up the diff) whereas 'Thermal Load [kW]' is the building load which can be met by chiller operation or storage.
     # dfh['Demand Charge Schedule'] = dfh['Demand Period'] # changed all of these to 'Demand Period' already
     dfh['COP'] = getCOP(dfh['Thermal Load [kW]'], 6.7, info)
-    dfh['Electricity Consumption'] = dfh['Cooling'] / dfh['COP'] # electricity used to meet 'Cooling'; kept in sync with 'Cooling'/'COP' updates made throughout generate_schedule()
+    dfh['Electricity Consumption'] = dfh['Cooling'] / dfh['COP'] # electricity used to meet 'Cooling'; kept in sync with 'Cooling'/'COP' updates made throughout generate_dynamic_schedule()
     dfh['Cost [kWh]'] = dfh['Electricity Rate [$/kWh]'] * dfh['Electricity Consumption']
 
     # set_index() above drops 'datetime' as a column (it becomes the index only);
-    # restore it as a column too since downstream code (generate_schedule, etc.) expects df['datetime'] to work
+    # restore it as a column too since downstream code (generate_dynamic_schedule, etc.) expects df['datetime'] to work
     dfh['datetime'] = dfh.index
 
     return dfh, info
@@ -872,7 +866,7 @@ def generate_schedule_file(dms, info, file_path):
     df.to_csv(file_path, index=False)
 
 
-def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None, epw_file=None):
+def generate_dynamic_schedule(baseline_run_path, num_tanks, demand_charge_schedule=None, demand_charge_rate=None, electric_rate=None):
     """
     Generates the optimized load shifting schedule using dynamic charge controls. 
 
@@ -881,15 +875,14 @@ def generate_schedule(baseline_run_path, demand_charge_schedule=None, demand_cha
     - demand_charge_schedule: list or array, 24-hour demand charge period schedule, with different periods mapped to integers. The lowest cost period should be `0`, then the next highest `1`, `2`, etc. If not provided, will default to a sample schedule. 
     - demand_charge_rate: list, rates for different demand periods and overall demand. The indexes map to the numbering in demand_charge_schedule, such that the lowest cost period demand charge is in index 0, then the next highest in index 1, etc. The length should be 1 more than the number of different demand_charge_schedule periods. The final entry, index -1, is an overall demand charge applied to the highest consumption regardless of time. Any of these may be 0, but all must be included for the code to work correctly. If not provided, will default to a sample tariff rate. 
     - electric_rate: list or array, 24-hour electricity rates in $/kWh. If not provided, will default to a sample rate schedule. 
-    - epw_file: os.path, to the EnergyPlus Weather file (.epw) used to run the simulation. If none, it will default to in.epw (note: current stor4build repo does not create the in.epw, so it will likely crash if not provided)
 
     Returns
     - os.path to the resulting schedule file (.csv) containing the optimized charging schedule and charging temperature, in the format required for the add_pytank_with_schedule measure
     """
 
-    if debug: print(f"[dynamic_charge_controls] run\ngenerate_schedule({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate}, {epw_file})")
+    if debug: print(f"[dynamic_charge_controls] run\ngenerate_dynamic_schedule({baseline_run_path}, {demand_charge_schedule}, {demand_charge_rate}, {electric_rate})")
 
-    df, info = preprocess_baseline(baseline_run_path, demand_charge_schedule, demand_charge_rate, electric_rate, epw_file=epw_file)
+    df, info = preprocess_baseline(baseline_run_path, num_tanks, demand_charge_schedule, demand_charge_rate, electric_rate)
     demand_charge_rate = info['demand_charge_rate']
 
     df["Electricity:Facility [kW]"] = df["Electricity:Facility [W]"] / 1000
