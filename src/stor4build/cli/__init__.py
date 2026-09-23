@@ -512,6 +512,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
     demand_charge_rate = ''
     electric_rate = ''
 
+    num_tanks = 5
+
     if control == 'dynamic':
         # Parse rate options if provided
         dcs = [float(x) for x in demand_charge_schedule.split(',')] if demand_charge_schedule else None
@@ -521,6 +523,7 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         # Generate the new schedule using the output directory from Step 1.
         # We point to the 'run' subfolder because that's where OpenStudio saves the IDF and E+ output files.
         new_schedule_file = stor4build.generate_dynamic_schedule(baseline_path,
+                                                                 num_tanks,
                                                                  demand_charge_schedule=dcs,
                                                                  demand_charge_rate=dcr,
                                                                  electric_rate=er)
