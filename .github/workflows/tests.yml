@@ -74,12 +74,18 @@ jobs:
           # not executable from inside the OpenStudio job container.
       - name: Install Hatch
         run: python -m pip install hatch
+      - name: Report CLI Python dependencies
+        run: >-
+          hatch run python -c
+          "import sys, numpy, scipy; print(sys.version); print('numpy', numpy.__version__); print('scipy', scipy.__version__)"
       - name: Verify OpenStudio
         run: openstudio openstudio_version
       - name: Run CLI regression shard
         env:
           # Preserve a Python traceback if an EnergyPlus Python plugin crashes.
           PYTHONFAULTHANDLER: "1"
+          # Record the last import reached if a compiled plugin dependency crashes.
+          PYTHONPROFILEIMPORTTIME: "1"
         run: >-
           hatch run test-cli
           --openstudio openstudio
