@@ -70,8 +70,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: pyproject.toml
+          # setup-python's pip wrapper contains a host tool-cache path that is
+          # not executable from inside the OpenStudio job container.
       - name: Install Hatch
         run: python -m pip install hatch
       - name: Verify OpenStudio
