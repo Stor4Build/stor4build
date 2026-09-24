@@ -62,27 +62,15 @@ def test_prepare_cli_arguments_redirects_outputs(scratch_dir):
     assert arguments[arguments.index("-o") + 1] == str(scratch_dir / "actual.csv")
 
 
-def test_select_cases_filters_before_deterministic_sharding(scratch_dir):
+def test_select_cases_filters_in_deterministic_order(scratch_dir):
     cases = [
         RegressionCase(name, "cli", {}, scratch_dir / f"{name}.csv")
         for name in ("z_case", "a_case", "m_case", "b_other")
     ]
 
-    first = select_cases(cases, ["*_case"], shard_count=2, shard_index=0)
-    second = select_cases(cases, ["*_case"], shard_count=2, shard_index=1)
+    selected = select_cases(cases, ["*_case"])
 
-    assert [case.name for case in first] == ["a_case", "z_case"]
-    assert [case.name for case in second] == ["m_case"]
-    assert {case.name for case in first + second} == {"a_case", "m_case", "z_case"}
-
-
-@pytest.mark.parametrize(
-    ("shard_count", "shard_index"),
-    [(None, 0), (2, None), (0, 0), (2, -1), (2, 2)],
-)
-def test_select_cases_rejects_invalid_shards(shard_count, shard_index):
-    with pytest.raises(ValueError):
-        select_cases([], [], shard_count=shard_count, shard_index=shard_index)
+    assert [case.name for case in selected] == ["a_case", "m_case", "z_case"]
 
 
 def test_check_openstudio_toolchain_accepts_canonical_version(monkeypatch):

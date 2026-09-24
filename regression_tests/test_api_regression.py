@@ -15,11 +15,9 @@ def test_api_regression(case, regression_case_dir, request):
     selected = select_cases(
         API_CASES,
         request.config.getoption("--case"),
-        shard_count=request.config.getoption("--shard-count"),
-        shard_index=request.config.getoption("--shard-index"),
     )
     if case not in selected:
-        pytest.skip("case is not in the selected regression shard")
+        pytest.skip("case does not match the selected case patterns")
     if not case.enabled:
         pytest.skip(case.reason or "API regression is disabled")
     if not case.expected.is_file():

@@ -4,7 +4,7 @@
 from collections import Counter
 from pathlib import Path
 
-from .regression import iter_cases, select_cases, validate_manifest, validate_toolchain
+from .regression import iter_cases, validate_manifest, validate_toolchain
 
 
 def test_regression_manifest():
@@ -49,13 +49,3 @@ def test_at_least_half_of_cli_cases_specify_schedules():
         explicit += present == schedule_options
 
     assert explicit * 2 >= len(cases)
-
-
-def test_cli_shards_cover_the_inventory_once():
-    cases = list(iter_cases("cli"))
-    shards = [select_cases(cases, [], shard_count=6, shard_index=index) for index in range(6)]
-    flattened = [case.name for shard in shards for case in shard]
-
-    assert sorted(flattened) == sorted(case.name for case in cases)
-    assert len(flattened) == len(set(flattened))
-    assert max(map(len, shards)) - min(map(len, shards)) <= 1

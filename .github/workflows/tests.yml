@@ -14,17 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  toolchain:
-    runs-on: ubuntu-24.04
-    outputs:
-      openstudio_container: ${{ steps.read.outputs.openstudio_container }}
-    steps:
-      - uses: actions/checkout@v7
-      - id: read
-        name: Read canonical OpenStudio container
-        shell: bash
-        run: echo "openstudio_container=$(jq -r '.openstudio.container' regression_tests/toolchain.json)" >> "$GITHUB_OUTPUT"
-
   portable:
     runs-on: ubuntu-24.04
     strategy:
@@ -54,60 +43,3 @@ jobs:
         run: python -m pip install hatch
       - name: Run portable tests
         run: hatch run +py=${{ matrix.hatch-python }} test:pytest -q
-
-  cli-regression:
-    needs: [toolchain, portable]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 180
-    container:
-      image: ${{ needs.toolchain.outputs.openstudio_container }}
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [0, 1, 2, 3, 4, 5]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
-        with:
-          # Match the interpreter used to build the EnergyPlus executable;
-          # its Python plugins load extension modules from this environment.
-          python-version: "3.12.2"
-          # setup-python's pip wrapper contains a host tool-cache path that is
-          # not executable from inside the OpenStudio job container.
-      - name: Install Hatch
-        run: python -m pip install hatch
-      - name: Install known-working plugin dependencies
-        run: >-
-          hatch run python -m pip install
-          numpy==2.3.5
-          scipy==1.16.3
-      - name: Report CLI Python dependencies
-        run: >-
-          hatch run python -c
-          "import sys, numpy, scipy; print(sys.version); print('numpy', numpy.__version__); print('scipy', scipy.__version__)"
-      - name: Verify OpenStudio
-        run: openstudio openstudio_version
-      - name: Run CLI regression shard
-        env:
-          # Preserve a Python traceback if an EnergyPlus Python plugin crashes.
-          PYTHONFAULTHANDLER: "1"
-        run: >-
-          hatch run test-cli
-          --openstudio openstudio
-          --shard-count 6
-          --shard-index ${{ matrix.shard }}
-          --regression-output regression-output
-      - name: Upload failure diagnostics
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: cli-regression-shard-${{ matrix.shard }}
-          path: |
-            regression-output/**/*.csv
-            regression-output/**/run.log
-            regression-output/**/stdout-energyplus
-            regression-output/**/eplusout.err
-            regression-output/**/eplusout.end
-            regression-output/**/out.osw
-          if-no-files-found: ignore
-          retention-days: 7

@@ -274,33 +274,15 @@ def select_case(case: RegressionCase, patterns: list[str]) -> bool:
     return any(fnmatch(case.name, pattern) for pattern in patterns)
 
 
-def validate_shard(shard_count: int | None, shard_index: int | None) -> None:
-    if shard_count is None and shard_index is None:
-        return
-    if shard_count is None or shard_index is None:
-        raise ValueError("--shard-count and --shard-index must be supplied together")
-    if shard_count < 1:
-        raise ValueError("--shard-count must be at least 1")
-    if shard_index < 0 or shard_index >= shard_count:
-        raise ValueError("--shard-index must be at least 0 and less than --shard-count")
-
-
 def select_cases(
     cases: Iterable[RegressionCase],
     patterns: list[str],
-    *,
-    shard_count: int | None = None,
-    shard_index: int | None = None,
 ) -> list[RegressionCase]:
-    """Filter cases by name, then select one deterministic round-robin shard."""
-    validate_shard(shard_count, shard_index)
-    selected = sorted(
+    """Filter cases by name and return them in deterministic order."""
+    return sorted(
         (case for case in cases if select_case(case, patterns)),
         key=lambda case: case.name,
     )
-    if shard_count is None:
-        return selected
-    return selected[shard_index::shard_count]
 
 
 def prepare_cli_arguments(case: RegressionCase, output: Path, run_dir: Path, openstudio: str) -> list[str]:
