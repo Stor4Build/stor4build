@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import pytest
 
-from .regression import compare_outputs, format_regression_context, iter_cases, run_api_case, select_case
+from .regression import compare_outputs, format_regression_context, iter_cases, run_api_case, select_cases
 
 
 API_CASES = list(iter_cases("api"))
@@ -12,8 +12,14 @@ API_CASES = list(iter_cases("api"))
 @pytest.mark.api_regression
 @pytest.mark.parametrize("case", API_CASES, ids=lambda case: case.name)
 def test_api_regression(case, regression_case_dir, request):
-    if not select_case(case, request.config.getoption("--case")):
-        pytest.skip("case does not match --case selection")
+    selected = select_cases(
+        API_CASES,
+        request.config.getoption("--case"),
+        shard_count=request.config.getoption("--shard-count"),
+        shard_index=request.config.getoption("--shard-index"),
+    )
+    if case not in selected:
+        pytest.skip("case is not in the selected regression shard")
     if not case.enabled:
         pytest.skip(case.reason or "API regression is disabled")
     if not case.expected.is_file():

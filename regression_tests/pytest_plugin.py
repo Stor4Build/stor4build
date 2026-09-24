@@ -16,6 +16,18 @@ def pytest_addoption(parser):
     group.addoption("--run-api-regression", action="store_true", help="Run configured API regressions")
     group.addoption("--case", action="append", default=[], metavar="GLOB", help="Run matching regression case IDs")
     group.addoption(
+        "--shard-count",
+        type=int,
+        default=None,
+        help="Divide selected regression cases into this many deterministic shards",
+    )
+    group.addoption(
+        "--shard-index",
+        type=int,
+        default=None,
+        help="Run this zero-based regression shard; requires --shard-count",
+    )
+    group.addoption(
         "--openstudio",
         default=os.environ.get("STOR4BUILD_OPENSTUDIO", "openstudio"),
         help="OpenStudio executable for CLI regressions",
@@ -45,6 +57,12 @@ def pytest_addoption(parser):
 
 
 def pytest_configure(config):
+    from .regression import validate_shard
+
+    try:
+        validate_shard(config.getoption("--shard-count"), config.getoption("--shard-index"))
+    except ValueError as exc:
+        raise pytest.UsageError(str(exc)) from exc
     config.addinivalue_line("markers", "cli_regression: requires a configured OpenStudio installation")
     config.addinivalue_line("markers", "api_regression: requires a configured stor4build API")
 

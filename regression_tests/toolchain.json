@@ -1,7 +1,8 @@
 {
   "openstudio": {
     "version": "3.11.0",
-    "build": "241b8abb4d"
+    "build": "241b8abb4d",
+    "container": "nrel/openstudio:3.11.0@sha256:f2ce9f20a45a8068ed4231d7a7230d4c9adb85d43349a574e3ecf091a6a37104"
   },
   "energyplus": {
     "version": "25.2.0",

@@ -1,0 +1,97 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  toolchain:
+    runs-on: ubuntu-24.04
+    outputs:
+      openstudio_container: ${{ steps.read.outputs.openstudio_container }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: read
+        name: Read canonical OpenStudio container
+        shell: bash
+        run: echo "openstudio_container=$(jq -r '.openstudio.container' regression_tests/toolchain.json)" >> "$GITHUB_OUTPUT"
+
+  portable:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.8"
+            hatch-python: "38"
+          - python: "3.9"
+            hatch-python: "39"
+          - python: "3.10"
+            hatch-python: "310"
+          - python: "3.11"
+            hatch-python: "311"
+          - python: "3.12"
+            hatch-python: "312"
+          - python: "3.13"
+            hatch-python: "313"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Hatch
+        run: python -m pip install hatch
+      - name: Run portable tests
+        run: hatch run +py=${{ matrix.hatch-python }} test:pytest -q
+
+  cli-regression:
+    needs: [toolchain, portable]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    container:
+      image: ${{ needs.toolchain.outputs.openstudio_container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Hatch
+        run: python -m pip install hatch
+      - name: Verify OpenStudio
+        run: openstudio openstudio_version
+      - name: Run CLI regression shard
+        run: >-
+          hatch run test-cli
+          --openstudio openstudio
+          --shard-count 6
+          --shard-index ${{ matrix.shard }}
+          --regression-output regression-output
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cli-regression-shard-${{ matrix.shard }}
+          path: |
+            regression-output/**/*.csv
+            regression-output/**/run.log
+            regression-output/**/eplusout.err
+            regression-output/**/out.osw
+          if-no-files-found: ignore
+          retention-days: 7

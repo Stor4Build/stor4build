@@ -3,7 +3,7 @@
 The regression suite has two adapters over one case inventory in `cases.json`:
 
 - `cli_regression` runs the installed `stor4build` command through the package entry point. It is the generally portable regression tier, provided the canonical OpenStudio toolchain and the repository's model, weather, and measure inputs are available.
-- `api_regression` sends the same kind of simulation request to a separately configured API. It is intended only for systems on which that service and its full simulation environment are available.
+- `api_regression` sends the same kind of simulation request to a separately configured API and compares the response with the approved CLI golden for the same case. It is intended only for systems on which that service and its full simulation environment are available.
 
 Neither tier runs as part of the ordinary test suite unless it is explicitly enabled. The manifest and harness unit tests always run.
 
@@ -43,6 +43,14 @@ hatch run test-cli --openstudio /path/to/openstudio
 hatch run test-cli --openstudio /path/to/openstudio --case "*packaged_ice*"
 ```
 
+Large regression runs may be divided into deterministic, zero-based shards. Case patterns are applied first, and the remaining case IDs are sorted before round-robin assignment:
+
+```console
+hatch run test-cli --openstudio /path/to/openstudio --shard-count 6 --shard-index 0
+```
+
+Run every index from zero through `--shard-count - 1` to cover the complete selected inventory. The two shard options must be supplied together.
+
 Run API regressions against an already-running service:
 
 ```console
@@ -71,6 +79,10 @@ hatch run generate-goldens \
 The generator refuses to write anywhere inside `regression_tests` and refuses a non-empty candidate directory. It never modifies approved goldens. Each successful candidate is classified as `match`, `changed`, or `new`; execution failures are recorded as `failed`, and generation continues with the remaining cases. `generation.json` records the canonical and detected toolchain, host environment, original case arguments, per-case status, and comparison details. The command exits nonzero if any case fails to execute.
 
 Review candidate files and `generation.json` before replacing approved goldens. Promotion is deliberately a separate manual action.
+
+## Continuous integration
+
+GitHub Actions runs the portable suite across every supported host-Python version. Six parallel CLI jobs run the regression inventory under Python 3.12, with one deterministic shard per job. The CLI jobs use the digest-pinned OpenStudio container declared in `toolchain.json`; changing the canonical OpenStudio release therefore requires updating the toolchain record rather than copying the container reference into the workflow.
 
 ## Comparisons
 
