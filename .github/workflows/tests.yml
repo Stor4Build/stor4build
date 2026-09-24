@@ -69,7 +69,9 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          # Match the interpreter used to build the EnergyPlus executable;
+          # its Python plugins load extension modules from this environment.
+          python-version: "3.12.2"
           # setup-python's pip wrapper contains a host tool-cache path that is
           # not executable from inside the OpenStudio job container.
       - name: Install Hatch
