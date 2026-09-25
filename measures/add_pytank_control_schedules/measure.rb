@@ -96,7 +96,7 @@ class AddPyTankControlSchedules < OpenStudio::Measure::EnergyPlusMeasure
     )
     chrg_temp.setDefaultValue(-3.8)
     chrg_temp.setUnits('C')
-    args << chrg_tempe
+    args << chrg_temp
 
     return args
   end
