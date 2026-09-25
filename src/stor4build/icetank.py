@@ -77,6 +77,7 @@ class IceTank(Simulation):
                 "Add Python Tank System",
                 "add_pytank_system",
                 arguments={
+                    "chrg_temp": self.charge_temp,
                     "num_tanks": self.num_tanks,
                     "trim_temp": self.trim_temp,
                     "size_frac": self.size_fraction,

@@ -57,6 +57,15 @@ class AddPyTankSystem < OpenStudio::Measure::EnergyPlusMeasure
     # create empty argument vector to add arguments to
     args = OpenStudio::Measure::OSArgumentVector.new
 
+    # create argument for charge temperature
+    chrg_temp = OpenStudio::Measure::OSArgument.makeDoubleArgument(
+      'chrg_temp',
+      false
+    )
+    chrg_temp.setDefaultValue(-3.8)
+    chrg_temp.setUnits('C')
+    args << chrg_temp
+
     # create argument for number of tanks
     num_tanks = OpenStudio::Measure::OSArgument.makeDoubleArgument(
       'num_tanks',
@@ -139,6 +148,7 @@ class AddPyTankSystem < OpenStudio::Measure::EnergyPlusMeasure
     return false unless runner.validateUserArguments(arguments(ws), usr_args)
 
     # assign user arguments to variables
+    chrg_temp = runner.getDoubleArgumentValue('chrg_temp', usr_args)
     num_tanks = runner.getDoubleArgumentValue('num_tanks', usr_args)
     trim_temp = runner.getDoubleArgumentValue('trim_temp', usr_args)
     strg_type = runner.getStringArgumentValue('strg_type', usr_args)
