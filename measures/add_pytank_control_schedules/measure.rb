@@ -205,15 +205,15 @@ class AddPyTankControlSchedules < OpenStudio::Measure::EnergyPlusMeasure
     ws.addObject(no)
 
     # add chiller temperature schedule
-    #ot = 'Schedule_Compact'
-    #no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
-    #no.setString(0, 'Chiller Temp Sch')
-    #no.setString(1, 'Temperature')
-    #no.setString(2, 'Through: 12/31')
-    #no.setString(3, 'For: AllDays')
-    #no.setString(4, 'Until: 24:00')
-    #no.setDouble(5, 6.7)
-    #ws.addObject(no)
+    ot = 'Schedule_Compact'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Chiller Temp Sch')
+    no.setString(1, 'Temperature')
+    no.setString(2, 'Through: 12/31')
+    no.setString(3, 'For: AllDays')
+    no.setString(4, 'Until: 24:00')
+    no.setDouble(5, 6.7)
+    ws.addObject(no)
 
     # add ice tank temperature schedule
     #ot = 'Schedule_Compact'
@@ -225,6 +225,17 @@ class AddPyTankControlSchedules < OpenStudio::Measure::EnergyPlusMeasure
     #no.setString(4, 'Until: 24:00')
     #no.setDouble(5, 6.7)
     #ws.addObject(no)
+
+    #ot = 'Chiller_Electric_EIR'
+    #ws.getObjectsByType(ot.to_IddObjectType).each do |o|
+    #  setpoint_manager_type = 'SetpointManager_Scheduled'.to_IddObjectType
+    #  obj = ws.getObjectByTypeAndName(setpoint_manager_type, 
+    #                                  "#{o.name.get} Setpoint Manager")
+    #  unless obj.empty?
+    #    obj = obj.get
+    #    obj.setString(2, 'Chiller Temp Sch') 
+    #  end
+    #end
 
     return true
   end

@@ -86,6 +86,17 @@ class IceTank(Simulation):
                     "custom_site_packages": self.custom_site_packages,
                 },
             ),
+            #EnergyPlusMeasure(
+            #    "Add Python Tank Control Schedules",
+            #    "add_pytank_control_schedules",
+            #    arguments={
+            #        "chrg_start": self.charge_start,
+            #        "chrg_end": self.charge_end,
+            #        "dchrg_start": self.discharge_start,
+            #        "dchrg_end": self.discharge_end,
+            #        "chrg_temp": self.charge_temp
+            #    },
+            #),
         ]
 
     @classmethod

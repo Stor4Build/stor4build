@@ -366,7 +366,7 @@ class AddPyTankSystem < OpenStudio::Measure::EnergyPlusMeasure
       no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
       no.setString(0, "#{a[0]} Setpoint Manager")
       no.setString(1, 'Temperature')
-      no.setString(2, 'Chiller Temp Sch')
+      no.setString(2, 'Chiller Temp Sch') # This is no longer meaningful here!
       no.setString(3, a[3])
       ws.addObject(no)
     end

@@ -3,14 +3,23 @@
   <schema_version>3.1</schema_version>
   <name>add_py_tank_system</name>
   <uid>26791029-4af7-4b3d-8cec-9737104ed42f</uid>
-  <version_id>d698cd12-9f50-4ae1-95e1-f58356d1810f</version_id>
-  <version_modified>2026-09-25T16:25:31Z</version_modified>
+  <version_id>0080318b-d4e8-4179-8a7d-984512ae42e9</version_id>
+  <version_modified>2026-09-25T18:59:05Z</version_modified>
   <xml_checksum>C9E2315D</xml_checksum>
   <class_name>AddPyTankSystem</class_name>
   <display_name>Add Python Tank System</display_name>
   <description>This measure will add the Python tank model system.</description>
   <modeler_description>This measure will add the python tank model system.</modeler_description>
   <arguments>
+    <argument>
+      <name>chrg_temp</name>
+      <display_name>chrg_temp</display_name>
+      <type>Double</type>
+      <units>C</units>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>-3.8</default_value>
+    </argument>
     <argument>
       <name>num_tanks</name>
       <display_name>num_tanks</display_name>
@@ -129,7 +138,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>6A96692E</checksum>
+      <checksum>65BA2757</checksum>
     </file>
   </files>
 </measure>
