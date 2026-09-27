@@ -7,7 +7,7 @@
 # http://nrel.github.io/OpenStudio-user-documentation/reference/measure_writing_guide/
 
 # start the measure
-class SetTimestep < OpenStudio::Ruleset::ModelUserScript
+class SetTimestep < OpenStudio::Measure::ModelMeasure
   # human readable name
   def name
     return 'SetTimestep'
@@ -25,7 +25,7 @@ class SetTimestep < OpenStudio::Ruleset::ModelUserScript
 
   # define the arguments that the user will input
   def arguments(model)
-    args = OpenStudio::Ruleset::OSArgumentVector.new
+    args = OpenStudio::Measure::OSArgumentVector.new
 
     timesteps_per_hour = OpenStudio::Ruleset::OSArgument.makeIntegerArgument('timesteps_per_hour', true)
     timesteps_per_hour.setDisplayName('Timesteps per hour')

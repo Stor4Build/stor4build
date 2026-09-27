@@ -192,7 +192,7 @@ def process(csvfile, date, legend_loc): #osm, epw, openstudio, measures_dir, mea
 @click.option('--size-fraction', metavar='F', type=click.Choice(['1', '0.9', '0.8', '0.7', '0.6', '0.5']), show_default=True,
               default='1', help='Fraction to use to downsize the chiller.')
 @click.option('--control', metavar='NAME', show_default=True,
-              default='default', help='Specify a built-in control scheme (default | demo12to6) or a measure that implements the scheme.')
+              default='default', help='Specify a built-in control scheme (default | demo12to6 | demo_ambient_soc | dynamic) or a measure that implements the scheme.')
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_only,
                 charge_start, charge_end, discharge_start, discharge_end, charge_temp, ntanks, trim_temp, run_baseline,
@@ -235,16 +235,39 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         #run_baseline = True
         measures_only = False
 
+    if control == 'dynamic':
+        run_baseline = True
+
+    # Run the baseline if requested or required
+    if run_baseline:
+        pre = []
+        if control == 'dynamic':
+            pre.extend([
+                stor4build.ModelMeasure('Set Timestep', 'set_timestep', {'timesteps_per_hour': 4}),
+                stor4build.ModelMeasure('Add Dynamic Charge Control Outputs', 'add_dynamic_charge_control_outputs')]
+            )
+        post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
+        if cooling_season_only:
+            post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
+        baseline = stor4build.Simulation('baseline', pre_steps=pre, post_steps=post)
+        osw = baseline.osw(osm, measures_dir, epw)
+        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+
     # Run the ice tank
+    pre = []
     post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs', {'baseline': False})]
     if cooling_season_only:
         post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
     if control == 'default':
         pass
+    elif control == 'dynamic':
+        pre.append(stor4build.ModelMeasure('Set Timestep', 'set_timestep', {'timesteps_per_hour': 4}))
     else:
         measure_name = control
         if control == 'demo12to6':
             measure_name = 'add_demo_noon_to_six'
+        elif control == 'demo_ambient_soc':
+            measure_name = 'add_demo_ambient_soc'
         # For this to work, the measure will need to be in the measures directory
         control_measure_path = os.path.join(measures_dir, measure_name, 'measure')
         if os.path.exists(control_measure_path + '.py') or os.path.exists(control_measure_path + '.rb'):
@@ -255,19 +278,10 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         else:
             warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
         
-    icetank = stor4build.IceTank('icetank', post_steps=post, **arguments)
+    icetank = stor4build.IceTank('icetank', pre_steps=pre, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
     
-    # Run the baseline if requested
-    if run_baseline:
-        post = [stor4build.ModelMeasure('Add ThermalTank Outputs', 'add_thermaltank_outputs')]
-        if cooling_season_only:
-            post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
-        baseline = stor4build.Simulation('baseline', post_steps=post)
-        osw = baseline.osw(osm, measures_dir, epw)
-        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
-
     # Combine the CSVs
     if output:
         icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
