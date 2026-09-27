@@ -54,11 +54,8 @@ def run(osm, epw, openstudio, measures_dir, measures_only, run_dir):
 @click.argument('csvfile',metavar='CSV', type=click.Path(exists=True))
 # Need to fix this so it doesn't need a year
 @click.option('--date', type=click.DateTime(formats=["%Y-%m-%d"]), default='2006-07-07')
-#@click.option('--openstudio', show_default=True, default='openstudio', help='OpenStudio CLI to use.')
 @click.option('-l', '--legend-loc', type=str, show_default=True, default='lower left', help='Location for the matplotlib legend.')
-#@click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
-#@click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
-def process(csvfile, date, legend_loc): #osm, epw, openstudio, measures_dir, measures_only, run_dir):
+def process(csvfile, date, legend_loc):
     """
     Post-process the hourly CSV from the TES simulations.
     """
@@ -235,8 +232,13 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         #run_baseline = True
         measures_only = False
 
+    dcs = None
+    dcr = None
+    er = None
+    new_schedule_file = None
     if control == 'dynamic':
         run_baseline = True
+        measures_only = False
 
     # Run the baseline if requested or required
     if run_baseline:
@@ -251,7 +253,16 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
             post.append(stor4build.ModelMeasure('Run Cooling Season Only', 'run_cooling_season_only'))
         baseline = stor4build.Simulation('baseline', pre_steps=pre, post_steps=post)
         osw = baseline.osw(osm, measures_dir, epw)
-        stor4build.run_workflow(openstudio, os.path.join(run_path, baseline.tag()), osw, measures_only=measures_only)
+        stor4build.run_workflow(openstudio,
+                                os.path.join(run_path, baseline.tag()), osw,
+                                measures_only=measures_only)
+        if control == 'dynamic':
+             baseline_path = baseline_csv = os.path.join(run_path, baseline.tag(),'run')
+             new_schedule_file = stor4build.generate_dynamic_schedule(baseline_path,
+                                                                      ntanks,
+                                                                      demand_charge_schedule=dcs,
+                                                                      demand_charge_rate=dcr,
+                                                                      electric_rate=er)
 
     # Run the ice tank
     pre = []
@@ -277,23 +288,23 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
             post.append(stor4build.EnergyPlusMeasure('Add Path To Plugin Paths', 'add_path_to_plugin_paths', {'path': os.path.join(run_dir, 'icetank')}))
         else:
             warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
-        
+
     icetank = stor4build.IceTank('icetank', pre_steps=pre, post_steps=post, **arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
     
     # Combine the CSVs
-    if output:
-        icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
-        stor4build.fix_csv(icetank_csv)
-        if run_baseline:
-            baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
-            stor4build.fix_csv(baseline_csv)
-            txt = stor4build.combine_single_frequency_csv(baseline_csv, icetank_csv, 'Hourly')
-        else:
-            txt = stor4build.single_frequency_csv(icetank_csv, 'Hourly', verbose=False)
-        with open(output, 'w') as fp:
-            fp.write(txt)
+    #if output:
+    #    icetank_csv = os.path.join(run_path, icetank.tag(),'run', 'eplusout.csv')
+    #    stor4build.fix_csv(icetank_csv)
+    #    if run_baseline:
+    #        baseline_csv = os.path.join(run_path, baseline.tag(),'run', 'eplusout.csv')
+    #        stor4build.fix_csv(baseline_csv)
+    #        txt = stor4build.combine_single_frequency_csv(baseline_csv, icetank_csv, 'Hourly')
+    #    else:
+    #        txt = stor4build.single_frequency_csv(icetank_csv, 'Hourly', verbose=False)
+    #    with open(output, 'w') as fp:
+    #        fp.write(txt)
     
 
 @click.command()
