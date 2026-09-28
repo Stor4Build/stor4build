@@ -310,10 +310,11 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
               default='1', help='Fraction to use to downsize the chiller.')
 @click.option('--control', metavar='NAME', show_default=True,
               default='default', help='Specify a built-in control scheme (default | demo12to6 | demo_ambient_soc) or a measure that implements the scheme.')
+@click.option('--custom-site-packages', type=click.Path(exists=True, dir_okay=False), default=None, help='Path to site packages directory for plugin to use in simulation.')
 @click.option('--sensible-only', is_flag=True, show_default=True, default=False, help='Utilize sensible storage only.')
 def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
                  charge_start, charge_end, discharge_start, discharge_end, charge_temp, peak_reduction, show_sizing,
-                 cooling_season_only, medium, size_fraction, control, sensible_only):
+                 cooling_season_only, medium, size_fraction, control, custom_site_packages, sensible_only):
     """
     Add an ice tank TES system to an OpenStudio model, size it, and run it.
     """
@@ -332,7 +333,8 @@ def size_icetank(osm, epw, openstudio, run_dir, measures_dir, output,
         "charge_temp" : charge_temp,
         "peak_reduction" : peak_reduction,
         "size_fraction": float(size_fraction),
-        "storage_medium" : medium
+        "storage_medium": medium,
+        "custom_site_packages": custom_site_packages
     }
 
     # Handle storage details

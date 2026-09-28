@@ -1,6 +1,6 @@
 # Installation
 
-Stor4Build can be installed from PyPI:
+The `stor4build` can be installed from PyPI:
 
 ```console
 pip install stor4build
@@ -12,9 +12,16 @@ The command line entry point is `stor4build`:
 stor4build --help
 ```
 
-## External Tools
+## External Tools and Packages
 
-Stor4Build simulation workflows depend on OpenStudio and EnergyPlus. The CLI assumes that the OpenStudio executable is available as `openstudio` unless a command provides an `--openstudio` option.
+`stor4build` simulation workflows depend on OpenStudio and EnergyPlus. The CLI assumes that the OpenStudio executable is available as `openstudio` unless a command provides an `--openstudio` option.
+
+The tool uses an EnergyPlus plugin that requires Python packages in the version of Python supported by EnergyPlus:
+
+  - scipy
+  - SecondaryCoolantProps
+
+
 
 ## Development Environment
 

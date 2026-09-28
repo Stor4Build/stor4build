@@ -51,13 +51,16 @@ class IceTank(Simulation):
             self.charge_temp = freezing_temp[self.storage_medium] + charge_temp_delta[self.store_ice]
         self.sizing = kwargs.get('sizing', {})
         # The plug-in needs some packages, let's find where they SHOULD be
-        for possible in getsitepackages():
-            if os.path.exists(os.path.join(possible, 'numpy')):
-                self.custom_site_packages = possible
-                break
+        if 'custom_site_packages' in kwargs and kwargs['custom_site_packages'] is not None:
+            self.custom_site_packages = kwargs['custom_site_packages']
         else:
-            print(getsitepackages())
-            raise FileNotFoundError('Site packages directory not found')
+            for possible in getsitepackages():
+                if os.path.exists(os.path.join(possible, 'numpy')):
+                    self.custom_site_packages = possible
+                    break
+            else:
+                print(getsitepackages())
+                raise FileNotFoundError('Site packages directory not found')
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
     def required_steps(self):
         return [EnergyPlusMeasure('Add Python Tank', 'add_pytank',

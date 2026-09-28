@@ -22,6 +22,7 @@ This approach works but introduces another factor to consider. One of the chille
 
 When we mimic the downsizing of the chiller by limiting the maximum PLR, we need to adjust this curve accordingly. We adjusted these curves by making sure the endpoint remains the same as a non-downsized chiller. In other words, the value that the unmodified curve takes at one must be the same as the modified curve takes at the chosen downsizing value (**0.5, 0.6, 0.7, 0.8, or 0.9**). The table below summarizes how the curve coefficients are modified for different downsized values.
 
+:::{only} html
 | Maximum PLR | Constant Term | Linear Coefficient | Quadratic Coefficient |
 |-------------|--------------:|-------------------:|----------------------:|
 |     1.0     |     0.2221    |        0.5032      |         0.2569        |
@@ -30,6 +31,24 @@ When we mimic the downsizing of the chiller by limiting the maximum PLR, we need
 |     0.7     |     0.2221    |        0.7188      |         0.5243        |
 |     0.6     |     0.2221    |        0.8386      |         0.7136        |
 |     0.5     |     0.2221    |        1.0063      |         1.0276        |
+:::
+
+:::{raw} latex
+\begin{center}
+\begin{tabular}{lrrr}
+\hline
+\textbf{Maximum PLR} & \textbf{Constant Term} & \textbf{Linear Coefficient} & \textbf{Quadratic Coefficient} \\
+\hline
+1.0 & 0.2221 & 0.5032 & 0.2569 \\
+0.9 & 0.2221 & 0.5591 & 0.3172 \\
+0.8 & 0.2221 & 0.6289 & 0.4014 \\
+0.7 & 0.2221 & 0.7188 & 0.5243 \\
+0.6 & 0.2221 & 0.8386 & 0.7136 \\
+0.5 & 0.2221 & 1.0063 & 1.0276 \\
+\hline
+\end{tabular}
+\end{center}
+:::
 
 This section will describe how Stor4Build handles HVAC resizing when thermal energy storage is added to a building model.
 
