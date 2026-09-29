@@ -53,3 +53,5 @@ latex_elements = {
     "papersize": "letterpaper",
     "pointsize": "10pt",
 }
+
+today = "September 30, 2026"
