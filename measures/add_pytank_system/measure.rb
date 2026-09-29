@@ -231,6 +231,17 @@ class AddPyTankSystem < OpenStudio::Measure::EnergyPlusMeasure
     no.setString(2, 'Timestep')
     ws.addObject(no)
 
+    # add chiller temperature schedule
+    ot = 'Schedule_Compact'
+    no = OpenStudio::IdfObject.new(ot.to_IddObjectType)
+    no.setString(0, 'Chiller Temp Sch')
+    no.setString(1, 'Temperature')
+    no.setString(2, 'Through: 12/31')
+    no.setString(3, 'For: AllDays')
+    no.setString(4, 'Until: 24:00')
+    no.setDouble(5, 6.7)
+    ws.addObject(no)
+
     # add ice tank temperature schedule
     ot = 'Schedule_Compact'
     no = OpenStudio::IdfObject.new(ot.to_IddObjectType)

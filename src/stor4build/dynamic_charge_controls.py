@@ -10,6 +10,7 @@ import os
 import re
 import collections
 import sys
+from .system import Control, EnergyPlusMeasure
 
 class DynamicChargeControlError(Exception):
     pass
@@ -1435,3 +1436,50 @@ def generate_dynamic_schedule(baseline_run_path, num_tanks, demand_charge_schedu
     print(f"[dynamic_charge_controls] Dynamic charge schedule saved to: {output_path}")
 
     return output_path
+
+class DynamicIceTankControl(Control):
+    def __init__(self, filename):
+        self.filename = filename
+        self.charge_temp = -3.8
+    def required_steps(self):
+        return [
+            EnergyPlusMeasure(
+                'Add Schedule File',
+                'add_schedule_file',
+                {
+                    'file_name': self.filename,
+                    'schedule_name': 'Charge Sch',
+                    'schedule_column': 3,
+                    'row_skip': 1,
+                    'timesteps_per_hour': 4,
+                    'output_variable': True,
+                    'interpolate': False
+                }
+            ),
+            EnergyPlusMeasure(
+                'Add Schedule File',
+                'add_schedule_file',
+                {
+                    'file_name': self.filename,
+                    'schedule_name': 'Chrg Temp',
+                    'schedule_column': 4,
+                    'row_skip': 1,
+                    'timesteps_per_hour': 4,
+                    'output_variable': True,
+                    'interpolate': True
+                }
+            ),
+            #EnergyPlusMeasure(
+            #    'Add Schedule File',
+            #    'add_schedule_file',
+            #    {
+            #        'file_name': self.filename,
+            #        'schedule_name': 'Chiller Temp Sch',
+            #        'schedule_column': 5,
+            #        'row_skip': 1,
+            #        'timesteps_per_hour': 4,
+            #        'output_variable': True,
+            #        'interpolate': True
+            #    }
+            #),
+        ]

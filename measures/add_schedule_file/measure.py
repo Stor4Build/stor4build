@@ -78,7 +78,7 @@ class AddScheduleFile(openstudio.measure.EnergyPlusMeasure):
         interp.setDefaultValue(False)
         args.append(interp)
         
-        output_var = openstudio.measure.OSArgument.makeBoolArgument('output_var', False)
+        output_var = openstudio.measure.OSArgument.makeBoolArgument('output_variable', False)
         output_var.setDisplayName('Create an output variable')
         output_var.setDescription('Create an output variable for the schedule.')
         output_var.setDefaultValue(False)
@@ -104,7 +104,7 @@ class AddScheduleFile(openstudio.measure.EnergyPlusMeasure):
         sch_col = runner.getIntegerArgumentValue('schedule_column', user_arguments)
         row_skip = runner.getIntegerArgumentValue('row_skip', user_arguments)
         tph = runner.getIntegerArgumentValue('timesteps_per_hour', user_arguments)
-        output_var = runner.getBoolArgumentValue('row_skip', user_arguments)
+        output_var = runner.getBoolArgumentValue('output_variable', user_arguments)
         interp = runner.getBoolArgumentValue('interpolate', user_arguments)
 
         yes_no = {True:'Yes', False:'No'}

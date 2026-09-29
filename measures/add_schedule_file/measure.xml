@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>add_schedule_file</name>
   <uid>1cc61cb7-ce8f-4c95-a4d1-5aeceb67bd53</uid>
-  <version_id>e004112b-4d99-4911-aa7e-36a9003eea55</version_id>
-  <version_modified>2026-09-27T19:18:47Z</version_modified>
+  <version_id>99e82bd5-2e75-4b86-af15-3ec1aa496e09</version_id>
+  <version_modified>2026-09-28T21:50:10Z</version_modified>
   <xml_checksum>FA4A2FEC</xml_checksum>
   <class_name>AddScheduleFile</class_name>
   <display_name>Add Schedule File</display_name>
@@ -73,7 +73,7 @@
       </choices>
     </argument>
     <argument>
-      <name>output_var</name>
+      <name>output_variable</name>
       <display_name>Create an output variable</display_name>
       <description>Create an output variable for the schedule.</description>
       <type>Boolean</type>
@@ -114,13 +114,7 @@
       <filename>LICENSE.md</filename>
       <filetype>md</filetype>
       <usage_type>license</usage_type>
-      <checksum>CD7F5672</checksum>
-    </file>
-    <file>
-      <filename>.gitkeep</filename>
-      <filetype>gitkeep</filetype>
-      <usage_type>doc</usage_type>
-      <checksum>00000000</checksum>
+      <checksum>580C4D13</checksum>
     </file>
     <file>
       <version>
@@ -131,13 +125,7 @@
       <filename>measure.py</filename>
       <filetype>py</filetype>
       <usage_type>script</usage_type>
-      <checksum>A133618E</checksum>
-    </file>
-    <file>
-      <filename>test_add_schedule_file.py</filename>
-      <filetype>py</filetype>
-      <usage_type>test</usage_type>
-      <checksum>08472A9D</checksum>
+      <checksum>E4342182</checksum>
     </file>
   </files>
 </measure>

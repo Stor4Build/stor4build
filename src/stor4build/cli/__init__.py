@@ -168,13 +168,13 @@ def process(csvfile, date, legend_loc):
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
 @click.option('--measures-only', is_flag=True, show_default=True, default=False, help='Run the measures but not the simulation.')
-@click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
+@click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_charge_start,
               help='Time to start charging tank(s).')
-@click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_end,
+@click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_charge_end,
               help='Time to end charging tank(s).')
-@click.option('--discharge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_start,
+@click.option('--discharge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_discharge_start,
               help='Time to start discharging tank(s).')
-@click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_end,
+@click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_discharge_end,
               help='Time to end discharging tank(s).')
 @click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=False,
               default=None, help='Tank charging temperature.')
@@ -202,9 +202,20 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     osm = os.path.abspath(osm)
     epw = os.path.abspath(epw)
     measures_dir = os.path.abspath(measures_dir)
+
+    default_energy_rate_offpeak = 0.1
+    default_energy_rate_peak = 0.2
     
     # Organize the arguments
-    arguments = {
+    control_arguments = {
+        "charge_start" : charge_start,
+        "charge_end" : charge_end,
+        "discharge_start" : discharge_start,
+        "discharge_end" : discharge_end,
+        "charge_temp" : charge_temp,
+        "storage_medium" : medium
+    }
+    system_arguments = {
         "charge_start" : charge_start,
         "charge_end" : charge_end,
         "discharge_start" : discharge_start,
@@ -220,13 +231,14 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     tes_type = 'ThermalTank-Ice'
     if sensible_only:
         tes_type = 'ThermalTank-ChilledWater'
-        arguments['store_ice'] = False
+        system_arguments['store_ice'] = False
         if charge_temp is None:
-            arguments['charge_temp'] = sensible_only_charge_temp[medium]
+            system_arguments['charge_temp'] = sensible_only_charge_temp[medium]
     else:
-        arguments['store_ice'] = True
+        system_arguments['store_ice'] = True
         if charge_temp is None:
-            arguments['charge_temp'] = sensible_and_latent_charge_temp[medium]
+            system_arguments['charge_temp'] = sensible_and_latent_charge_temp[medium]
+    control_arguments['store_ice'] = system_arguments['store_ice']
 
     if output:
         #run_baseline = True
@@ -272,7 +284,7 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
     if control == 'default':
         pass
     elif control == 'dynamic':
-        pre.append(stor4build.ModelMeasure('Set Timestep', 'set_timestep', {'timesteps_per_hour': 4}))
+        pass
     else:
         measure_name = control
         if control == 'demo12to6':
@@ -289,7 +301,12 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
         else:
             warnings.warn(f'Failed to find measure "{measure_name}", default control will be used.')
 
-    icetank = stor4build.IceTank('icetank', pre_steps=pre, post_steps=post, **arguments)
+    if control == 'dynamic':
+        icetank_control = stor4build.DynamicIceTankControl(new_schedule_file)
+    else:
+        icetank_control = stor4build.IceTankControl(**control_arguments)
+    icetank = stor4build.IceTank('icetank', pre_steps=pre, post_steps=post, control=icetank_control,
+                                 **system_arguments)
     osw = icetank.osw(osm, measures_dir, epw)
     stor4build.run_workflow(openstudio, os.path.join(run_path, icetank.tag()), osw, measures_only=measures_only)
     
@@ -314,13 +331,13 @@ def run_icetank(osm, epw, openstudio, run_dir, measures_dir, output, measures_on
 @click.option('-r', '--run-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory to run in.')
 @click.option('-m', '--measures-dir', type=click.Path(exists=True), show_default=True, default='.', help='Directory containing measures.')
 @click.option('-o', '--output', type=click.Path(writable=True, dir_okay=False), default=None, help='Run baseline and write combined CSV to specified file.')
-@click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_start,
+@click.option('--charge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_charge_start,
               help='Time to start charging tank(s).')
-@click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_charge_end,
+@click.option('--charge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_charge_end,
               help='Time to end charging tank(s).')
-@click.option('--discharge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_start,
+@click.option('--discharge-start', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_discharge_start,
               help='Time to start discharging tank(s), beginning of sizing window.')
-@click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTank.default_discharge_end,
+@click.option('--discharge-end', metavar='HH:MM', show_default=True, default=stor4build.IceTankControl.default_discharge_end,
               help='Time to end discharging tank(s), end of sizing window.')
 @click.option('--charge-temp', metavar='T', type=click.FloatRange(min=-10.0, max=10.0), show_default=False,
               default=None, help='Tank charging temperature.')

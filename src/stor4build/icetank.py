@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 import os
 from site import getsitepackages
-from .system import Simulation, EnergyPlusMeasure
+from .system import Control, Simulation, EnergyPlusMeasure
 import pandas as pd
 import math
 import datetime
@@ -18,11 +18,45 @@ charge_temp_delta = {True: -4.0, False: 1.0}
 single_tank_capacity = {"water": 668.0, "simplewater": 668.0, "pcm2x2a": 668.0}  # kWh
 
 
-class IceTank(Simulation):
+class IceTankControl(Control):
     default_charge_start = "21:00"
     default_charge_end = "07:00"
     default_discharge_start = "12:00"
     default_discharge_end = "18:00"
+    default_store_ice = True
+    default_storage_medium = "water"
+
+    def __init__(self, **kwargs):
+            # Get all the data first
+            self.charge_start = kwargs.get("charge_start", self.default_charge_start)
+            self.charge_end = kwargs.get("charge_end", self.default_charge_end)
+            self.discharge_start = kwargs.get("discharge_start", self.default_discharge_start)
+            self.discharge_end = kwargs.get("discharge_end", self.default_discharge_end)
+            store_ice = kwargs.get("store_ice", self.default_store_ice)
+            storage_medium = kwargs.get("storage_medium", self.default_storage_medium)
+            if "charge_temp" in kwargs and kwargs["charge_temp"] is not None:
+                self.charge_temp = kwargs["charge_temp"]
+            else:
+                self.charge_temp = (
+                    freezing_temp[storage_medium] + charge_temp_delta[store_ice]
+                )
+
+    def required_steps(self):
+            return [
+                EnergyPlusMeasure(
+                    "Add Python Tank Control Schedules",
+                    "add_pytank_control_schedules",
+                    arguments={
+                        "chrg_start": self.charge_start,
+                        "chrg_end": self.charge_end,
+                        "dchrg_start": self.discharge_start,
+                        "dchrg_end": self.discharge_end,
+                        "chrg_temp": self.charge_temp
+                    }
+                )
+            ]
+
+class IceTank(Simulation):
     default_num_tanks = 1
     default_trim_temp = 10.0
     default_peak_reduction = 100.0
@@ -30,25 +64,17 @@ class IceTank(Simulation):
     default_store_ice = True
     default_storage_medium = "water"
 
-    def __init__(self, name, pre_steps=None, post_steps=None, **kwargs):
+    def __init__(self, name, pre_steps=None, post_steps=None, control=None, **kwargs):
         # Get all the data first
-        self.charge_start = kwargs.get("charge_start", self.default_charge_start)
-        self.charge_end = kwargs.get("charge_end", self.default_charge_end)
-        self.discharge_start = kwargs.get(
-            "discharge_start", self.default_discharge_start
-        )
-        self.discharge_end = kwargs.get("discharge_end", self.default_discharge_end)
         self.num_tanks = kwargs.get("num_tanks", self.default_num_tanks)
         self.trim_temp = kwargs.get("trim_temp", self.default_trim_temp)
         self.size_fraction = kwargs.get("size_fraction", self.default_size_fraction)
         self.store_ice = kwargs.get("store_ice", self.default_store_ice)
         self.storage_medium = kwargs.get("storage_medium", self.default_storage_medium)
-        if "charge_temp" in kwargs and kwargs["charge_temp"] is not None:
-            self.charge_temp = kwargs["charge_temp"]
+        if control is None:
+             self.control = IceTankControl(storage_medium=self.storage_medium, store_ice=self.store_ice)
         else:
-            self.charge_temp = (
-                freezing_temp[self.storage_medium] + charge_temp_delta[self.store_ice]
-            )
+             self.control = control
         self.sizing = kwargs.get("sizing", {})
         # The plug-in needs some packages, let's find where they SHOULD be
         for possible in getsitepackages():
@@ -61,23 +87,12 @@ class IceTank(Simulation):
         super().__init__(name, pre_steps=pre_steps, post_steps=post_steps)
 
     def required_steps(self):
-        return [
-            EnergyPlusMeasure(
-                "Add Python Tank Control Schedules",
-                "add_pytank_control_schedules",
-                arguments={
-                    "chrg_start": self.charge_start,
-                    "chrg_end": self.charge_end,
-                    "dchrg_start": self.discharge_start,
-                    "dchrg_end": self.discharge_end,
-                    "chrg_temp": self.charge_temp
-                },
-            ),
-            EnergyPlusMeasure(
+        measures = self.control.required_steps()
+        measures.append(EnergyPlusMeasure(
                 "Add Python Tank System",
                 "add_pytank_system",
                 arguments={
-                    "chrg_temp": self.charge_temp,
+                    "chrg_temp": self.control.charge_temp,
                     "num_tanks": self.num_tanks,
                     "trim_temp": self.trim_temp,
                     "size_frac": self.size_fraction,
@@ -85,19 +100,9 @@ class IceTank(Simulation):
                     "strg_medium": self.storage_medium,
                     "custom_site_packages": self.custom_site_packages,
                 },
-            ),
-            #EnergyPlusMeasure(
-            #    "Add Python Tank Control Schedules",
-            #    "add_pytank_control_schedules",
-            #    arguments={
-            #        "chrg_start": self.charge_start,
-            #        "chrg_end": self.charge_end,
-            #        "dchrg_start": self.discharge_start,
-            #        "dchrg_end": self.discharge_end,
-            #        "chrg_temp": self.charge_temp
-            #    },
-            #),
-        ]
+            )
+        )
+        return measures
 
     @classmethod
     def size(cls, name, baseline_results, **kwargs):
@@ -105,8 +110,8 @@ class IceTank(Simulation):
         # Get the CSV file name to use
         csvfile = kwargs.get("csv", "eplusout.csv")
         # Get the utility rate inputs
-        window_start = kwargs.get("discharge_start", cls.default_discharge_start)
-        window_end = kwargs.get("discharge_end", cls.default_discharge_end)
+        window_start = kwargs.get("discharge_start", IceTankControl.default_discharge_start)
+        window_end = kwargs.get("discharge_end", IceTankControl.default_discharge_end)
         peak_reduction = kwargs.get("peak_reduction", cls.default_peak_reduction)
         store_ice = kwargs.get("store_ice", cls.default_store_ice)
         storage_medium = kwargs.get("storage_medium", cls.default_storage_medium)
@@ -215,7 +220,8 @@ class IceTank(Simulation):
         kwargs.pop("num_tanks", None)
         kwargs.pop("trim_temp", None)
         return cls(
-            name, num_tanks=actual_num_tanks, trim_temp=Ti, sizing=sizing, **kwargs
+            name, num_tanks=actual_num_tanks, trim_temp=Ti, sizing=sizing,
+            control=IceTankControl(**kwargs), **kwargs
         )
 
     def osw(self, seed_file, measures_directory, epw_file):
