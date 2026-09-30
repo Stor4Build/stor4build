@@ -7,7 +7,7 @@ balance that EnergyPlus does not provide through a native ice-tank plant object.
 
 The same framework can run sensible chilled-water storage and the included PCM
 property model. Packaged DX ice storage follows a separate, native EnergyPlus path
-and is not covered on this page.
+documented in {doc}`packaged-ice-storage`.
 
 ```{figure} images/ice-tank-plant-loop.png
 :alt: Chilled-water loop with pump, chiller, Python-controlled ice tank and bypass, and chilled-water coils.

@@ -13,6 +13,7 @@ installation
 quickstart
 architecture
 ice-tank-plugin
+packaged-ice-storage
 hvac-resizing
 examples
 outputs

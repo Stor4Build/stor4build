@@ -128,4 +128,5 @@ return physically consistent outlet conditions, and avoid advancing stored state
 more than once when EnergyPlus iterates within a timestep.
 
 See {doc}`ice-tank-plugin` for the concrete implementation of this contract in the
-thermal-tank plugin.
+thermal-tank plugin, and {doc}`packaged-ice-storage` for the native packaged DX
+storage pathway.
