@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>add_py_tank_system</name>
+  <uid>26791029-4af7-4b3d-8cec-9737104ed42f</uid>
+  <version_id>0080318b-d4e8-4179-8a7d-984512ae42e9</version_id>
+  <version_modified>2026-09-25T18:59:05Z</version_modified>
+  <xml_checksum>C9E2315D</xml_checksum>
+  <class_name>AddPyTankSystem</class_name>
+  <display_name>Add Python Tank System</display_name>
+  <description>This measure will add the Python tank model system.</description>
+  <modeler_description>This measure will add the python tank model system.</modeler_description>
+  <arguments>
+    <argument>
+      <name>chrg_temp</name>
+      <display_name>chrg_temp</display_name>
+      <type>Double</type>
+      <units>C</units>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>-3.8</default_value>
+    </argument>
+    <argument>
+      <name>num_tanks</name>
+      <display_name>num_tanks</display_name>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>1</default_value>
+    </argument>
+    <argument>
+      <name>trim_temp</name>
+      <display_name>trim_temp</display_name>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>10</default_value>
+    </argument>
+    <argument>
+      <name>strg_type</name>
+      <display_name>strg_type</display_name>
+      <description>Options are ice or chw</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>ice</default_value>
+      <choices>
+        <choice>
+          <value>ice</value>
+          <display_name>ice</display_name>
+        </choice>
+        <choice>
+          <value>chw</value>
+          <display_name>chw</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>ctrl_type</name>
+      <display_name>ctrl_type</display_name>
+      <description>Options are sch or soc</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>sch</default_value>
+    </argument>
+    <argument>
+      <name>size_frac</name>
+      <display_name>size_frac</display_name>
+      <description>Chiller sizing factor</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>1</default_value>
+    </argument>
+    <argument>
+      <name>strg_medium</name>
+      <display_name>strg_medium</display_name>
+      <description>Set storage medium to use</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>water</default_value>
+      <choices>
+        <choice>
+          <value>water</value>
+          <display_name>water</display_name>
+        </choice>
+        <choice>
+          <value>simplewater</value>
+          <display_name>simplewater</display_name>
+        </choice>
+        <choice>
+          <value>pcm2x2a</value>
+          <display_name>pcm2x2a</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>custom_site_packages</name>
+      <display_name>custom_site_packages</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CF6C7259</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.3.0</identifier>
+        <min_compatible>2.3.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>65BA2757</checksum>
+    </file>
+  </files>
+</measure>

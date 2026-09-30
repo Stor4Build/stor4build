@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.8"
+            hatch-python: "38"
+          - python: "3.9"
+            hatch-python: "39"
+          - python: "3.10"
+            hatch-python: "310"
+          - python: "3.11"
+            hatch-python: "311"
+          - python: "3.12"
+            hatch-python: "312"
+          - python: "3.13"
+            hatch-python: "313"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Hatch
+        run: python -m pip install hatch
+      - name: Run portable tests
+        run: hatch run +py=${{ matrix.hatch-python }} test:pytest -q

@@ -90,6 +90,15 @@ def fix_csv(filepath, verbose=False):
         #df = df.drop(drop_cols, axis=1).dropna()
         df.to_csv(filepath, index=False)
 
+def strip_0000(filepath):
+    # This needs to be rewritten
+    shutil.copy(filepath, filepath + '.bak')
+    with open(filepath + '.bak', 'w') as src: 
+        with open(filepath, 'r') as dst:
+            for line in src:
+                if not line.lstrip().startswith('0000'):
+                    dst.write(line)
+
 def prefix_with_baseline(name):
     return 'Baseline ' + name
 

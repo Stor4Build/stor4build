@@ -497,7 +497,7 @@
             "capacity": 100
         },
         "baseline": {
-            "climate": "4A",
+            "climate": "5A",
             "vintage": 2011,
             "type": "LargeOffice"
         },
@@ -564,7 +564,7 @@
             "capacity": 100
         },
         "baseline": {
-            "climate": "4B",
+            "climate": "5B",
             "vintage": 2011,
             "type": "LargeOffice"
         },

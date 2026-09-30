@@ -294,6 +294,8 @@ class UsrDefPlntCmpSim(EnergyPlusPlugin):
             "Schedule Value",
             "Chiller Temp Sch"
         )
+        if self.t_set_chiller_hndl == -1:
+            exit('Actuator handle "Chiller Temp Sch" not found.')
 
         # get global handles
         self.soc_hndl = self.api.exchange.get_global_handle(
