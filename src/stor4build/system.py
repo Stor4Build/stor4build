@@ -34,6 +34,10 @@ class ReportingMeasure:
 class BadSizing(Exception):
     pass
 
+class Control:
+    def required_steps(self):
+        return []
+
 class Simulation:
     def __init__(self, name, pre_steps=None, post_steps=None):
         self.name = name

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Stor4Build package architecture</title>
+  <desc id="desc">User interfaces feed scenario data to workflow assembly, which runs OpenStudio and EnergyPlus before processing baseline and TES results.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#315b6d"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .label{font-family:Arial,sans-serif;fill:#17313b}.lane{font:700 18px Arial,sans-serif;letter-spacing:1px}.head{font:700 21px Arial,sans-serif}.body{font:15px Arial,sans-serif}.small{font:13px Arial,sans-serif}.box{stroke-width:2;filter:url(#shadow)}.arrow{stroke:#315b6d;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1200" height="680" rx="18" fill="#f7f9fa"/>
+  <rect x="24" y="24" width="1152" height="118" rx="12" fill="#eaf3f7" stroke="#83adbf"/>
+  <text x="48" y="55" class="label lane">INTERFACES AND SCENARIO DATA</text>
+  <rect class="box" x="62" y="76" width="208" height="50" rx="9" fill="#fff" stroke="#1686b0"/>
+  <text x="166" y="107" text-anchor="middle" class="label head">CLI</text>
+  <rect class="box" x="338" y="76" width="208" height="50" rx="9" fill="#fff" stroke="#1686b0"/>
+  <text x="442" y="107" text-anchor="middle" class="label head">Python API</text>
+  <rect class="box" x="614" y="76" width="208" height="50" rx="9" fill="#fff" stroke="#1686b0"/>
+  <text x="718" y="107" text-anchor="middle" class="label head">Flask API</text>
+  <rect class="box" x="890" y="76" width="244" height="50" rx="9" fill="#fff" stroke="#1686b0"/>
+  <text x="1012" y="98" text-anchor="middle" class="label body">Schema + prototype, weather</text>
+  <text x="1012" y="117" text-anchor="middle" class="label body">and baseline database</text>
+
+  <rect x="24" y="162" width="1152" height="156" rx="12" fill="#fff6df" stroke="#d4aa45"/>
+  <text x="48" y="193" class="label lane">STOR4BUILD WORKFLOW ASSEMBLY</text>
+  <rect class="box" x="62" y="220" width="250" height="74" rx="9" fill="#fff" stroke="#d39b22"/>
+  <text x="187" y="248" text-anchor="middle" class="label head">Technology model</text>
+  <text x="187" y="273" text-anchor="middle" class="label body">IceTank or DxCoil</text>
+  <rect class="box" x="378" y="220" width="292" height="74" rx="9" fill="#fff" stroke="#d39b22"/>
+  <text x="524" y="248" text-anchor="middle" class="label head">Simulation</text>
+  <text x="524" y="273" text-anchor="middle" class="label body">orders model, EnergyPlus and reporting steps</text>
+  <rect class="box" x="736" y="220" width="398" height="74" rx="9" fill="#fff" stroke="#d39b22"/>
+  <text x="935" y="248" text-anchor="middle" class="label head">OpenStudio Workflow (s4b.osw)</text>
+  <text x="935" y="273" text-anchor="middle" class="label body">seed model + weather + measures + arguments</text>
+  <path class="arrow" d="M312 257 H368"/><path class="arrow" d="M670 257 H726"/>
+
+  <rect x="24" y="338" width="1152" height="184" rx="12" fill="#f7e9eb" stroke="#b87682"/>
+  <text x="48" y="369" class="label lane">OPENSTUDIO AND ENERGYPLUS</text>
+  <rect class="box" x="62" y="398" width="234" height="92" rx="9" fill="#fff" stroke="#a84c5c"/>
+  <text x="179" y="426" text-anchor="middle" class="label head">OpenStudio CLI</text>
+  <text x="179" y="451" text-anchor="middle" class="label body">applies measures</text>
+  <text x="179" y="474" text-anchor="middle" class="label body">and translates the model</text>
+  <rect class="box" x="362" y="398" width="300" height="92" rx="9" fill="#fff" stroke="#a84c5c"/>
+  <text x="512" y="426" text-anchor="middle" class="label head">EnergyPlus</text>
+  <text x="512" y="451" text-anchor="middle" class="label body">building, HVAC and plant solver</text>
+  <text x="512" y="474" text-anchor="middle" class="label body">controls timesteps and iteration</text>
+  <rect class="box" x="728" y="388" width="406" height="112" rx="9" fill="#fff" stroke="#a84c5c"/>
+  <text x="931" y="416" text-anchor="middle" class="label head">TES integration</text>
+  <text x="931" y="444" text-anchor="middle" class="label body">Thermal tank: PythonPlugin + user-defined plant component</text>
+  <text x="931" y="469" text-anchor="middle" class="label body">Packaged ice: native thermal-storage DX coil</text>
+  <text x="931" y="489" text-anchor="middle" class="label small">Optional control plugins actuate the tank mode schedule</text>
+  <path class="arrow" d="M296 444 H352"/><path class="arrow" d="M662 444 H718"/>
+
+  <rect x="24" y="542" width="1152" height="114" rx="12" fill="#eaf4e8" stroke="#75a66b"/>
+  <text x="48" y="573" class="label lane">RESULTS AND COMPARISON</text>
+  <rect class="box" x="62" y="594" width="260" height="44" rx="9" fill="#fff" stroke="#57954b"/>
+  <text x="192" y="622" text-anchor="middle" class="label body">EnergyPlus CSV + reports</text>
+  <rect class="box" x="402" y="594" width="330" height="44" rx="9" fill="#fff" stroke="#57954b"/>
+  <text x="567" y="622" text-anchor="middle" class="label body">repair, select frequency and align cases</text>
+  <rect class="box" x="812" y="594" width="322" height="44" rx="9" fill="#fff" stroke="#57954b"/>
+  <text x="973" y="622" text-anchor="middle" class="label body">combined baseline + TES output</text>
+  <path class="arrow" d="M322 616 H392"/><path class="arrow" d="M732 616 H802"/>
+  <path class="arrow" d="M1012 142 V210"/><path class="arrow" d="M935 294 V328"/><path class="arrow" d="M931 500 V532"/>
+</svg>

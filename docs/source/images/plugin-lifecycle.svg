@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="610" viewBox="0 0 1200 610" role="img" aria-labelledby="title desc">
+  <title id="title">Ice tank Python plugin lifecycle</title>
+  <desc id="desc">Stor4Build and an OpenStudio measure construct the model, then EnergyPlus invokes setup and simulation plugin instances that call the tank branch and physics models.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#355b68"/></marker>
+    <style>.t{font-family:Arial,sans-serif;fill:#18333c}.h{font:700 20px Arial,sans-serif}.b{font:15px Arial,sans-serif}.s{font:13px Arial,sans-serif}.lane{font:700 17px Arial,sans-serif;letter-spacing:1px}.box{stroke-width:2}.a{stroke:#355b68;stroke-width:3;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="610" rx="18" fill="#f8fafb"/>
+  <rect x="24" y="24" width="1152" height="190" rx="12" fill="#fff3dc" stroke="#d4a03b"/>
+  <text x="50" y="55" class="t lane">MODEL CONSTRUCTION</text>
+  <rect class="box" x="55" y="88" width="225" height="92" rx="9" fill="#fff" stroke="#c58a19"/>
+  <text x="168" y="118" text-anchor="middle" class="t h">IceTank</text><text x="168" y="144" text-anchor="middle" class="t b">arguments + sizing</text><text x="168" y="165" text-anchor="middle" class="t s">creates add_pytank step</text>
+  <rect class="box" x="353" y="78" width="310" height="112" rx="9" fill="#fff" stroke="#c58a19"/>
+  <text x="508" y="108" text-anchor="middle" class="t h">add_pytank measure</text><text x="508" y="134" text-anchor="middle" class="t b">inserts user-defined plant component</text><text x="508" y="157" text-anchor="middle" class="t b">adds schedules, globals and outputs</text><text x="508" y="179" text-anchor="middle" class="t s">registers plugin classes and search paths</text>
+  <rect class="box" x="736" y="78" width="409" height="112" rx="9" fill="#fff" stroke="#c58a19"/>
+  <text x="941" y="108" text-anchor="middle" class="t h">EnergyPlus input model</text><text x="941" y="136" text-anchor="middle" class="t b">PlantComponent:UserDefined</text><text x="941" y="159" text-anchor="middle" class="t b">PythonPlugin:Instance × 2</text><text x="941" y="180" text-anchor="middle" class="t s">plant topology + callback program names</text>
+  <path class="a" d="M280 134 H343"/><path class="a" d="M663 134 H726"/>
+
+  <rect x="24" y="234" width="1152" height="352" rx="12" fill="#eaf3f7" stroke="#76a8ba"/>
+  <text x="50" y="265" class="t lane">ENERGYPLUS RUNTIME</text>
+  <rect class="box" x="55" y="296" width="252" height="102" rx="9" fill="#fff" stroke="#277c9c"/>
+  <text x="181" y="325" text-anchor="middle" class="t h">Setup instance</text><text x="181" y="350" text-anchor="middle" class="t b">UsrDefPlntCmpSet</text><text x="181" y="374" text-anchor="middle" class="t s">sets flow and loading limits</text>
+  <rect class="box" x="379" y="286" width="330" height="122" rx="9" fill="#fff" stroke="#277c9c"/>
+  <text x="544" y="315" text-anchor="middle" class="t h">Simulation instance</text><text x="544" y="340" text-anchor="middle" class="t b">UsrDefPlntCmpSim</text><text x="544" y="364" text-anchor="middle" class="t s">reads handles and schedules</text><text x="544" y="385" text-anchor="middle" class="t s">sets mode, setpoints and outlet actuators</text>
+  <rect class="box" x="781" y="296" width="324" height="102" rx="9" fill="#fff" stroke="#277c9c"/>
+  <text x="943" y="325" text-anchor="middle" class="t h">EnergyPlus plant solver</text><text x="943" y="351" text-anchor="middle" class="t b">provides inlet state and timestep</text><text x="943" y="374" text-anchor="middle" class="t s">iterates until the plant solution converges</text>
+  <path class="a" d="M307 347 H369"/><path class="a" d="M709 347 H771"/>
+
+  <rect class="box" x="205" y="454" width="320" height="92" rx="9" fill="#fff" stroke="#5d9361"/>
+  <text x="365" y="483" text-anchor="middle" class="t h">TankBypassBranch</text><text x="365" y="508" text-anchor="middle" class="t b">charge, float or discharge</text><text x="365" y="529" text-anchor="middle" class="t s">solves bypass fraction for outlet setpoint</text>
+  <rect class="box" x="675" y="454" width="320" height="92" rx="9" fill="#fff" stroke="#5d9361"/>
+  <text x="835" y="483" text-anchor="middle" class="t h">IceTank + fluid model</text><text x="835" y="508" text-anchor="middle" class="t b">heat transfer, sensible and latent state</text><text x="835" y="529" text-anchor="middle" class="t s">returns outlet temperature and stored state</text>
+  <path class="a" d="M500 408 V444 H365 V444"/><path class="a" d="M525 500 H665"/><path class="a" d="M835 454 V430 H943 V408"/>
+  <text x="600" y="575" text-anchor="middle" class="t s">State advances once per EnergyPlus timestep; repeated plant iterations recalculate from the previous accepted state.</text>
+</svg>

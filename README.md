@@ -7,12 +7,19 @@
 
 **Table of Contents**
 
+- [About](#about)
 - [Installation](#installation)
 - [Command Line Usage](#command-line-usage)
 - [VS Code/Hatch Dev Environment](#vs-codehatch-dev-environment)
 - [Web API](#web-api)
 - [Prototype Coverage](#prototype-coverage)
 - [License](#license)
+
+## About
+
+The `stor4build` package is a modeling tool for evaluating building-integrated thermal energy storage systems using EnergyPlus(R) and OpenStudio(R). It provides a Python package, command line interface, and web API for running baseline building models, adding TES technologies, sizing storage systems, and comparing simulation outputs.
+
+The package is intended to support studies of how thermal energy storage can shift cooling loads, reduce peak demand, and interact with building type, climate zone, vintage, utility rates, and control strategy. `stor4build` builds on standard OpenStudio measures, EnergyPlus simulations, JSON inputs, and CSV outputs so that studies can be reproduced and extended with familiar tools.
 
 ## Installation
 

@@ -2,7 +2,7 @@
   "info": {
     "description": "The stor4build API for TES calculations",
     "title": "stor4build",
-    "version": "0.4.1"
+    "version": "1.0.0"
   },
   "paths": {},
   "openapi": "3.0.2",
